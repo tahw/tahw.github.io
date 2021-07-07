@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>内存分配与垃圾回收 | 李俊龙's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">内存分配与垃圾回收</h1><a id="logo" href="/.">李俊龙's Blog</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">内存分配与垃圾回收</h1><div class="post-meta">2021-03-09<span> | </span><span class="category"><a href="/categories/jvm/">jvm</a></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F"><span class="toc-number">1.</span> <span class="toc-text">jvm内存区域</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E5%8C%BA"><span class="toc-number">2.</span> <span class="toc-text">线程共享内存区</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A0%86%E5%8C%BA"><span class="toc-number">2.1.</span> <span class="toc-text">堆区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E5%8C%BA"><span class="toc-number">2.2.</span> <span class="toc-text">方法区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Jvm%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.</span> <span class="toc-text">Jvm常量池</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Class%E6%96%87%E4%BB%B6%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">Class文件常量池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">运行时常量池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.3.</span> <span class="toc-text">全局字符串常量池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E5%8C%85%E8%A3%85%E7%B1%BB%E5%AF%B9%E8%B1%A1%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.4.</span> <span class="toc-text">基本类型包装类对象常量池</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E7%A7%81%E6%9C%89%E5%86%85%E5%AD%98%E5%8C%BA"><span class="toc-number">3.</span> <span class="toc-text">线程私有内存区</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#PC%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">3.1.</span> <span class="toc-text">PC寄存器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E6%A0%88"><span class="toc-number">3.2.</span> <span class="toc-text">Java栈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88"><span class="toc-number">3.3.</span> <span class="toc-text">本地方法栈</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">自动内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%8E%9F%E7%90%86"><span class="toc-number">4.1.</span> <span class="toc-text">内存分配原理</span></a></li></ol></li></ol></div></div><div class="post-content"><h1 id="jvm内存区域"><a href="#jvm内存区域" class="headerlink" title="jvm内存区域"></a>jvm内存区域</h1><p>之所以会选中jvm的内存区域划分为多个不同的内存区，是因为每一个独立的内存区都拥有各自的用途。<br>其中一部分的内存区域和jvm生命周期保持一致<br>另外一部分的内存区域和线程的生命周期保持一致</p>
+<p><img src="/images/pasted-17.png" alt="jvm内存区域"></p>
+<h1 id="线程共享内存区"><a href="#线程共享内存区" class="headerlink" title="线程共享内存区"></a>线程共享内存区</h1><p>允许被所有线程共享访问的一类内存区，包括堆区、方法区和运行时常量池三个内存区。</p>
+<h2 id="堆区"><a href="#堆区" class="headerlink" title="堆区"></a>堆区</h2><p>堆（heap）,Java堆区在JVM启动的时候被创建，并且它在实际的内存空间中可以是不连续的。<br>堆（heap）区是一块用于存储对象实例的内存区，同时也是GC执行垃圾回收的重点区域，正式因为java堆区是GC重点回收区域，那么GC极有可能在大内存的使用和回收上成为性能瓶颈。</p>
+<blockquote>
+<p>为了解决问题，考虑是否一定需要将对象实例存储到Java堆区中。其中逃逸分析与栈上分配等优化技术同样也是降低GC回收频率与提升GC回收效率的方式。</p>
+</blockquote>
+<p>堆还分为新生代（YoungGen）和老年代（OldGen）,其中新生代也可以分为Eden空间、From Survivor空间和To Survivor空间。</p>
+<p><img src="/images/pasted-18.png" alt="堆区的分代"></p>
+<p><code>-Xmx</code>表示堆区最大内存<br><code>-Xms</code>表示堆区起始内存<br>一旦堆中的内存大小大于最大内存，就会抛出OutOfMemoryError异常</p>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><table>
+<thead>
+<tr>
+<th>jdk版本</th>
+<th>方法区实现</th>
+<th>运行时常量池位置</th>
+<th>存储信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt;1.6</td>
+<td>PermGen space（永久代）</td>
+<td>PermGen space（永久代）</td>
+<td>运行时常量池、变量、字段和方法数据、构造函数和普通方法的字节码内容、类和实例和接口初始化需要用到的特殊方法等数据</td>
+</tr>
+<tr>
+<td>1.7</td>
+<td>PermGen space（永久代）</td>
+<td>Heap（堆）</td>
+<td>Heap（堆）</td>
+</tr>
+<tr>
+<td>1.8</td>
+<td>Metaspace（元空间）</td>
+<td>Heap（堆）</td>
+<td>Heap（堆）</td>
+</tr>
+</tbody></table>
+<p>由于主流的jdk版本采用的是1.8版本，这里我们主要介绍jdk1.8版本方法区<br>元空间（Metaspace），是方法区的一种实现，其中元空间是属于本地内存中的，之前的方法区的实现是存储在堆中。然后元空间存储类的元信息，而静态变量和常量池都并入堆中。</p>
+<h3 id="Jvm常量池"><a href="#Jvm常量池" class="headerlink" title="Jvm常量池"></a>Jvm常量池</h3><h4 id="Class文件常量池"><a href="#Class文件常量池" class="headerlink" title="Class文件常量池"></a>Class文件常量池</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JavaBean</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> value = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">public</span> String s = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> f = <span class="number">0x101</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(<span class="keyword">int</span> v)</span></span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> temp = <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">this</span>.value = temp + v;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getValue</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>编写.java文件编译为.class文件格式的二进制数据存放在磁盘中</li>
+<li>非运行时常量池，在编译阶段以及确定</li>
+<li>Class文件常量池存放<b>字面量</b>和<b>符号引用</b><ul>
+<li>字面量<ul>
+<li>第一种存储是文本字符串<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">9</span> = Utf8               s</span><br><span class="line">#<span class="number">3</span> = String             #<span class="number">31</span>            <span class="comment">// abc</span></span><br><span class="line">#<span class="number">31</span> = Utf8              abc</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li>第二种存储用final修饰的成员变量，包括静态变量、实例变量和局部变量
+           <pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">11</span> = Utf8               f</span><br><span class="line">#<span class="number">12</span> = Utf8               ConstantValue</span><br><span class="line">#<span class="number">13</span> = Integer            <span class="number">257</span></span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li>这里说明下，存在常量池的字面量，指的是数据的值，也就是<code>abc</code>和<code>0x101(257)</code>，通过对常量池的观察可知这两个字面量是确实存在于常量池的。而对于基本数据类型，也就是上面的<code>private int value = 1</code>，常量池只保留他的字段描述符<code>I(1反编译出来的结果)</code>和字段的名称<code>value</code>，他们的字面量不会存在于常量池中</li>
+</ul>
+</li>
+<li>符号引用<ul>
+<li>类和接口的全限定名，也就是<code>Ljava/lang/String;</code>这样，主要用于在运行时解析得到类的直接引用</li>
+<li>字段的名称和描述符，字段也就是类或者接口中声明的变量，包括类级别变量（static）和实例级的变量</li>
+<li>方法的名称和修饰符，也就是参数类型+返回值类型        </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h4><p>运行时常量池是方法区的一部分，所以也是全局共享的。jvm在执行过程中，需要经过<b>加载、连接(验证、准备、解析)、初始化</b>，在第一步的<b>加载</b>，虚拟机需要做下面3件事</p>
+<ul>
+<li>通过一个类的“全限定名”来获取此类的二进制字节流</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</li>
+<li>在内存中生成一个类代表这类的java.lang.Class对象，作为方法区这个类的各种数据访问的入口</li>
+</ul>
+<blockquote>
+<p>这个Class对象和实例对象是不同的，类对象是在类加载的时候生成的，实例对象是调用new之后创建的<br>上面第二条，将class字节流代表的静态存储结构转化为方法区的运行时数据结构，其中就包含class文件常量池进入运行时常量池的过程。不同的类公用一个运行时常量池，同时在进入运行时常量池的过程中，多个class文件中常量池中相同的字符串只会存在一份在运行时常量池中。</p>
+</blockquote>
+<p><font color='red'><b>运行时常量池的作用是存储class文件常量池中的符号信息。</b></font><br>运行时常量池中保存着一些class文件中描述的符号引用，同时在类加载的<b>“解析阶段”</b>还会将这些<b>符号引用</b>所翻译出来的<b>直接引用(直接指向实例对象的指针)</b>存储在运行时常量池中。</p>
+<blockquote>
+<p>运行时常量池相对于class常量池一大特性就是其具有<b>动态性</b>，<b>Java规范并不要求常量只能在运行时才产生</b>，也就是说运行时常量池中的内容并不全部来自class文件常量池，class文件常量池并非运行时常量池的唯一数据输入口；<b>在运行时可以通过代码生成常量并将其放入常量池中</b>，这种特性被用的较多的是String.intern()</p>
+</blockquote>
+<h4 id="全局字符串常量池"><a href="#全局字符串常量池" class="headerlink" title="全局字符串常量池"></a>全局字符串常量池</h4><ul>
+<li>不同于基本数据类型，String类型是一个final对象，他的字面量存在于class文件常量池中，但是运行期行为却与普通变量常量不同</li>
+<li>jdk1.7中，字符串常量池和类引用被移动到Java堆中(与运行时常量池分离)，因此不同版本的String行为也有差异</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String s0 = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">String s1 = <span class="keyword">new</span> String(<span class="string">&quot;hello&quot;</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一种的方式声明的字面量<code>hello</code>是在<font color='red'><b>编译器</b></font>就确定的，它会直接进入到class文件常量池中，当运行期间在全局字符串常量池中会保存它的一个引用，实际上最终还是要在堆中创建一个<code>yellow</code>对象</li>
+<li>第二种方式使用<code>new String()</code>，也就是调用了String类的构造函数，我们知道new指令是创建一个类的实例对象并完成加载初始化，因此这个字符串对象是在<font color='red'><b>运行期</b></font>确定的，创建的字符串对象是在堆内存上</li>
+<li><code>s0 == s1</code>，返回是false，s0和s1都存在堆上，但是地址肯定不同</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">String s1 = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">String s2 = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">String s3 = <span class="string">&quot;Hel&quot;</span> + <span class="string">&quot;lo&quot;</span>;</span><br><span class="line">String s4 = <span class="string">&quot;Hel&quot;</span> + <span class="keyword">new</span> String(<span class="string">&quot;lo&quot;</span>);</span><br><span class="line">String s5 = <span class="keyword">new</span> String(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">String s7 = <span class="string">&quot;H&quot;</span>;</span><br><span class="line">String s8 = <span class="string">&quot;ello&quot;</span>;</span><br><span class="line">String s9 = s7 + s8;</span><br><span class="line"></span><br><span class="line">System.out.println(s1 == s2);  <span class="comment">// true</span></span><br><span class="line">System.out.println(s1 == s3);  <span class="comment">// true</span></span><br><span class="line">System.out.println(s1 == s4);  <span class="comment">// false</span></span><br><span class="line">System.out.println(s1 == s9);  <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>s1 == s2<ul>
+<li>这个就很好理解了，因为字面量<code>Hello</code>在运行期间会进入到全局字符串常量池，同一份字面量只会保留一份，所有引用都指向这一份字符串，自然引用的地址也就相同了</li>
+</ul>
+</li>
+<li>s1 == s3<ul>
+<li>编译优化，编译器会直接在Class文件常量池存的是<code>Hello</code>，跟第一种是一样的</li>
+</ul>
+</li>
+<li>s1 != s4<ul>
+<li><code>new String(&quot;lo&quot;)</code>在堆中创建一个String对象，而<code>Hel</code>字面量是通过另一种操作在堆中创建对象，这两个在堆中不同的地方创建的对象是通过<code>StringBuilder.append</code>方法拼接出来的，并且最终会调用<code>StringBuilder.toString</code>方法输出，最终拼出来的String对象，地址肯定是不一样的<br>   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Create a copy, don&#x27;t share the array</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> String(value, <span class="number">0</span>, count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>s1 != s9<ul>
+<li>字面量会存在<code>Hello</code>、<code>H</code>、<code>ello</code>，运行期间会创建<code>H</code>和<code>ello</code>对象，通过<code>StringBuilder.append</code>方法拼接出来的，最终还是会重新生成String对象，地址肯定是不一样的。</li>
+</ul>
+</li>
+</ul>
+<p>    </p>
+<blockquote>
+<p>字符串常量池的概率：字符串常量池是Jvm所维护的一个字符串实例的引用表，在Hotspot vm中，他是一个叫做String Table的全局表。在字符串常量池中维护的是字符串实例的引用，底层C++实现就是一个HashTable。这些被维护的引用所指的字符串实例，被称为”被驻留的字符串“或”interned String“或通常所说的”进入了字符串常量池的字符串“。<br>运行时常量池在方法区(Non-heap)，而JDK1.7后，字符串常量池被移到了heap区，因此两者根本就不是一个概念</p>
+</blockquote>
+<h4 id="基本类型包装类对象常量池"><a href="#基本类型包装类对象常量池" class="headerlink" title="基本类型包装类对象常量池"></a>基本类型包装类对象常量池</h4><p><code>java</code>中基本类型的包装类的大部分都实现了常量池技术，这些类是<code>Byte、Short、Integer、Long、Character、Boolean</code>，另外两种浮点数没有实现。另外上面这5种整型的包装类也只是在对应值小于等于127时才可使用对象池，也即对象不负责创建和管理大于127的这些类的对象。其中会包含自动拆箱和自动装箱。</p>
+<h1 id="线程私有内存区"><a href="#线程私有内存区" class="headerlink" title="线程私有内存区"></a>线程私有内存区</h1><p>和线程共享内存区不同，线程私有内存区是不允许被所有线程共享访问的。线程私有内存区是只允许被所属的独立线程进行访问的一类内存区，包括PC寄存器、Java栈和本地方法栈。</p>
+<h2 id="PC寄存器"><a href="#PC寄存器" class="headerlink" title="PC寄存器"></a>PC寄存器</h2><p>由于JVM是基于栈的架构，任何的操作都需要入栈和出栈来完成，其中PC寄存器并不是物理寄存器，实际上是PC计数器。以下是特性</p>
+<ul>
+<li>PC寄存器用来存储下一条指令的地址</li>
+<li>每个线程都会有一个PC寄存器，线程私有的，生命周期和线程的生命周期保持一致。 </li>
+<li>任何时间一个线程都只有一个方法在执行，如果当前线程所执行的方法是一个Java方法，那么PC寄存器就会存储正在执行的字节码指令地址；如果当前线程所执行的方法是一个native方法，那么pc寄存器的值就是空(undefined)。</li>
+<li>它是唯一一个在Java虚拟机规范中没有规定任何OutOfMemoryError的区域</li>
+</ul>
+<h2 id="Java栈"><a href="#Java栈" class="headerlink" title="Java栈"></a>Java栈</h2><p>Java栈也称Java虚拟机栈，是线程私有的。Java栈存储栈帧(Stack Frame)<br>栈帧</p>
+<ul>
+<li>局部变量表<ul>
+<li>存储各类原始数据类型、对象引用(reference)、returnAddress类型</li>
+<li>returnAddress类型被定义为Java虚拟机内部的原始数据类型，该类型用于表示一条字节码指令的操作码(opcode)。</li>
+</ul>
+</li>
+<li>操作数栈</li>
+<li>动态链接</li>
+<li>方法出口<blockquote>
+<p>Java 栈允许被实现成固定大小的内存或者可动态扩展的内存大小<br>如果超过固定大小的内存就会抛出StackOverflowError错误<br>如果超过可动态扩展的内存就会抛出OutOfMemoryError错误</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>Native Method Stack，用于支持本地方法执行（native方法，比如c/c++代码）</p>
+<h1 id="自动内存管理"><a href="#自动内存管理" class="headerlink" title="自动内存管理"></a>自动内存管理</h1><p>程序内存管理是一个非常敏感的话题，对于c/c++而言，可以再语法层面上随意控制程序中一个对象的生命周期，随意创建一个对象，也能随意杀死一个对象，这种方式称之为手动内存管理。<br>手动内存管理是一把双刃剑，不好的地方会影响内存泄漏和内存溢出</p>
+<ul>
+<li>内存泄漏<ul>
+<li>比较一个常见的场景，就是释放一个链表所引用的所有空间时，却错误地释放链表的第一个元素，尽管剩下的元素不被引用，但是他们却离开了整个程序的控制范围。这样一来，链表中的元素所占用的内存空间永远不会被释放</li>
+<li>内存泄漏不会立马引起程序崩溃，慢慢在消耗内存，然后会瓦解</li>
+</ul>
+</li>
+<li>内存溢出<ul>
+<li>当使用的对象超出内存限制，一直无法释放时，就会产生内存溢出</li>
+</ul>
+</li>
+</ul>
+<p>但是Jvm是使用的<font color='red'><b>自动内存管理机制</b></font>，这样会降低内存泄漏和内存溢出的风险，但是这样会影响到一旦出现问题后，不太容易定位问题，还是需要了解jvm如何管理内容</p>
+<h2 id="内存分配原理"><a href="#内存分配原理" class="headerlink" title="内存分配原理"></a>内存分配原理</h2><p>Jvm包含三种引用类型，分别是类类型(class type)，数组类型(array type)和接口类型（interface type），这些引用类型的值则是由类实例、数组实例以及实现了某个接口的派生类实例负责动态创建，那么jvm中究竟是如何为这些类型创建对应的对象实例呢？</p>
+<ol>
+<li>语法层面使用new关键字创建一个Java对象</li>
+<li>new 指令的参数能否在常量池中定位到一个类的符号引用</li>
+<li>检查这个符号引用想对应的类是否已经成功经历过加载、解析和初始化</li>
+<li>当类完成装载步骤之后，就已经完全可以确定出创建对象实例所需要的内存大小</li>
+<li>jvm就会将其进行内存分配，以存储生成的对象实例</li>
+</ol>
+<p><img src="/images/pasted-19.png" alt="对象分配内存流程"></p>
+<p>为新对象分配内存是一件非常严谨和复杂的任务，需要考虑下面三个问题</p>
+<ol>
+<li><p>内存如何分配？</p>
+<p> 如果内存空间以规整和有序的方式分布，即已有和未用的内存都各自一边，彼此之间维系着一个记录下一次分配起始点的标记指针，当为新对象分配内存时，只需要通过修改指针的偏移量将新对象分配在第一个空闲内存位置上。这种分配叫做<font color='red'><b>指针碰撞（Bump the Pointer）</b></font>，否则只能使用<font color='red'><b>空闲列表（Free List）</b></font>执行内存分配。</p>
+</li>
+<li><p>分配到哪里？</p>
+<p> Java堆区分为新生代（Young Gen）和老年代（Old Gen），其中新生代分为Eden、From Survivor、To Survivor，由于对象的创建在Jvm中非常频繁，因此在并发情况下从堆区中划分内存空间是非线程安全的，所以务必需要保证数据操作的原子性。基于线程安全的考虑，如果一个类在分配内存之前已经成功完成类装载步骤之后，Jvm优先选在在<font color='red'><b>TLAB（Thread Local Allocation Buffer，本地线程分配缓冲区）</b></font>中为对象实例分配内存空间。<br> TLAB在Java堆区中是一块线程私有区域，它包含在Eden空间中，除了可以避免一系列的非线程安全问题外，同时还能够提升内存分配的吞吐量，因此这种内存分配方式为<b>快速分配策略</b><br> 不是所有的对象实例都在TLAB成功分配，但Jvm确实是将TLAB作为内存分配的首选，在程序中，开发人员可以将<code>-XX:UseTLAB</code>是否开启TLAB空间。<br> <font color='red'><b>默认情况下，TLAB占Eden中的1%</b></font>，可以手动调整<code>-XX:TLABWasteTargetPercent</code>设置TLAB站Eden空间的百分比大小。<br> <font color='red'><b>一旦对象在TLAB空间分配内存失败时，Jvm就会尝试着通过使用加锁机制确保数据操作的原子性，从而直接在Eden空间中分配内存，如果Eden空间中也无法分配内存时，Jvm就会执行Mirror GC，直至最终可以在Eden空间分配内存为止。（如果是大对象直接在老年代中分配）</b></font>
+   </p>
+</li>
+<li><p>内存回收？</p>
+</li>
+</ol>
+</div><div class="tags"><a href="/tags/jvm/"><i class="fa fa-tag"></i>jvm</a></div><div class="post-nav"><a class="pre" href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">操作系统的底层认识</a><a class="next" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">并发</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/flink/" style="font-size: 15px;">flink</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/07/06/BlockingQueue/">BlockingQueue</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/26/AQS/">AQS</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">synchronized</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/15/MESI/">MESI</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">JMM内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">操作系统的底层认识</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">内存分配与垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/">字节码文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">字节码编译原理</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">李俊龙's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>

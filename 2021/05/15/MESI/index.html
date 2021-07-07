@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>MESI | 李俊龙's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">MESI</h1><a id="logo" href="/.">李俊龙's Blog</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">MESI</h1><div class="post-meta">2021-05-15<span> | </span><span class="category"><a href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></span></div><div class="post-content"><h1 id="jvm整个执行过程"><a href="#jvm整个执行过程" class="headerlink" title="jvm整个执行过程"></a>jvm整个执行过程</h1><p><img src="/images/pasted-39.png" alt="jvm-&gt;cpu执行过程"></p>
+<h1 id="volatile可见性"><a href="#volatile可见性" class="headerlink" title="volatile可见性"></a>volatile可见性</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 打印汇编</span></span><br><span class="line"><span class="comment"> * 在jdk库里加上/Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home/jre/lib/hsdis-amd64.dylib</span></span><br><span class="line"><span class="comment"> * vm options：-server -Xcomp -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -XX:CompileCommand=compileonly,*JavaVolatile.fresh</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaVolatile</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> <span class="keyword">boolean</span> initFlag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">fresh</span><span class="params">()</span></span>&#123;</span><br><span class="line">        initFlag = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Thread thread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">while</span> (!initFlag) &#123;</span><br><span class="line">                    j++;</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">&quot;param=&quot;</span> + initFlag);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        Thread thread1 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                fresh();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        thread.start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">100</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        thread1.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中输出结果如下，发现被volatile修饰的initFlag中有<code>lock#</code>打头。</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x000000010657165b</span>: movabs $0x7956a1a38,%rsi  ;   &#123;oop(a <span class="string">&#x27;java/lang/Class&#x27;</span> = <span class="string">&#x27;juc/juc03/JavaVolatile&#x27;</span>)&#125;</span><br><span class="line"><span class="number">0x0000000106571665</span>: mov    $0x1,%edi</span><br><span class="line"><span class="number">0x000000010657166a</span>: mov    %dil,<span class="number">0x6c</span>(%rsi)</span><br><span class="line"><span class="number">0x000000010657166e</span>: lock addl $0x0,(%rsp)     ;*putstatic initFlag</span><br><span class="line">                                              ; - juc.juc03.JavaVolatile::fresh@1 (line <span class="number">14</span>)</span><br></pre></td></tr></table></figure>
+
+<h1 id="总线锁和缓存一致性协议"><a href="#总线锁和缓存一致性协议" class="headerlink" title="总线锁和缓存一致性协议"></a>总线锁和缓存一致性协议</h1><p><code>lock#</code>是汇编指令。用lock会触发硬件缓存锁定机制。总线锁和缓存一致性协议。</p>
+<blockquote>
+<p>在IA-32架构中有描述以下文字：在修改内存操作时，使用 LOCK 前缀去调用加锁的读-修改-写操作(原子的)。这种机制用于多处理器系统中处理器之间进行可靠的通讯，具体描述如下：在 Pentium 和早期的 IA-32 处理器中，LOCK 前缀会使处理器执行当前指令时产生一个 LOCK#信号，这总是引起显式总线锁定出现</p>
+</blockquote>
+<h2 id="总线锁"><a href="#总线锁" class="headerlink" title="总线锁"></a>总线锁</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;早期技术比较落后，cpu多核操作主内存，会发生线程安全问题，然后会加一个总线锁来解决线程安全。如果一个cpu要操作数据，首先先获取总线锁。然后再去操作数据。但是这样的效率非常低，一个cpu拿到总线锁，另外的cpu就只能等待。发挥不了多核的能力。</p>
+<blockquote>
+<p>这里要引申下，现在还是用到总线锁，是在mesi操作不了的时候才采用总线锁，那么什么是mesi操作不了，那接下来看下mesi。<br>这里还是解释下，由于cpu数据是放在cache line里的，如果锁不住cache line。就只能是用总线锁。（什么情况下锁不住cache line，使用多个cache line，多个cache line不是原子操作）</p>
+</blockquote>
+<h2 id="缓存一致性协议（MESI）"><a href="#缓存一致性协议（MESI）" class="headerlink" title="缓存一致性协议（MESI）"></a>缓存一致性协议（MESI）</h2><p>现在的处理器都是多核处理器，并且每个核都带有多个缓存（指令缓存和数据缓存，见下图）。为什么需要缓存呢，这是因为CPU访问内存的速度比较慢，所以在CPU和内存之间加了个缓存以提高访问速度。既然每个核都有缓存，那么假设两个核或者多个核同时访问同一个变量时这些缓存是如何进行同步的呢（缓存细分为一个个缓存行），这就有了MESI协议。MESI是指4个状态的首字母。每个cache line有4个状态。用两个2个bit表示。</p>
+<table>
+<thead>
+<tr>
+<th align="left">状态</th>
+<th align="left">描述</th>
+<th align="left">监听任务</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">M(修改)</td>
+<td align="left"><b><font color='red'>该cache line有效，数据被修改了，和内存中的数据不一致，数据只存在本cache中</font></b></td>
+<td align="left">缓存行必须时刻监听所有试图读该缓存行相对就主存的操作，这种操作必须在缓存将该缓存行写回主存并将状态变成S（共享）状态之前被延迟执行</td>
+</tr>
+<tr>
+<td align="left">E(独享)</td>
+<td align="left"><b><font color='red'>该Cache line有效，数据和内存中的数据一致，数据只存在于本Cache中。</font></b></td>
+<td align="left">缓存行也必须监听其它缓存读主存中该缓存行的操作，一旦有这种操作，该缓存行需要变成S（共享）状态。</td>
+</tr>
+<tr>
+<td align="left">S(共享)</td>
+<td align="left"><b><font color='red'>该Cache line有效，数据和内存中的数据一致，数据存在于很多Cache中。</font></b></td>
+<td align="left">缓存行也必须监听其它缓存使该缓存行无效或者独享该缓存行的请求，并将该缓存行变成无效（Invalid）。</td>
+</tr>
+<tr>
+<td align="left">I(无效)</td>
+<td align="left"><b><font color='red'>该Cache line无效。</font></b></td>
+<td align="left">无</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>对于M和E状态而言总是精准的。他们在和该缓存行的真正状态是一致的，而S状态有可能是不一致的。如果一个缓存将处于S状态的缓存行作废了，而另一个缓存实际上可能已经独享了该缓存行，但是该缓存却不会将该缓存行升迁为E状态，这是因为其它缓存不会广播他们作废掉该缓存行的通知，同样由于缓存并没有保存该缓存行的copy的数量，因此（即使有这种通知）也没有办法确定自己是否已经独享了该缓存行。<br>从上面的意义看来E状态是一种投机性的优化：如果一个CPU想修改一个处于S状态的缓存行，总线事务需要将所有该缓存行的copy变成invalid状态，而修改E状态的缓存不需要使用总线事务。</p>
+</blockquote>
+<h3 id="MESI状态切换"><a href="#MESI状态切换" class="headerlink" title="MESI状态切换"></a>MESI状态切换</h3><p><img src="/images/pasted-41.png"><br>理解该图的前置说明：</p>
+<ol>
+<li>触发事件</li>
+</ol>
+<ul>
+<li>本地读取(local read)-本地内核读取本地cache数据</li>
+<li>本地写入(local write)-本地内核写入本地cache数据</li>
+<li>远端读取(remote read)-其它内核读取其它Cache中的值</li>
+<li>远端写入(remote write)-其他内核写入其他cache数据</li>
+</ul>
+<p>MESI状态扭转：</p>
+<table>
+    <tr>
+        <th>当前状态</th>
+        <th>事件</th>
+        <th>行为</th>
+          <th>下一个状态</th>
+    </tr >
+    <tr >
+        <td rowspan="4">I</td>
+        <td>local read</td>
+        <td>如果其它Cache没有这份数据，本Cache从内存中取数据，Cache line状态变成E；
+          如果其它Cache有这份数据，且状态为M，则将数据更新到内存，本Cache再从内存中取数据，2个Cache 的Cache line状态都变成S；如果其它Cache有这份数据，且状态为S或者E，本Cache从内存中取数据，这些Cache 的Cache line状态都变成S
+</td>
+        <td>E/S</td>
+    </tr>
+    <tr>
+        <td>local write</td>
+        <td>从内存中取数据，在Cache中修改，状态变成M；
+          如果其它Cache有这份数据，且状态为M，则要先将数据更新到内存；
+          如果其它Cache有这份数据，则其它Cache的Cache line状态变成I</td>
+              <td>M</td>
+    </tr>
+    <tr>
+        <td>remote read</td>
+        <td>既然是Invalid，别的核的操作与它无关</td>
+              <td>I</td>
+    </tr>
+    <tr>
+        <td>remote write</td>
+        <td>既然是Invalid，别的核的操作与它无关</td>
+              <td>I</td>
+    </tr>
+  <tr >
+        <td rowspan="4">E</td>
+        <td>local read</td>
+        <td>从Cache中取数据，状态不变</td>
+        <td>E</td>
+    </tr>
+    <tr>
+        <td>local write</td>
+        <td>修改Cache中的数据，状态变成M</td>
+          <td>M</td>
+    </tr>
+    <tr>
+        <td>remote read</td>
+        <td>数据和其它核共用，状态变成了S</td>
+          <td>S</td>
+    </tr>
+    <tr>
+        <td>remote write</td>
+        <td>数据被修改，本Cache line不能再使用，状态变成I</td>
+          <td>I</td>
+    </tr>
+  <tr >
+        <td rowspan="4">S</td>
+        <td>local read</td>
+        <td>从Cache中取数据，状态不变</td>
+        <td>S</td>
+    </tr>
+    <tr>
+        <td>local write</td>
+        <td>修改Cache中的数据，状态变成M，其它核共享的Cache line状态变成I</td>
+          <td>M</td>
+    </tr>
+    <tr>
+        <td>remote read</td>
+        <td>状态不变</td>
+              <td>S</td>
+    </tr>
+    <tr>
+        <td>remote write</td>
+        <td>数据被修改，本Cache line不能再使用，状态变成I</td>
+          <td>I</td>
+    </tr>
+  <tr >
+        <td rowspan="4">M</td>
+        <td>local read</td>
+        <td>从Cache中取数据，状态不变</td>
+        <td>E</td>
+    </tr>
+    <tr>
+        <td>local write</td>
+        <td>修改Cache中的数据，状态不变</td>
+          <td>M</td>
+    </tr>
+    <tr>
+        <td>remote read</td>
+        <td>这行数据被写到内存中，使其它核能使用到最新的数据，状态变成S</td>
+          <td>S</td>
+    </tr>
+    <tr>
+        <td>remote write</td>
+        <td>这行数据被写到内存中，使其它核能使用到最新的数据，由于其它核会修改这行数据，状态变成I</td>
+          <td>I</td>
+    </tr>
+</table>
+
+
+<h4 id="Store-Buffer和Invalidate-Queue"><a href="#Store-Buffer和Invalidate-Queue" class="headerlink" title="Store Buffer和Invalidate Queue"></a>Store Buffer和Invalidate Queue</h4><p>CPU架构中传统的MESI协议中有两个行为的执行成本比较大。一个是将某个Cache Line标记为Invalid状态，另一个是当某Cache Line当前状态为Invalid时写入新的数据。所以CPU通过Store Buffer和Invalidate Queue组件来降低这类操作的延时。</p>
+<p><img src="/images/pasted-37.png" alt="MESI"></p>
+<blockquote>
+<p>当一个核心在Invalid状态进行写入时，首先会给其它CPU核发送Invalid消息，然后把当前写入的数据写入到Store Buffer中。然后异步在某个时刻真正的写入到Cache Line中。当前CPU核如果要读Cache Line中的数据，需要先扫描Store Buffer之后再读取Cache Line（Store-Buffer Forwarding）。但是此时其它CPU核是看不到当前核的Store Buffer中的数据的，要等到Store Buffer中的数据被刷到了Cache Line之后才会触发失效操作。<br>而当一个CPU核收到Invalid消息时，会把消息写入自身的Invalidate Queue中，随后异步将其设为Invalid状态。和Store Buffer不同的是，当前CPU核心使用Cache时并不扫描Invalidate Queue部分，所以可能会有极短时间的脏读问题。这里的Store Buffer和Invalidate Queue的说法是针对一般的SMP架构来说的，不涉及具体架构。</p>
+</blockquote>
+</div><div class="tags"><a href="/tags/%E5%B9%B6%E5%8F%91/"><i class="fa fa-tag"></i>并发</a></div><div class="post-nav"><a class="pre" href="/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">synchronized</a><a class="next" href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">JMM内存模型</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">并发</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/flink/" style="font-size: 15px;">flink</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/07/06/BlockingQueue/">BlockingQueue</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/26/AQS/">AQS</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">synchronized</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/15/MESI/">MESI</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">JMM内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">操作系统的底层认识</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">内存分配与垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/">字节码文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">字节码编译原理</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">李俊龙's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
