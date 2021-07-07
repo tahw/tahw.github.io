@@ -1,12 +1,255 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>内存分配与垃圾回收 | 李俊龙's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">内存分配与垃圾回收</h1><a id="logo" href="/.">李俊龙's Blog</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">内存分配与垃圾回收</h1><div class="post-meta">2021-03-09<span> | </span><span class="category"><a href="/categories/jvm/">jvm</a></span></div><div class="clear"><div class="toc-article" id="toc"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F"><span class="toc-number">1.</span> <span class="toc-text">jvm内存区域</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E5%8C%BA"><span class="toc-number">2.</span> <span class="toc-text">线程共享内存区</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A0%86%E5%8C%BA"><span class="toc-number">2.1.</span> <span class="toc-text">堆区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E5%8C%BA"><span class="toc-number">2.2.</span> <span class="toc-text">方法区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Jvm%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.</span> <span class="toc-text">Jvm常量池</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Class%E6%96%87%E4%BB%B6%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">Class文件常量池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">运行时常量池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E5%B1%80%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.3.</span> <span class="toc-text">全局字符串常量池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E5%8C%85%E8%A3%85%E7%B1%BB%E5%AF%B9%E8%B1%A1%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-number">2.2.1.4.</span> <span class="toc-text">基本类型包装类对象常量池</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E7%A7%81%E6%9C%89%E5%86%85%E5%AD%98%E5%8C%BA"><span class="toc-number">3.</span> <span class="toc-text">线程私有内存区</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#PC%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">3.1.</span> <span class="toc-text">PC寄存器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E6%A0%88"><span class="toc-number">3.2.</span> <span class="toc-text">Java栈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88"><span class="toc-number">3.3.</span> <span class="toc-text">本地方法栈</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">自动内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%8E%9F%E7%90%86"><span class="toc-number">4.1.</span> <span class="toc-text">内存分配原理</span></a></li></ol></li></ol></div></div><div class="post-content"><h1 id="jvm内存区域"><a href="#jvm内存区域" class="headerlink" title="jvm内存区域"></a>jvm内存区域</h1><p>之所以会选中jvm的内存区域划分为多个不同的内存区，是因为每一个独立的内存区都拥有各自的用途。<br>其中一部分的内存区域和jvm生命周期保持一致<br>另外一部分的内存区域和线程的生命周期保持一致</p>
-<p><img src="/images/pasted-17.png" alt="jvm内存区域"></p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="jvm内存区域之所以会选中jvm的内存区域划分为多个不同的内存区，是因为每一个独立的内存区都拥有各自的用途。其中一部分的内存区域和jvm生命周期保持一致另外一部分的内存区域和线程的生命周期保持一致  线程共享内存区允许被所有线程共享访问的一类内存区，包括堆区、方法区和运行时常量池三个内存区。 堆区堆（heap）,Java堆区在JVM启动的时候被创建，并且它在实际的内存空间中可以是不连续的。堆（he">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内存分配与垃圾回收">
+<meta property="og:url" content="https://theme-next.js.org/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/index.html">
+<meta property="og:site_name" content="天真有邪">
+<meta property="og:description" content="jvm内存区域之所以会选中jvm的内存区域划分为多个不同的内存区，是因为每一个独立的内存区都拥有各自的用途。其中一部分的内存区域和jvm生命周期保持一致另外一部分的内存区域和线程的生命周期保持一致  线程共享内存区允许被所有线程共享访问的一类内存区，包括堆区、方法区和运行时常量池三个内存区。 堆区堆（heap）,Java堆区在JVM启动的时候被创建，并且它在实际的内存空间中可以是不连续的。堆（he">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-17.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-18.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-19.png">
+<meta property="article:published_time" content="2021-03-09T11:31:00.000Z">
+<meta property="article:modified_time" content="2021-07-06T15:09:28.769Z">
+<meta property="article:author" content="李俊龙">
+<meta property="article:tag" content="jvm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://theme-next.js.org/images/pasted-17.png">
+
+
+<link rel="canonical" href="https://theme-next.js.org/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/","path":"2021/03/09/内存分配与垃圾回收/","title":"内存分配与垃圾回收"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>内存分配与垃圾回收 | 天真有邪</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">天真有邪</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F"><span class="nav-number">1.</span> <span class="nav-text">jvm内存区域</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E5%8C%BA"><span class="nav-number">2.</span> <span class="nav-text">线程共享内存区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E5%8C%BA"><span class="nav-number">2.1.</span> <span class="nav-text">堆区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%8C%BA"><span class="nav-number">2.2.</span> <span class="nav-text">方法区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jvm%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-number">2.2.1.</span> <span class="nav-text">Jvm常量池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Class%E6%96%87%E4%BB%B6%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Class文件常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">运行时常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">全局字符串常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E5%8C%85%E8%A3%85%E7%B1%BB%E5%AF%B9%E8%B1%A1%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-number">2.2.1.4.</span> <span class="nav-text">基本类型包装类对象常量池</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%A7%81%E6%9C%89%E5%86%85%E5%AD%98%E5%8C%BA"><span class="nav-number">3.</span> <span class="nav-text">线程私有内存区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PC%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">PC寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java%E6%A0%88"><span class="nav-number">3.2.</span> <span class="nav-text">Java栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88"><span class="nav-number">3.3.</span> <span class="nav-text">本地方法栈</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">自动内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%8E%9F%E7%90%86"><span class="nav-number">4.1.</span> <span class="nav-text">内存分配原理</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">李俊龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          内存分配与垃圾回收
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-09 19:31:00" itemprop="dateCreated datePublished" datetime="2021-03-09T19:31:00+08:00">2021-03-09</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-06 23:09:28" itemprop="dateModified" datetime="2021-07-06T23:09:28+08:00">2021-07-06</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/jvm/" itemprop="url" rel="index"><span itemprop="name">jvm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="jvm内存区域"><a href="#jvm内存区域" class="headerlink" title="jvm内存区域"></a>jvm内存区域</h1><p>之所以会选中jvm的内存区域划分为多个不同的内存区，是因为每一个独立的内存区都拥有各自的用途。<br>其中一部分的内存区域和jvm生命周期保持一致<br>另外一部分的内存区域和线程的生命周期保持一致</p>
+<p><img src="/images/pasted-17.png" alt="jvm内存区域" loading="lazy"></p>
 <h1 id="线程共享内存区"><a href="#线程共享内存区" class="headerlink" title="线程共享内存区"></a>线程共享内存区</h1><p>允许被所有线程共享访问的一类内存区，包括堆区、方法区和运行时常量池三个内存区。</p>
 <h2 id="堆区"><a href="#堆区" class="headerlink" title="堆区"></a>堆区</h2><p>堆（heap）,Java堆区在JVM启动的时候被创建，并且它在实际的内存空间中可以是不连续的。<br>堆（heap）区是一块用于存储对象实例的内存区，同时也是GC执行垃圾回收的重点区域，正式因为java堆区是GC重点回收区域，那么GC极有可能在大内存的使用和回收上成为性能瓶颈。</p>
 <blockquote>
 <p>为了解决问题，考虑是否一定需要将对象实例存储到Java堆区中。其中逃逸分析与栈上分配等优化技术同样也是降低GC回收频率与提升GC回收效率的方式。</p>
 </blockquote>
 <p>堆还分为新生代（YoungGen）和老年代（OldGen）,其中新生代也可以分为Eden空间、From Survivor空间和To Survivor空间。</p>
-<p><img src="/images/pasted-18.png" alt="堆区的分代"></p>
+<p><img src="/images/pasted-18.png" alt="堆区的分代" loading="lazy"></p>
 <p><code>-Xmx</code>表示堆区最大内存<br><code>-Xms</code>表示堆区起始内存<br>一旦堆中的内存大小大于最大内存，就会抛出OutOfMemoryError异常</p>
 <h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><table>
 <thead>
@@ -39,21 +282,27 @@
 <p>由于主流的jdk版本采用的是1.8版本，这里我们主要介绍jdk1.8版本方法区<br>元空间（Metaspace），是方法区的一种实现，其中元空间是属于本地内存中的，之前的方法区的实现是存储在堆中。然后元空间存储类的元信息，而静态变量和常量池都并入堆中。</p>
 <h3 id="Jvm常量池"><a href="#Jvm常量池" class="headerlink" title="Jvm常量池"></a>Jvm常量池</h3><h4 id="Class文件常量池"><a href="#Class文件常量池" class="headerlink" title="Class文件常量池"></a>Class文件常量池</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JavaBean</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> value = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">public</span> String s = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> f = <span class="number">0x101</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(<span class="keyword">int</span> v)</span></span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> temp = <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">this</span>.value = temp + v;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getValue</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ul>
-<li>编写.java文件编译为.class文件格式的二进制数据存放在磁盘中</li>
-<li>非运行时常量池，在编译阶段以及确定</li>
-<li>Class文件常量池存放<b>字面量</b>和<b>符号引用</b><ul>
-<li>字面量<ul>
-<li>第一种存储是文本字符串<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">9</span> = Utf8               s</span><br><span class="line">#<span class="number">3</span> = String             #<span class="number">31</span>            <span class="comment">// abc</span></span><br><span class="line">#<span class="number">31</span> = Utf8              abc</span><br></pre></td></tr></table></figure>
-</code></pre>
+<li><p>编写.java文件编译为.class文件格式的二进制数据存放在磁盘中</p>
 </li>
-<li>第二种存储用final修饰的成员变量，包括静态变量、实例变量和局部变量
-           <pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">11</span> = Utf8               f</span><br><span class="line">#<span class="number">12</span> = Utf8               ConstantValue</span><br><span class="line">#<span class="number">13</span> = Integer            <span class="number">257</span></span><br></pre></td></tr></table></figure>
-</code></pre>
+<li><p>非运行时常量池，在编译阶段以及确定</p>
 </li>
-<li>这里说明下，存在常量池的字面量，指的是数据的值，也就是<code>abc</code>和<code>0x101(257)</code>，通过对常量池的观察可知这两个字面量是确实存在于常量池的。而对于基本数据类型，也就是上面的<code>private int value = 1</code>，常量池只保留他的字段描述符<code>I(1反编译出来的结果)</code>和字段的名称<code>value</code>，他们的字面量不会存在于常量池中</li>
+<li><p>Class文件常量池存放<b>字面量</b>和<b>符号引用</b></p>
+<ul>
+<li><p>字面量</p>
+<ul>
+<li><p>第一种存储是文本字符串</p>
+<pre><code><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#9 = Utf8               s</span><br><span class="line">#3 = String             #31            // abc</span><br><span class="line">#31 = Utf8              abc</span><br></pre></td></tr></table></figure></code></pre>
+</li>
+<li><p>第二种存储用final修饰的成员变量，包括静态变量、实例变量和局部变量
+           </p>
+<pre><code><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#11 = Utf8               f</span><br><span class="line">#12 = Utf8               ConstantValue</span><br><span class="line">#13 = Integer            257</span><br></pre></td></tr></table></figure></code></pre>
+</li>
+<li><p>这里说明下，存在常量池的字面量，指的是数据的值，也就是<code>abc</code>和<code>0x101(257)</code>，通过对常量池的观察可知这两个字面量是确实存在于常量池的。而对于基本数据类型，也就是上面的<code>private int value = 1</code>，常量池只保留他的字段描述符<code>I(1反编译出来的结果)</code>和字段的名称<code>value</code>，他们的字面量不会存在于常量池中</p>
+</li>
 </ul>
 </li>
-<li>符号引用<ul>
+<li><p>符号引用</p>
+<ul>
 <li>类和接口的全限定名，也就是<code>Ljava/lang/String;</code>这样，主要用于在运行时解析得到类的直接引用</li>
 <li>字段的名称和描述符，字段也就是类或者接口中声明的变量，包括类级别变量（static）和实例级的变量</li>
 <li>方法的名称和修饰符，也就是参数类型+返回值类型        </li>
@@ -100,14 +349,14 @@
 </ul>
 </li>
 <li>s1 != s9<ul>
-<li>字面量会存在<code>Hello</code>、<code>H</code>、<code>ello</code>，运行期间会创建<code>H</code>和<code>ello</code>对象，通过<code>StringBuilder.append</code>方法拼接出来的，最终还是会重新生成String对象，地址肯定是不一样的。</li>
+<li>字面量会存在<code>Hello</code>、<code>H</code>、<code>ello</code>，运行期间会创建<code>H</code>和<code>ello</code>对象，通过<code>StringBuilder.append</code>方法拼接出来的，最终还是会重新生成String对象，地址肯定是不一样的。
+   <blockquote>
+<p>字符串常量池的概率：字符串常量池是Jvm所维护的一个字符串实例的引用表，在Hotspot vm中，他是一个叫做String Table的全局表。在字符串常量池中维护的是字符串实例的引用，底层C++实现就是一个HashTable。这些被维护的引用所指的字符串实例，被称为”被驻留的字符串“或”interned String“或通常所说的”进入了字符串常量池的字符串“。<br>运行时常量池在方法区(Non-heap)，而JDK1.7后，字符串常量池被移到了heap区，因此两者根本就不是一个概念</p>
+</blockquote>
+</li>
 </ul>
 </li>
 </ul>
-<p>    </p>
-<blockquote>
-<p>字符串常量池的概率：字符串常量池是Jvm所维护的一个字符串实例的引用表，在Hotspot vm中，他是一个叫做String Table的全局表。在字符串常量池中维护的是字符串实例的引用，底层C++实现就是一个HashTable。这些被维护的引用所指的字符串实例，被称为”被驻留的字符串“或”interned String“或通常所说的”进入了字符串常量池的字符串“。<br>运行时常量池在方法区(Non-heap)，而JDK1.7后，字符串常量池被移到了heap区，因此两者根本就不是一个概念</p>
-</blockquote>
 <h4 id="基本类型包装类对象常量池"><a href="#基本类型包装类对象常量池" class="headerlink" title="基本类型包装类对象常量池"></a>基本类型包装类对象常量池</h4><p><code>java</code>中基本类型的包装类的大部分都实现了常量池技术，这些类是<code>Byte、Short、Integer、Long、Character、Boolean</code>，另外两种浮点数没有实现。另外上面这5种整型的包装类也只是在对应值小于等于127时才可使用对象池，也即对象不负责创建和管理大于127的这些类的对象。其中会包含自动拆箱和自动装箱。</p>
 <h1 id="线程私有内存区"><a href="#线程私有内存区" class="headerlink" title="线程私有内存区"></a>线程私有内存区</h1><p>和线程共享内存区不同，线程私有内存区是不允许被所有线程共享访问的。线程私有内存区是只允许被所属的独立线程进行访问的一类内存区，包括PC寄存器、Java栈和本地方法栈。</p>
 <h2 id="PC寄存器"><a href="#PC寄存器" class="headerlink" title="PC寄存器"></a>PC寄存器</h2><p>由于JVM是基于栈的架构，任何的操作都需要入栈和出栈来完成，其中PC寄存器并不是物理寄存器，实际上是PC计数器。以下是特性</p>
@@ -153,7 +402,7 @@
 <li>当类完成装载步骤之后，就已经完全可以确定出创建对象实例所需要的内存大小</li>
 <li>jvm就会将其进行内存分配，以存储生成的对象实例</li>
 </ol>
-<p><img src="/images/pasted-19.png" alt="对象分配内存流程"></p>
+<p><img src="/images/pasted-19.png" alt="对象分配内存流程" loading="lazy"></p>
 <p>为新对象分配内存是一件非常严谨和复杂的任务，需要考虑下面三个问题</p>
 <ol>
 <li><p>内存如何分配？</p>
@@ -166,4 +415,76 @@
 <li><p>内存回收？</p>
 </li>
 </ol>
-</div><div class="tags"><a href="/tags/jvm/"><i class="fa fa-tag"></i>jvm</a></div><div class="post-nav"><a class="pre" href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">操作系统的底层认识</a><a class="next" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">并发</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/flink/" style="font-size: 15px;">flink</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/07/06/BlockingQueue/">BlockingQueue</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/26/AQS/">AQS</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">synchronized</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/15/MESI/">MESI</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">JMM内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">操作系统的底层认识</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">内存分配与垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/">字节码文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">字节码编译原理</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">李俊龙's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/jvm/" rel="tag"># jvm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/" rel="prev" title="jvm初始化启动">
+                  <i class="fa fa-chevron-left"></i> jvm初始化启动
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/" rel="next" title="操作系统的底层认识">
+                  操作系统的底层认识 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">李俊龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

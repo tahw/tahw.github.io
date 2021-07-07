@@ -1,11 +1,249 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>字节码文件 | 李俊龙's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">字节码文件</h1><a id="logo" href="/.">李俊龙's Blog</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">字节码文件</h1><div class="post-meta">2021-03-01<span> | </span><span class="category"><a href="/categories/jvm/">jvm</a></span></div><div class="post-content"><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>每一个字节码文件其实都对应着全局唯一的一个类或者接口的定义信息。<br>结构体中只有两种类型结构，分别是<font color='red'>无符号数</font>和<font color='red'>表</font>。</p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="概念每一个字节码文件其实都对应着全局唯一的一个类或者接口的定义信息。结构体中只有两种类型结构，分别是无符号数和表。  无符号数字节码文件中的“基本类型”，u1表示一个字节，无符号类型。u2表示二个字节，无符号类型。u4表示四个字节，无符号类型。u8表示八个字节，无符号类型。 表有多个无符号数或者其他表作为数据项构成的复合数据类型，所有表的后缀都是使用“_info”进行结尾  classFile每个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="字节码文件">
+<meta property="og:url" content="https://theme-next.js.org/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="天真有邪">
+<meta property="og:description" content="概念每一个字节码文件其实都对应着全局唯一的一个类或者接口的定义信息。结构体中只有两种类型结构，分别是无符号数和表。  无符号数字节码文件中的“基本类型”，u1表示一个字节，无符号类型。u2表示二个字节，无符号类型。u4表示四个字节，无符号类型。u8表示八个字节，无符号类型。 表有多个无符号数或者其他表作为数据项构成的复合数据类型，所有表的后缀都是使用“_info”进行结尾  classFile每个">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-01T08:22:00.000Z">
+<meta property="article:modified_time" content="2021-07-06T15:09:28.772Z">
+<meta property="article:author" content="李俊龙">
+<meta property="article:tag" content="jvm">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://theme-next.js.org/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/","path":"2021/03/01/字节码文件/","title":"字节码文件"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>字节码文件 | 天真有邪</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">天真有邪</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#classFile"><span class="nav-number">1.1.</span> <span class="nav-text">classFile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#magic-%E9%AD%94%E6%9C%AF"><span class="nav-number">1.2.</span> <span class="nav-text">magic(魔术)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#minor-version-%E6%AC%A1%E7%89%88%E6%9C%AC%E5%8F%B7-%E5%92%8Cmajor-version-%E4%B8%BB%E7%89%88%E6%9C%AC%E5%8F%B7"><span class="nav-number">1.3.</span> <span class="nav-text">minor_version(次版本号)和major_version(主版本号)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#constant-pool-count-%E5%B8%B8%E9%87%8F%E6%B1%A0%E6%95%B0%E9%87%8F-%E5%92%8Cconstant-pool-%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-number">1.4.</span> <span class="nav-text">constant_pool_count(常量池数量)和constant_pool(常量池)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#access-flags-%E8%AE%BF%E9%97%AE%E6%A0%87%E5%BF%97"><span class="nav-number">1.5.</span> <span class="nav-text">access_flags(访问标志)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#this-class-%E7%B1%BB%E7%B4%A2%E5%BC%95-%E5%92%8Csuper-class-%E8%B6%85%E7%B1%BB%E7%B4%A2%E5%BC%95"><span class="nav-number">1.6.</span> <span class="nav-text">this_class(类索引)和super_class(超类索引)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#interfaces-count-%E6%8E%A5%E5%8F%A3%E6%95%B0%E9%87%8F-%E5%92%8Cinterfaces-%E6%8E%A5%E5%8F%A3%E8%A1%A8"><span class="nav-number">1.7.</span> <span class="nav-text">interfaces_count(接口数量)和interfaces(接口表)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fields-count-%E5%AD%97%E6%AE%B5%E6%95%B0%E9%87%8F-%E5%92%8Cfields-%E5%AD%97%E6%AE%B5%E8%A1%A8"><span class="nav-number">1.8.</span> <span class="nav-text">fields_count(字段数量)和fields(字段表)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#methods-count-%E6%96%B9%E6%B3%95%E6%95%B0%E9%87%8F-%E5%92%8Cmethods-%E6%96%B9%E6%B3%95%E8%A1%A8"><span class="nav-number">1.9.</span> <span class="nav-text">methods_count(方法数量)和methods(方法表)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#attributes-count-%E5%B1%9E%E6%80%A7%E6%95%B0%E9%87%8F-%E5%92%8Cattributes-%E5%B1%9E%E6%80%A7%E8%A1%A8"><span class="nav-number">1.10.</span> <span class="nav-text">attributes_count(属性数量)和attributes(属性表)</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">李俊龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          字节码文件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-01 16:22:00" itemprop="dateCreated datePublished" datetime="2021-03-01T16:22:00+08:00">2021-03-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-06 23:09:28" itemprop="dateModified" datetime="2021-07-06T23:09:28+08:00">2021-07-06</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/jvm/" itemprop="url" rel="index"><span itemprop="name">jvm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>每一个字节码文件其实都对应着全局唯一的一个类或者接口的定义信息。<br>结构体中只有两种类型结构，分别是<font color='red'>无符号数</font>和<font color='red'>表</font>。</p>
 <ol>
 <li>无符号数<br>字节码文件中的“基本类型”，u1表示一个字节，无符号类型。u2表示二个字节，无符号类型。<br>u4表示四个字节，无符号类型。u8表示八个字节，无符号类型。</li>
 <li>表<br>有多个无符号数或者其他表作为数据项构成的复合数据类型，所有表的后缀都是使用“_info”进行结尾</li>
 </ol>
 <h4 id="classFile"><a href="#classFile" class="headerlink" title="classFile"></a>classFile</h4><p>每个字节码文件都对应一个ClassFile的结构。</p>
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">ClassFile</span> &#123;</span><br><span class="line">        <span class="attribute">u4</span>               magic;</span><br><span class="line">        <span class="attribute">u2</span>               minor_version;</span><br><span class="line">       <span class="attribute">u2</span>                major_version;</span><br><span class="line">       <span class="attribute">u2</span>                constant_pool_count;</span><br><span class="line">       <span class="attribute">cp_info</span>           constant_pool[constant_pool_count-<span class="number">1</span>];</span><br><span class="line">       <span class="attribute">u2</span>                access_flags;</span><br><span class="line">       <span class="attribute">u2</span>                this_class;</span><br><span class="line">       <span class="attribute">u2</span>                super_class;</span><br><span class="line">       <span class="attribute">u2</span>                interfaces_count;</span><br><span class="line">       <span class="attribute">u2</span>                interfaces[interfaces_count];</span><br><span class="line">       <span class="attribute">u2</span>                fields_count;</span><br><span class="line">       <span class="attribute">field_info</span>        fields[fields_count];</span><br><span class="line">       <span class="attribute">u2</span>                methods_count;</span><br><span class="line">       <span class="attribute">method_info</span>       methods[methods_count];</span><br><span class="line">       <span class="attribute">u2</span>                attributes_count;</span><br><span class="line">       <span class="attribute">attribute_info</span>    attributes[attributes_count];</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
 <h4 id="magic-魔术"><a href="#magic-魔术" class="headerlink" title="magic(魔术)"></a>magic(魔术)</h4><p>一个有效的字节码文件的前4个自己为0xCAFEBABE。魔术就是jvm用于校验所读取的目标文件是一个有效且合法的字节码文件。</p>
 <h4 id="minor-version-次版本号-和major-version-主版本号"><a href="#minor-version-次版本号-和major-version-主版本号" class="headerlink" title="minor_version(次版本号)和major_version(主版本号)"></a>minor_version(次版本号)和major_version(主版本号)</h4><p>紧跟在magic之后的4个字节就是编译的此版本号和主版本号，它们共同构成了字节码文件的版本号。比如主板号为M，次版本号m，那版本号为M.m。</p>
 <blockquote>
@@ -29,7 +267,7 @@
 <blockquote>
 <p>在C语言中，如果一个程序需要调用其他库中的函数，那么在链接时，该函数在库中的位置（即相对于库文件开头的偏移量）会被写在程序中，运行时直接去这个地址调用函数即可。但在java虚拟机在运行时，从常量池中获取出对应的符号引用，并经过解析阶段将这些符号引用全部转换为直接引用，java虚拟机才能正常使用。</p>
 </blockquote>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">cp_info</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attribute">u1</span> tag;</span><br><span class="line">        <span class="attribute">u1</span> <span class="literal">info</span>[];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cp_info</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attribute">u1</span> tag;</span><br><span class="line">        <span class="attribute">u1</span> <span class="literal">info</span>[];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <h4 id="access-flags-访问标志"><a href="#access-flags-访问标志" class="headerlink" title="access_flags(访问标志)"></a>access_flags(访问标志)</h4><p>访问标志主要就是用于表示某个类或者接口的访问权限</p>
 <ul>
 <li>文件时类还是接口</li>
@@ -53,10 +291,8 @@
 <li>是否是常量(final修饰符)<blockquote>
 <p>字段表中所包含的字段信息仅限于当前类或者当前接口的所属字段，并不包含继承超类的字段信息</p>
 </blockquote>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">field_info</span> &#123;</span><br><span class="line">        <span class="attribute">u2</span> access_flags;</span><br><span class="line">        <span class="attribute">u2</span> name_index;</span><br><span class="line">        <span class="attribute">u2</span> descriptor_index;</span><br><span class="line">        <span class="attribute">u2</span> attributes_count;</span><br><span class="line">        <span class="attribute">attribute_info</span> attributes[attributes_count];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="methods-count-方法数量-和methods-方法表"><a href="#methods-count-方法数量-和methods-方法表" class="headerlink" title="methods_count(方法数量)和methods(方法表)"></a>methods_count(方法数量)和methods(方法表)</h4><p>方法数量：一个字节码文件中的method_info表总数<br>方法表：是一个数组集合，方法表中的每一个成员都必须是一个method_info数据结构。<br>method_info：表示当前类或者接口中某个方法的完整描述</p>
-<ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">field_info</span> &#123;</span><br><span class="line">        <span class="attribute">u2</span> access_flags;</span><br><span class="line">        <span class="attribute">u2</span> name_index;</span><br><span class="line">        <span class="attribute">u2</span> descriptor_index;</span><br><span class="line">        <span class="attribute">u2</span> attributes_count;</span><br><span class="line">        <span class="attribute">attribute_info</span> attributes[attributes_count];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="methods-count-方法数量-和methods-方法表"><a href="#methods-count-方法数量-和methods-方法表" class="headerlink" title="methods_count(方法数量)和methods(方法表)"></a>methods_count(方法数量)和methods(方法表)</h4>方法数量：一个字节码文件中的method_info表总数<br>方法表：是一个数组集合，方法表中的每一个成员都必须是一个method_info数据结构。<br>method_info：表示当前类或者接口中某个方法的完整描述</li>
 <li>方法标示符</li>
 <li>方法的访问修饰符</li>
 <li>方法的返回值类型</li>
@@ -66,4 +302,76 @@
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">method_info</span> &#123;</span><br><span class="line">        <span class="attribute">u2</span> access_flags;</span><br><span class="line">        <span class="attribute">u2</span> name_index;</span><br><span class="line">        <span class="attribute">u2</span> descriptor_index;</span><br><span class="line">        <span class="attribute">u2</span> attributes_count;</span><br><span class="line">        <span class="attribute">attribute_info</span> attributes[attributes_count];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <h4 id="attributes-count-属性数量-和attributes-属性表"><a href="#attributes-count-属性数量-和attributes-属性表" class="headerlink" title="attributes_count(属性数量)和attributes(属性表)"></a>attributes_count(属性数量)和attributes(属性表)</h4>属性数量：标示当前字节码文件中的attribute_info表总数<br>属性表：一个数组集合，属性表中的每一个成员都必须是一个attribute_info数据结构。<br>每一个attribute_info表的第一项都是指向常量池列表中CONSTANT_Utf8_info的，该表给出了属性的名称<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">attribute_info</span> &#123;</span><br><span class="line">        <span class="attribute">u2</span> attribute_name_index;</span><br><span class="line">        <span class="attribute">u4</span> attribute_length;</span><br><span class="line">        <span class="attribute">u1</span> <span class="literal">info</span>[attribute_length];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
 </ul>
-</div><div class="tags"><a href="/tags/jvm/"><i class="fa fa-tag"></i>jvm</a></div><div class="post-nav"><a class="pre" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a><a class="next" href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">字节码编译原理</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">并发</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/flink/" style="font-size: 15px;">flink</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/07/06/BlockingQueue/">BlockingQueue</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/26/AQS/">AQS</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">synchronized</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/15/MESI/">MESI</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">JMM内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">操作系统的底层认识</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">内存分配与垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/">字节码文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">字节码编译原理</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">李俊龙's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/jvm/" rel="tag"># jvm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/" rel="prev" title="字节码编译原理">
+                  <i class="fa fa-chevron-left"></i> 字节码编译原理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/" rel="next" title="jvm初始化启动">
+                  jvm初始化启动 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">李俊龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

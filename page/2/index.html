@@ -1,9 +1,1044 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>李俊龙's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">李俊龙's Blog</h1><a id="logo" href="/.">李俊龙's Blog</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title"><a href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81/">java概览</a></h1><div class="post-meta">2021-01-29</div><div class="post-content"><h3 id="java概览"><a href="#java概览" class="headerlink" title="java概览"></a>java概览</h3><h4 id="1-重要概念"><a href="#1-重要概念" class="headerlink" title="1. 重要概念"></a>1. 重要概念</h4><ul></div><p class="readmore"><a href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2021/01/27/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%8E%9F%E7%90%86/">JVM类加载原理</a></h1><div class="post-meta">2021-01-27</div><div class="post-content"><h2 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h2><ol>
-<li>类加载</li>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta property="og:type" content="website">
+<meta property="og:title" content="天真有邪">
+<meta property="og:url" content="https://theme-next.js.org/page/2/index.html">
+<meta property="og:site_name" content="天真有邪">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="李俊龙">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://theme-next.js.org/page/2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"page/2/index.html","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>天真有邪</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">天真有邪</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">李俊龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" class="post-title-link" itemprop="url">JMM内存模型</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-22 21:01:00" itemprop="dateCreated datePublished" datetime="2021-04-22T21:01:00+08:00">2021-04-22</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-06 23:09:28" itemprop="dateModified" datetime="2021-07-06T23:09:28+08:00">2021-07-06</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">并发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="什么是JMM"><a href="#什么是JMM" class="headerlink" title="什么是JMM?"></a>什么是JMM?</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;Java 内存模型（Java Mermory Model）是一个抽象的概念，并不真实存在。它描述的是一种规范和准则，通过这组规范定义了程序中各个变量的访问方式。</b><font color='red'>它是描述的线程模型。</font></b>JVM运行程序的实体是线程，而每个线程创建时JVM都会为其创建一个工作内存，用户存储线程私有的数据，而Java内存模型中规定所有变量都存储在主内存，主内存是共享区域，所有线程都可以访问，但线程对变量的操作必须在工作内存中，其中首先会从主内存中变量复制到工作内存中，然后对变量进行操作后写会到主内存中。不同的工作线程无法通信，只能通过主内存来进行通信。</p>
+<p><img src="/images/pasted-29.png" alt="java memory model" loading="lazy"></p>
+<h2 id="主内存"><a href="#主内存" class="headerlink" title="主内存"></a>主内存</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;主要存储的是java对象，所有线程创建的实例对象都存放在主内存，不管该实例对象是成员变量还是局部变量，还包括类信息、常量、静态变量。由于是共享区域，会发生线程安全问题。</p>
+<h2 id="工作内存"><a href="#工作内存" class="headerlink" title="工作内存"></a>工作内存</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;主要存储当前方法的所有本地方法变量，存储的主内存的变量副本，每个线程只能访问自己的工作内存，线程间无法通信，工作内存不存在线程安全问题。</p>
+<h1 id="JMM和jvm内存区域模型关系"><a href="#JMM和jvm内存区域模型关系" class="headerlink" title="JMM和jvm内存区域模型关系"></a>JMM和jvm内存区域模型关系</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;提起jvm内存模型，那就肯定有堆、栈、本地方法栈、方法区、程序计数器这些，他和jmm有相似之处，都有共享区域和私有区域，不同的地方是，jmm是描述的一个规范，通过这种规范来控制变量在共享区域和私有区域的访问方式，jmm围绕的还是原子性、可见性、有序性。</p>
+<h1 id="JMM和硬件内存架构关系"><a href="#JMM和硬件内存架构关系" class="headerlink" title="JMM和硬件内存架构关系"></a>JMM和硬件内存架构关系</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;从前面可以了解到，多线程的执行还是会映射到硬件上，但是jmm和硬件内存架构并不完全一致。硬件内存架构只有寄存器、缓存内存、主内存的概念，并没有工作内存和主内存。对于硬件内存架构中数据存储在主内存、寄存器中。java内存模型和计算机硬件内存架构是一个相互交叉的关系，是一种抽象和真实物理硬件的交叉。</p>
+<p><img src="/images/pasted-30.png" alt="jmm-&gt;硬件" loading="lazy"></p>
+<h1 id="JMM存在必要性"><a href="#JMM存在必要性" class="headerlink" title="JMM存在必要性"></a>JMM存在必要性</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;从下面这个问题，线程B读取的值到底是1还是2，工作内存读取主内存变量实现细节，jmm定义了八种操作来完成，来解决这类问题。<br><img src="/images/pasted-31.png" alt="jmm问题" loading="lazy"></p>
+<h2 id="数据同步八大原子操作"><a href="#数据同步八大原子操作" class="headerlink" title="数据同步八大原子操作"></a>数据同步八大原子操作</h2><ol>
+<li>lock（锁定）：作用于主内存的变量，把一个变量标记为一条线程独占状态</li>
+<li>unlock（解锁）：作用于主内存的变量，把一个变量处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定</li>
+<li>read（读取）：作用于主内存的变量，把一个变量值从主内存传输到线程的工作内存中，以便随后的load动作使用</li>
+<li>load（载入）：作用于工作内存的变量，他把read操作从主内存中得到的变量值放入工作内存的变量副本中</li>
+<li>use（使用）：作用于工作内存的变量，把工作内存中的一个变量值传递给执行引擎</li>
+<li>assign（赋值）：作用于工作内存的变量，他把一个从执行引擎执行后的变量赋值给工作内存的变量</li>
+<li>store（存储）：作用于工作内存的变量，把工作内存中的一个变量的值传递给主内存中，以便随后的write的操作</li>
+<li>write（写入）：作用于工作内存的变量，它把store操作从工作内存中的一个变量的值传送到主内存的变量中</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.classloader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.classloader.model.Student;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JvmClassLoader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> i = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Student student = <span class="keyword">new</span> Student();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">exec</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> j = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> (i + j) * <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        JvmClassLoader jvmClassLoader = <span class="keyword">new</span> JvmClassLoader();</span><br><span class="line">        <span class="keyword">int</span> exec = jvmClassLoader.exec();</span><br><span class="line">        System.out.println(exec);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div><p class="readmore"><a href="/2021/01/27/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%8E%9F%E7%90%86/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2021/01/15/%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84/">学习路径</a></h1><div class="post-meta">2021-01-15</div><div class="post-content"><h4 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h4><blockquote>
-<p>java.util包下的非线程安全集合和java.util.concurrent下的线程安全集合。</p>
+<p><img src="/images/pasted-32.png" alt="数据同步过程" loading="lazy"></p>
+<h2 id="同步规则分析"><a href="#同步规则分析" class="headerlink" title="同步规则分析"></a>同步规则分析</h2><ol>
+<li>不允许一个线程无原因地把数据（没有经过任何assign操作）从工作内存同步到主内存中</li>
+<li>一个新的变量只能在主内存中诞生，不允许在工作内存中直接使用一个未被初始化变量。</li>
+<li>一个变量在同一时刻只允许一条线程对其进行lock操作，但lock操作可以被同一线程重复执行多次，多次执行lock后，只有执行相同次数的unlock操作，才有可能被其他线程给获取。lock和unlock必须成对出现</li>
+<li>如果对一个变量执行lock操作，将会清空工作内存中此变量的值，在执行引擎使用这个变量之前需要重新执行load或assign操作初始化变量的值</li>
+<li>如果一个变量事先没有被lock操作锁定，则不允许对它执行unlock操作；也不允许去 unlock一个被其他线程锁定的变量。</li>
+<li>对一个变量执行unlock操作之前，必须先把此变量同步到主内存中（执行store和write 操作）</li>
+</ol>
+<h1 id="三大特性问题"><a href="#三大特性问题" class="headerlink" title="三大特性问题"></a>三大特性问题</h1><h2 id="原子性问题"><a href="#原子性问题" class="headerlink" title="原子性问题"></a>原子性问题</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;原子性指的是一个操作是不可中断的，即使在多线程的环境下，一个操作一旦开始就不会被其他线程影响。在并发情况下可以使用synchronized关键字来解决原子性,<br>后面会着重讲解<font color='red'><b><code>synchronized</code>和<code>lock</code></b></font></p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># </span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="keyword">count</span> = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> Object o = <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(String[] args) <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="keyword">public</span> <span class="keyword">void</span> run() &#123;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;<span class="number">1000</span>; j++) &#123;</span><br><span class="line">                        <span class="keyword">synchronized</span> (o) &#123; <span class="comment">//一个线程只能进入一次</span></span><br><span class="line">                            <span class="keyword">count</span>++; <span class="comment">//不会发生指令重排</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line">        Thread.sleep(<span class="number">200</span>);</span><br><span class="line">        System.out.<span class="keyword">println</span>(<span class="keyword">count</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="可见性问题"><a href="#可见性问题" class="headerlink" title="可见性问题"></a>可见性问题</h2><p>下面这个会出现可见性问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> initFlag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 start&quot;</span>);</span><br><span class="line">               <span class="keyword">while</span> (!initFlag)&#123;</span><br><span class="line">               &#125;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">       Thread.sleep(<span class="number">200</span>); <span class="comment">// 休眠</span></span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 start&quot;</span>);</span><br><span class="line">               initFlag = <span class="keyword">true</span>;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>可见性解决方案，后面会着重讲解<font color='red'><b><code>volatile</code>和<code>synchronized</code></b></font></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br></pre></td><td class="code"><pre><span class="line"># 第一种方案（volatile可以解决可见性问题，通过MESI来控制）</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> initFlag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 start&quot;</span>);</span><br><span class="line">               <span class="keyword">while</span> (!initFlag)&#123;</span><br><span class="line">               &#125;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">       Thread.sleep(<span class="number">200</span>); <span class="comment">// 休眠</span></span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 start&quot;</span>);</span><br><span class="line">               initFlag = <span class="keyword">true</span>;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   # 第二种方案（原因有可能是i和initFlag在一个cacheline上面，导致获取i的时候initFlag也读取到最新的）</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> initFlag = <span class="keyword">false</span>;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// 如果换成int类型就不可以了</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> Integer i = <span class="number">0</span>; </span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 start&quot;</span>);</span><br><span class="line">               <span class="keyword">while</span> (!initFlag)&#123;</span><br><span class="line">               	i++;</span><br><span class="line">               &#125;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">       Thread.sleep(<span class="number">200</span>); <span class="comment">// 休眠</span></span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 start&quot;</span>);</span><br><span class="line">               initFlag = <span class="keyword">true</span>;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   # 第三种方案（原因有可能是i和initFlag在一个cacheline上面，导致获取i的时候initFlag也读取到最新的）</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> initFlag = <span class="keyword">false</span>;</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 start&quot;</span>);</span><br><span class="line">               <span class="keyword">while</span> (!initFlag)&#123;</span><br><span class="line">               	i++;</span><br><span class="line">               &#125;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">       Thread.sleep(<span class="number">200</span>); <span class="comment">// 休眠</span></span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 start&quot;</span>);</span><br><span class="line">               initFlag = <span class="keyword">true</span>;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   # 第四种方案（为什么加上sout就会可以，因为空循环的优先级非常高，一旦获取cpu，很难切换时间片的）</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> initFlag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 start&quot;</span>);</span><br><span class="line">               <span class="keyword">while</span> (!initFlag)&#123;</span><br><span class="line">				System.out.println(<span class="number">111</span>);</span><br><span class="line">               &#125;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">       Thread.sleep(<span class="number">200</span>); <span class="comment">// 休眠</span></span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 start&quot;</span>);</span><br><span class="line">               initFlag = <span class="keyword">true</span>;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   # 第五种方案（jvm 增加-Djava.compiler=NONE 这是关掉jvm jit编译，jit编译优化是：编译过一次，下次再执行的时候就不用再次编译了，类似于for循环，就非常好）</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> initFlag = <span class="keyword">false</span>;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// 注意这里是int类型</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> i = <span class="number">0</span>; </span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 start&quot;</span>);</span><br><span class="line">               <span class="keyword">while</span> (!initFlag)&#123;</span><br><span class="line">               	i++;</span><br><span class="line">               &#125;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 1 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">       Thread.sleep(<span class="number">200</span>); <span class="comment">// 休眠</span></span><br><span class="line">       <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">           <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 start&quot;</span>);</span><br><span class="line">               initFlag = <span class="keyword">true</span>;</span><br><span class="line">               System.out.println(<span class="string">&quot;thread 2 stop&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;).start();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="有序性问题"><a href="#有序性问题" class="headerlink" title="有序性问题"></a>有序性问题</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Integer x, y = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Integer a, b = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (;;)&#123;</span><br><span class="line">            i++;</span><br><span class="line">            x=<span class="number">0</span>;y=<span class="number">0</span>;</span><br><span class="line">            a=<span class="number">0</span>;b=<span class="number">0</span>;</span><br><span class="line">            Thread t1 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    <span class="comment">// 等待</span></span><br><span class="line">                    sleep();</span><br><span class="line">                    a = <span class="number">1</span>;</span><br><span class="line">                    x = b;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            Thread t2 = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    <span class="comment">// 等待</span></span><br><span class="line">                    sleep();</span><br><span class="line">                    b = <span class="number">1</span>;</span><br><span class="line">                    y = a;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            t1.start();</span><br><span class="line">            t2.start();</span><br><span class="line">            t1.join();</span><br><span class="line">            t2.join();</span><br><span class="line">            <span class="keyword">if</span>(x ==<span class="number">0</span> &amp;&amp; y ==<span class="number">0</span>)&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;第&quot;</span>+i+<span class="string">&quot;次&quot;</span>+<span class="string">&quot;,x=&quot;</span>+x+<span class="string">&quot;,y=&quot;</span>+y);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;第&quot;</span>+i+<span class="string">&quot;次&quot;</span>+<span class="string">&quot;,x=&quot;</span>+x+<span class="string">&quot;,y=&quot;</span>+y);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sleep</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>当x和y都是0的时候就发生指令重排，可以通过<font color='red'><b><code>volatile</code></b></font>来解决。<br><img src="/images/pasted-33.png" alt="分析" loading="lazy"></p>
+<h3 id="happens-before原则"><a href="#happens-before原则" class="headerlink" title="happens-before原则"></a>happens-before原则</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;每个线程都有自己的工作内存。每个线程对变量的操作都必须在工作内存中进行，而不是直接对主内存进行操作。并且每个线程不能访问其他线程的工作内存。在java内存模型中存在一些先天的“有序性”，即不需要通过任何手段就能够得到程序的有序性。这个就是happens-before原则。如果两个操作无法从happens-before原则推导出来，那么他们就不能保证有序性。<br>那happens-before原则原则就是如下：</p>
+<ol>
+<li>程序顺序原则，即在一个线程内必须保证语义串行性，也就是说按照代码顺序执行。</li>
+<li>锁规则 解锁(unlock)操作必然发生在后续的同一个锁的加锁(lock)之前，也就是说，如果对于一个锁解锁后，再加锁，那么加锁的动作必须在解锁动作之后(同一个 锁)。 </li>
+<li>volatile规则 volatile变量的写，先发生于读，这保证了volatile变量的可见性，简 单的理解就是，volatile变量在每次被线程访问时，都强迫从主内存中读该变量的 值，而当该变量发生变化时，又会强迫将最新的值刷新到主内存，任何时刻，不同的 线程总是能够看到该变量的最新值。 4. 线程启动规则 线程的start()方法先于它的每一个动作，即如果线程A在执行线程B 的start方法之前修改了共享变量的值，那么当线程B执行start方法时，线程A对共享 变量的修改对线程B可见 </li>
+<li>传递性 A先于B ，B先于C 那么A必然先于C </li>
+<li>线程终止规则 线程的所有操作先于线程的终结，Thread.join()方法的作用是等待 当前执行的线程终止。假设在线程B终止之前，修改了共享变量，线程A从线程B的 join方法成功返回后，线程B对共享变量的修改将对线程A可见。 </li>
+<li>线程中断规则 对线程 interrupt()方法的调用先行发生于被中断线程的代码检测到 中断事件的发生，可以通过Thread.interrupted()方法检测线程是否中断。 </li>
+<li>对象终结规则对象的构造函数执行，结束先于finalize()方法</li>
+</ol>
+<h3 id="指令重排"><a href="#指令重排" class="headerlink" title="指令重排"></a>指令重排</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;java语言规范规定jvm线程内部维持顺序化语义。即只要程序的最终结果与它顺序的结果相等，那么指令的执行顺序可以与代码顺序不一致，此过程叫指令的重排序。指令重排的意义在哪？jvm能够根据处理器的特性（CPU多级缓存、多核处理器等）适当对机器指令进行重排序，是机器指令能更符合CPU的执行特性，最大限度发挥机器性能。</p>
+<p><img src="/images/pasted-36.png" alt="指令优化" loading="lazy"></p>
+<h3 id="as-if-serial语义"><a href="#as-if-serial语义" class="headerlink" title="as-if-serial语义"></a>as-if-serial语义</h3><p>不管怎么重排序（编译器和处理器为了提高并行度），（单线程下）程序的执行结果不能被改变。编译器，runtime 和处理器都必须遵守as-if-serial语义。</p>
+<h2 id="volatile语义"><a href="#volatile语义" class="headerlink" title="volatile语义"></a>volatile语义</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;volatile是java虚拟机提供的轻量级的同步机制。有两个作用：</p>
+<ol>
+<li>可见性，一个被volatile变量修改会被其他线程感知到</li>
+<li>有序性，通过内存屏障，禁止指令重排</li>
+<li>无法保证原子性，参照下面的代码，并发情况下，执行incr方法会线程安全问题，可以通过<code>synchronized</code>解决。其中<code>synchronized</code>本身也具有可见性，故不用<code>volatile</code>修饰</li>
+</ol>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Interger counter = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">void</span> <span class="title">incr</span><span class="params">()</span></span>&#123;</span><br><span class="line">	counter++; <span class="comment">// 不会发生指令重排，但是不是原子性</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里引申下，dcl（双重检测锁）在并发情况下，会有线程问题，细节不过多展示，那这里需要加入<code>volatile</code>，这里<code>volatile</code>和<code>synchronized</code>都必须在，因为不加<code>volatile</code>,这里<code>instance = new Instance()</code>会发生指令重排，会出现线程问题</p>
 </blockquote>
-<h5 id="List"><a href="#List" class="headerlink" title="List"></a>List</h5><p>ArrayList与LinkedList的实现和区别</p></div><p class="readmore"><a href="/2021/01/15/%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84/">阅读全文</a></p></div><div class="post"><h1 class="post-title"><a href="/2021/01/10/flink-init/">flink介绍</a></h1><div class="post-meta">2021-01-10</div><div class="post-content"><p><img src="/images/pasted-1.png"></p>
-<h3 id="flink是什么？"><a href="#flink是什么？" class="headerlink" title="flink是什么？"></a>flink是什么？</h3><blockquote>
-<p>Apache Flink is a framework and distributed processing engine for stateful computations over unbounded and bounded data streams.<br>apache flink是一个<font color='red'><strong>框架</strong></font>和<font color='red'><strong>分布式处理引擎</strong></font>，用于对<font color='red'><strong>无界</strong></font>与<font color='red'><strong>有界</strong></font>数据流进行<font color='red'><strong>状态</strong></font>计算</p></div><p class="readmore"><a href="/2021/01/10/flink-init/">阅读全文</a></p></div><nav class="page-navigator"><a class="extend prev" rel="prev" href="/">上一页</a><a class="page-number" href="/">1</a><span class="page-number current">2</span></nav></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">并发</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/flink/" style="font-size: 15px;">flink</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/07/06/BlockingQueue/">BlockingQueue</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/26/AQS/">AQS</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">synchronized</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/15/MESI/">MESI</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">JMM内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">操作系统的底层认识</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">内存分配与垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/">字节码文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">字节码编译原理</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">李俊龙's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">private<span class="keyword"> static</span> Instance instance;</span><br><span class="line"></span><br><span class="line">public<span class="keyword"> static</span> Instance getInstance()&#123;</span><br><span class="line">	if(instance == null)&#123;</span><br><span class="line">    	synchronized(Instance.class)&#123;</span><br><span class="line">        	if(instance == null)&#123;</span><br><span class="line">            <span class="built_in">	instance </span>=<span class="built_in"> new </span>Instance();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="volatile禁止重排优化"><a href="#volatile禁止重排优化" class="headerlink" title="volatile禁止重排优化"></a>volatile禁止重排优化</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;要说明<code>volatile</code>禁止重排，这里就的引入一个名词<b><font color='red'>内存屏障（memory barrier）</font></b>。</p>
+<h4 id="内存屏障"><a href="#内存屏障" class="headerlink" title="内存屏障"></a>内存屏障</h4><p>是一个cpu指令。jvm有四个内存屏障指令。</p>
+<table>
+<thead>
+<tr>
+<th align="left">屏蔽类型</th>
+<th align="left">指令实例</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">LoadLoad</td>
+<td align="left">Load1;LoadLoad;Load2</td>
+<td align="left">保证Load1的读取操作在Load2之前</td>
+</tr>
+<tr>
+<td align="left">StoreStore</td>
+<td align="left">Store1;StoreStore;Store2</td>
+<td align="left">在Store2及其后的写操作执行前，保证Store1的写操作已刷新到主内存</td>
+</tr>
+<tr>
+<td align="left">LoadStore</td>
+<td align="left">Load1;LoadStore;Store2;</td>
+<td align="left">在Store2及其后的写操作执行前，保证Load1的读操作是正确数据</td>
+</tr>
+<tr>
+<td align="left">StoreLoad</td>
+<td align="left">Store1;StoreLoad;Load2</td>
+<td align="left">保证Store1的写操作已刷新内存，Load2读取数据是正确数据</td>
+</tr>
+</tbody></table>
+<h5 id="编译器屏障（Compiler-Barrior）"><a href="#编译器屏障（Compiler-Barrior）" class="headerlink" title="编译器屏障（Compiler Barrior）"></a>编译器屏障（Compiler Barrior）</h5><p>阻止编译器重排，保证编译程序时在优化屏障之前的指令不会在优化屏障之后执行。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* The &quot;volatile&quot; is due to gcc bugs */</span></span><br><span class="line"><span class="selector-id">#define</span> <span class="selector-tag">barrier</span>() <span class="selector-tag">__asm__</span> <span class="selector-tag">__volatile__</span>(<span class="string">&quot;&quot;</span>: : :<span class="string">&quot;memory&quot;</span>) </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h5 id="CPU屏障（Cpu-Barrior）"><a href="#CPU屏障（Cpu-Barrior）" class="headerlink" title="CPU屏障（Cpu Barrior）"></a>CPU屏障（Cpu Barrior）</h5><ol>
+<li>作用：<ol>
+<li>防止指令重排序</li>
+<li>保证数据可见性</li>
+</ol>
+</li>
+<li>分类：<ol>
+<li>lfence，是一种Load Barrior 读屏障，会将invalidate queue失效，强制读取L1 Cache中，而且lfence之后的读操作不会被调度到之前，即lfence的读操作一定在lfence完成（并未规定全局可见性）；</li>
+<li>sfence，是一种save Barrior 写屏障，会将store buffer中缓存的修改刷入L1 Cache中，使得其他cpu核可以观察到这些变化，而且之后的写操作不会被调度到之前，即sfence之前的写操作一定在sfence完成且全局可见</li>
+<li>mfence，是一种全能型屏障，具备lfence和sfence的能力，同时刷新store buffer和invalidate queue，保证了mfence前后的读写操作的顺序，同时要求mfence之后写操作结果全局可见之前，mfence之前写操作全局可见</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>cpu屏障也包含指令<b>lock前缀</b>，lock不是一种内存屏障，但是它能完成类似内存屏障的功能。lock会对cpu总线和高速缓存加锁，可以理解为cpu指令级的一种锁。会让指令操作原子化，而且自带mfence效果。</p>
+</blockquote>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<b>X86-64一般情况根本不会需要使用lfence与sfence这两个指令，除非操作Write-Through内存或使用 non-temporal 指令（NT指令，属于SSE指令集），比如movntdq, movnti, maskmovq，这些指令也使用Write-Through内存策略，通常使用在图形学或视频处理，Linux编程里就需要使用GNC提供的专门的函数，下面是GNU中的三种内存屏障定义方法，下面是结合编译器屏障和CPU指令屏障。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#define</span> <span class="selector-tag">lfence</span>() <span class="selector-tag">__asm__</span> <span class="selector-tag">__volatile__</span>(<span class="string">&quot;lfence&quot;</span>: : :<span class="string">&quot;memory&quot;</span>) </span><br><span class="line"><span class="selector-id">#define</span> <span class="selector-tag">sfence</span>() <span class="selector-tag">__asm__</span> <span class="selector-tag">__volatile__</span>(<span class="string">&quot;sfence&quot;</span>: : :<span class="string">&quot;memory&quot;</span>) </span><br><span class="line"><span class="selector-id">#define</span> <span class="selector-tag">mfence</span>() <span class="selector-tag">__asm__</span> <span class="selector-tag">__volatile__</span>(<span class="string">&quot;mfence&quot;</span>: : :<span class="string">&quot;memory&quot;</span>) </span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;代码中仍然使用lfence()与sfence()这两个内存屏障应该也是一种长远的考虑。按照Interface写代码是最保险的，万一Intel以后出一个采用弱一致模型的CPU，遗留代码出问题就不好了。目前在X86下面视为编译器屏障即可。</b></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># java通过魔术类来加内存屏障</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Unsafe unsafe = Unsafe.getUnsafe();</span><br><span class="line">unsafe.loadFence();</span><br><span class="line">unsafe.storeFence();</span><br><span class="line">unsafe.fullFence();</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>下面这里有一个典型的使用内存屏障的例子（DCL）</p>
+</blockquote>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> A a= <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> A <span class="function"><span class="title">getInstance</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(a == <span class="literal">null</span>)&#123;</span><br><span class="line">            synchronized (双重检查锁.class)&#123;</span><br><span class="line">                a = <span class="keyword">new</span> A(); <span class="comment">// 多线程可能会出现问题的地方</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>为什么在多线程的场景下a = new A();会出现问题？<br>其实这里不是原子操作，有分为下面三步；</p>
+<ol>
+<li>分配对象内存空间 memory = allocate();</li>
+<li>初始化对象     instance(memory);</li>
+<li>设置instance的对象指向刚分配的内存空间instance = memory;</li>
+</ol>
+</blockquote>
+<blockquote>
+<p><font color='red'><b>由于第二步和第三步没有依赖关系，是可以重排的。重排后再单线程结果是没有改变的，所有这种重排是可以允许的。指令重排只会保证串行语义的执行的一致性(单线程)，但并不会关心多线程间的语义一致性。所以当一个线程访问instance对象不为null时，虽然是不为空的，但是执行方法时就会报错，对象没有实例化完成。解决重排通过加上<code>volatile</code>就可以解决。</b></font></p>
+</blockquote>
+<h4 id="volatile内存语义的实现"><a href="#volatile内存语义的实现" class="headerlink" title="volatile内存语义的实现"></a>volatile内存语义的实现</h4><p>编译器制定的volatile重排序规则表</p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">第二个操作：普通读写</th>
+<th align="center">第二个操作：volatile读</th>
+<th align="center"><font color='red'>第二个操作：volatile写</font></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">第一个操作：普通读写</td>
+<td align="center">可以</td>
+<td align="center">可以</td>
+<td align="center">不可以</td>
+</tr>
+<tr>
+<td align="center"><font color='red'><b>第一个操作：volatile读</b></font></td>
+<td align="center">不可以</td>
+<td align="center">不可以</td>
+<td align="center">不可以</td>
+</tr>
+<tr>
+<td align="center">第一个操作：volatile写</td>
+<td align="center">可以</td>
+<td align="center">不可以</td>
+<td align="center">不可以</td>
+</tr>
+</tbody></table>
+<ul>
+<li>其中第一个操作：volatile读，都不可以重排</li>
+<li>其中第二个操作：volatile写，都不可以重排</li>
+<li>其中第一个操作：volatile写，第二个操作：volatile读，都不可以重排</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;为了实现volatile的内存语义，编译器在生成字节码时，会在指令序列中插入内存屏障来禁止特定类型的处理器重排序。对于编译器来说，发现一个最优布置来最小化插入屏障的总数几乎不可能。为此，JMM采取保守策略。下面是基于保守策略的JMM内存屏障插入策 略。</p>
+<ul>
+<li>在每个volatile写操作的前面插入一个StoreStore屏障。</li>
+<li>在每个volatile写操作的后面插入一个StoreLoad屏障。 </li>
+<li>在每个volatile读操作的后面插入一个LoadLoad屏障</li>
+<li>在每个volatile读操作的后面插入一个LoadStore屏障</li>
+</ul>
+<p>这里举一个来说明</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a;</span><br><span class="line">   <span class="keyword">volatile</span> <span class="keyword">int</span> v1 = <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">volatile</span> <span class="keyword">int</span> v2 = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">readAndWrite</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">int</span> i = v1; <span class="comment">// 第一个volatile读</span></span><br><span class="line">       <span class="keyword">int</span> j = v2; <span class="comment">// 第二个volatile读</span></span><br><span class="line">       a = i+j;    <span class="comment">// 普通写</span></span><br><span class="line">       v1 = i + <span class="number">1</span>; <span class="comment">// 第一个volatile写</span></span><br><span class="line">       v2 = j * <span class="number">2</span>; <span class="comment">// 第二个volatile写</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>针对readAndWrite方法，编译器在字节码会做如下的优化，见下面的解释就可以会很清楚了。<br><img src="/images/pasted-38.png" alt="内存屏障优化" loading="lazy"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/" class="post-title-link" itemprop="url">操作系统的底层认识</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-20 12:31:00" itemprop="dateCreated datePublished" datetime="2021-04-20T12:31:00+08:00">2021-04-20</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-06 23:09:28" itemprop="dateModified" datetime="2021-07-06T23:09:28+08:00">2021-07-06</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">并发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="冯诺依曼计算机模型"><a href="#冯诺依曼计算机模型" class="headerlink" title="冯诺依曼计算机模型"></a>冯诺依曼计算机模型</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;现在计算机模型都是基于-<font color='red'><b>冯诺依曼计算机模型</b></font><br>&nbsp;&nbsp;&nbsp;&nbsp;计算机在运行时，先从内存中取出第一条指令，通过控制器的译码，按指令的要求，从存储器中取出数据进行指定的运算和逻辑操作等加工，然后再按地址把结果送到内存中。接下来，再取出第二条指令，在控制器的指挥下完成规定操作，依次进行下去。直至遇到停止指令。<br>&nbsp;&nbsp;&nbsp;&nbsp;程序与数据一样存储，按程序编排的顺序，一步一步的取出指令，自动完成指令规定的操作是计算机最基本的工作模型。这个就是冯.诺依曼计算机模型。</p>
+<p><img src="/images/pasted-20.png" alt="冯诺依曼计算机模型" loading="lazy"></p>
+<h2 id="计算机五大核心组成部分"><a href="#计算机五大核心组成部分" class="headerlink" title="计算机五大核心组成部分"></a>计算机五大核心组成部分</h2><ol>
+<li>控制器(control)：是整个计算机的中枢神经，其功能是对程序规定的控制信息进行解释，根据其要求进行控制，调度程序、数据、地址，协调计算机各部分工作及内存与外设的访问等。</li>
+<li>运算器(Datapath)：对数据进行各种算数运算和逻辑运算，即对数据进行加工</li>
+<li>存储器(Memory)：存储器的功能是存储程序、数据和各种信号、命令等信息，并在需要时提供这些信息。</li>
+<li>输入(Input system)：输入设备是计算机的重要组成部分，输入设备与输出设备合你 为外部设备，简称外设，输入设备的作用是将程序、原始数据、文字、字符、控制命令或现 场采集的数据等信息输入到计算机。常见的输入设备有键盘、鼠标器、光电输入机、磁带 机、磁盘机、光盘机等。</li>
+<li>输出(Output system)：输出设备与输入设备同样是计算机的重要组成部分，它把外 算机的中间结果或最后结果、机内的各种数据符号及文字或各种控制信号等信息输出出来。 微机常用的输出设备有显示终端CRT、打印机、激光印字机、绘图仪及磁带、光盘机等。</li>
+</ol>
+<h2 id="现代计算机模型"><a href="#现代计算机模型" class="headerlink" title="现代计算机模型"></a>现代计算机模型</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;现在的计算机就是通过冯诺依曼计算机模型来应用出来的，见下图。其中我们最主要是关心CPU和内存。</p>
+<p><img src="/images/pasted-21.png" alt="现代计算机模型" loading="lazy"></p>
+<h2 id="cpu指令结构"><a href="#cpu指令结构" class="headerlink" title="cpu指令结构"></a>cpu指令结构</h2><p>cpu内部结构</p>
+<ul>
+<li>控制单元<ul>
+<li>控制单元是整个CPU的指挥控制中心，由指令寄存器IR（Instruction Register）、指 令译码器ID（Instruction Decoder）和 操作控制器OC（Operation Controller） 等组 成，对协调整个电脑有序工作极为重要。它根据用户预先编好的程序，依次从存储器中取出 各条指令，放在指令寄存器IR中，通过指令译码（分析）确定应该进行什么操作，然后通过 操作控制器OC，按确定的时序，向相应的部件发出微操作控制信号。操作控制器OC中主要 包括：节拍脉冲发生器、控制矩阵、时钟脉冲发生器、复位电路和启停电路等控制逻辑。</li>
+</ul>
+</li>
+<li>运算单元<ul>
+<li>运算单元是运算器的核心。可以执行算术运算（包括加减乘数等基本运算及其附加运 算）和逻辑运算（包括移位、逻辑测试或两个值比较）。相对控制单元而言，运算器接受控 制单元的命令而进行动作，即运算单元所进行的全部操作都是由控制单元发出的控制信号来 指挥的，所以它是执行部件。</li>
+</ul>
+</li>
+<li>数据单元<ul>
+<li>存储单元包括 CPU 片内缓存Cache和寄存器组，是 CPU 中暂时存放数据的地方，里 面保存着那些等待处理的数据，或已经处理过的数据，CPU 访问寄存器所用的时间要比访 问内存的时间短。 寄存器是CPU内部的元件，寄存器拥有非常高的读写速度，所以在寄存 器之间的数据传送非常快。采用寄存器，可以减少 CPU 访问内存的次数，从而提高了 CPU 的工作速度。寄存器组可分为专用寄存器和通用寄存器。专用寄存器的作用是固定的，分别 寄存相应的数据；而通用寄存器用途广泛并可由程序员规定其用途。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/pasted-22.png" alt="cpu内部结构" loading="lazy"></p>
+<h2 id="CPU缓存结构"><a href="#CPU缓存结构" class="headerlink" title="CPU缓存结构"></a>CPU缓存结构</h2><p>现在CPU为了提升执行效率，减少cpu与内存的交互，一般在CPU设置多级缓存</p>
+<ul>
+<li>L1 cache，分为指令缓存和数据缓存，逻辑核独占</li>
+<li>L2 cache，物理核独占，逻辑核共享</li>
+<li>L3 cache，所有物理核共享<blockquote>
+<p>物理核：可以看的到的，真实的cpu核<br>逻辑核：在同一个物理核内，逻辑层面的核。<br>超线程：超线程可以在一个逻辑核等待指令执行的间隔(等待从cache或内存中获取下一条指令)，把时间片分配到另一个逻辑核。高速在这两个逻辑核之间切换，让应用程序感知不到这个间隔，误认为自己是独占了一个核。<br><font color='red'></b>一个CPU有多个物理核，如果开启了超线程，一个物理核可以分成n个逻辑核，n为超线程的数量。<br>其中一台机器可以有多个CPU，但是CPU之前的缓存是不共享的</b></font><br>Runtime.getRuntime().availableProcessors()是逻辑核数</p>
+</blockquote>
+</li>
+</ul>
+<p><img src="/images/pasted-23.png" alt="cpu缓存结构" loading="lazy"></p>
+<ul>
+<li>存储器的大小：内存&gt;L3&gt;L2&gt;L1&gt;寄存器</li>
+<li>存储器速度快慢排序：寄存器&gt;L1&gt;L2&gt;L3&gt;内存</li>
+<li>缓存最小的存储单位是-缓存行(cache line)，缓存大小默认64Byte，如果对象大小大于64Byte，可以采用多个缓存行存储</li>
+</ul>
+<h3 id="CPU读取存储器数据的过程"><a href="#CPU读取存储器数据的过程" class="headerlink" title="CPU读取存储器数据的过程"></a>CPU读取存储器数据的过程</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">1</span>. CPU要取寄存器X的值，直接读取寄存器</span><br><span class="line"><span class="attribute">2</span>. CPU要取L<span class="number">1</span> cache的某个值，把cacheline锁住，把数据拿来，解锁。没有锁住就慢了</span><br><span class="line"><span class="attribute">3</span>. CPU要取L<span class="number">2</span> cache的某个值，L<span class="number">2</span>开始加锁，加锁以后把数据复制到L<span class="number">1</span>，执行上面的L<span class="number">1</span>的步骤，再解锁</span><br><span class="line"><span class="attribute">4</span>. CPU要取L<span class="number">3</span> cache的某个值，L<span class="number">3</span>复制到L<span class="number">2</span>，L<span class="number">2</span>复制到L<span class="number">1</span>，L<span class="number">1</span>复制寄存器</span><br><span class="line"><span class="attribute">5</span>. CPU要取内存中的数据，通知内存控制器占用总线带宽，通知内存加锁，发起内存读请求，等待回应，回应数据保存，复制到L<span class="number">3</span>，然后复制到L<span class="number">2</span>，然后复制到L<span class="number">1</span>，最后复制到寄存器，之后解除总线锁定</span><br></pre></td></tr></table></figure>
+<h3 id="CPU为何有一个高速缓存"><a href="#CPU为何有一个高速缓存" class="headerlink" title="CPU为何有一个高速缓存"></a>CPU为何有一个高速缓存</h3><p>CPU在摩尔定律指导下，每18个月翻一番的速度，而内存和硬盘速度远不及CPU速度。为了解决这个问题，CPU中内置了少量的高速缓存以解决I/o速度和CPU运算速度之间的不匹配问题。在CPU访问存储设备时，无论是存储数据或者指令，都趋于一片连续的区域中，这就叫做局部性原则</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">时间局部性：如果一个信息正在被访问，那么近期它很有可能还会被访问。比如循环、递归、方法的反复调用等。</span><br><span class="line">空间局部性：如果一个存储器的位置被引用，那么将来它附近的位置也会被引用。比如顺序执行的代码、连续创建的两个对象、数组等。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>空间局部性的例子</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"># first 比 second方式快一点，是因为再引用数组位置时，它附近的位置也引用了，导致会快一点</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RUNS = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> rows = <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> cols = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Long[][] data = <span class="keyword">new</span> Long[rows][cols];</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rows; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; cols; j++) &#123;</span><br><span class="line">                data[i][j] = <span class="number">1L</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;first&quot;</span>);</span><br><span class="line">        <span class="keyword">long</span> first = System.currentTimeMillis();</span><br><span class="line">        Long firstNum = <span class="number">0L</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> r = <span class="number">0</span>; r &lt; RUNS; r++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rows; i++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; cols; j++) &#123;</span><br><span class="line">                    firstNum += data[i][j];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;firstNum=&quot;</span>+firstNum);</span><br><span class="line">        System.out.println(<span class="string">&quot;first =&quot;</span>+(System.currentTimeMillis()-first)); <span class="comment">//2700</span></span><br><span class="line">        System.out.println(<span class="string">&quot;second&quot;</span>);</span><br><span class="line">        <span class="keyword">long</span> second = System.currentTimeMillis();</span><br><span class="line">        Long secondNum = <span class="number">0L</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> r = <span class="number">0</span>; r &lt; RUNS; r++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; cols; i++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; rows; j++) &#123;</span><br><span class="line">                    secondNum += data[j][i];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;secondNum=&quot;</span>+secondNum);</span><br><span class="line">        System.out.println(<span class="string">&quot;second =&quot;</span>+(System.currentTimeMillis()-second));  <span class="comment">// 3249</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CPU运行安全等级"><a href="#CPU运行安全等级" class="headerlink" title="CPU运行安全等级"></a>CPU运行安全等级</h3><ul>
+<li>ring0<ul>
+<li>操作系统内部的指令</li>
+</ul>
+</li>
+<li>rong1<ul>
+<li>没有使用</li>
+</ul>
+</li>
+<li>rong2<ul>
+<li>没有使用</li>
+</ul>
+</li>
+<li>rong3<ul>
+<li>用户程序的指令<blockquote>
+<p>JVM创建线程，线程阻塞唤醒是重型操作了，因为CPU要切换运行状态</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<p>例子：JVM创建线程CPU的过程</p>
+<blockquote>
+<ol>
+<li>CPU从ring3切换到ring0，创建线程，调用p_thread库</li>
+<li>线程创建完成后，CPU从ring0切换到ring3</li>
+<li>执行java程序</li>
+<li>CPU从ring3切换到ring0，销毁</li>
+</ol>
+</blockquote>
+<h1 id="操作系统内存管理"><a href="#操作系统内存管理" class="headerlink" title="操作系统内存管理"></a>操作系统内存管理</h1><h2 id="执行空间保护"><a href="#执行空间保护" class="headerlink" title="执行空间保护"></a>执行空间保护</h2><p>操作系统有用户空间与系统空间两个概念，目的也是为了做到程序运行安全隔离与稳定，以32位4G大小内存的空间来说。它的寻址地址为2^32个地址。<br><img src="/images/pasted-24.png" alt="内容空间" loading="lazy"></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;Linux为内核代码和数据结构预留了几个页框，这些页永远不会被转出到磁盘上。从0x00000000到0xC0000000（PAGE_OFFSET）的线性地址可由用户代码和内核代码进行引用（<font color='red'><b>用户空间</b></font>），从0xC0000000（PAGE_OFFSET）到0xFFFFFFFF的线性地址只能由内核代码进行访问（<font color='red'><b>内核空间</b></font>）。内核空间及其数据结构都必须位于在1GB的地址空间中，但是对于此地址空间而言，更大的消费者是物理地址虚拟映射。而3GB可以用于用户应用程序。<br>&nbsp;&nbsp;&nbsp;&nbsp;进程与线程只能运行在用户模式（user mode）与内核模式(kernel mode)下。用户程序运行在用户模式下，而系统调用运行在内核模式下。这两种使用的堆栈是不一样的。用户方式下用的是 一般的堆栈(用户空间的堆栈)，而内核方式下用的是固定大小的堆栈（内核空间的堆栈，一般为一个内存页的大小），即每个进程与线程其实有两个堆栈，分别运行与用户态与内核态。</p>
+<h3 id="用户线程模型-ULT"><a href="#用户线程模型-ULT" class="headerlink" title="用户线程模型(ULT)"></a>用户线程模型(ULT)</h3><p>用户程序实现，不依赖系统内核，应用提供创建、同步、调度和管理线程的函数来创建用户线程。不需要用户态/内核态切换，速度快。内核对ULT无感知，线程阻塞则进程（包括它所有的线程）阻塞。</p>
+<p><img src="/images/pasted-26.png" alt="用户线程模型" loading="lazy"></p>
+<h3 id="内核线程模型-KLT"><a href="#内核线程模型-KLT" class="headerlink" title="内核线程模型(KLT)"></a>内核线程模型(KLT)</h3><p>内核保存线程的状态和上下文信息，线程阻塞不会引起进程阻塞。在多处理器系统上，多线程在多处理器上并行运行。线程的创建、调度和管理由内核完成，效率比ULT慢，比进程效率快。</p>
+<p><img src="/images/pasted-25.png" alt="内核线程模型" loading="lazy"></p>
+<blockquote>
+<p>那JVM是什么线程模型呢？其实JVM是采用KLT。</p>
+</blockquote>
+<h1 id="进程和线程"><a href="#进程和线程" class="headerlink" title="进程和线程"></a>进程和线程</h1><h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><p>现代操作系统在运行一个程序时，会为其创造一个进程。进程是OS资源分配的最小单元。像启动一个java程序，计算机就会启动一个进程。</p>
+<h2 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h2><p>线程是OS调度CPU的最小单元。也叫做轻量级进程。在一个进程里可以有多个线程，这些线程都拥有各自的计数器、堆栈和局部变量表等属性。并且能够访问共享的内存变量。CPU在这些线程上高速切换，让使用者感觉到这些线程在同时执行，即并发的概念。</p>
+<p><img src="/images/pasted-28.png" alt="线程上下文切换过程" loading="lazy"></p>
+<p><code>vmstat 1，其中cs就是上下文切换，上下文存放在TSS（Task State Segment）</code><br><img src="/images/pasted-27.png" alt="线程上下文切换" loading="lazy"></p>
+<h1 id="虚拟机指令集架构"><a href="#虚拟机指令集架构" class="headerlink" title="虚拟机指令集架构"></a>虚拟机指令集架构</h1><p>虚拟机指令集架构主要分为两种：</p>
+<ol>
+<li>栈指令集架构</li>
+<li>寄存器指令集架构</li>
+</ol>
+<h2 id="栈指令集架构"><a href="#栈指令集架构" class="headerlink" title="栈指令集架构"></a>栈指令集架构</h2><ol>
+<li>设计和实现更简单,适用于资源受限的系统; </li>
+<li>避开了寄存器的分配难题:使用零地址指令方式分配; </li>
+<li>指令流中的指令大部分是零地址指令,其执行过程依赖与操作栈,指令集更小,编译器 容易实现; </li>
+<li>不需要硬件支持,可移植性更好,更好实现跨平台。</li>
+</ol>
+<h2 id="寄存器指令集架构"><a href="#寄存器指令集架构" class="headerlink" title="寄存器指令集架构"></a>寄存器指令集架构</h2><ol>
+<li>典型的应用是x86的二进制指令集:比如传统的PC以及Android的Davlik虚拟机。 </li>
+<li>指令集架构则完全依赖硬件,可移植性差。 </li>
+<li>性能优秀和执行更高效。 </li>
+<li>花费更少的指令去完成一项操作。 </li>
+<li>在大部分情况下,基于寄存器架构的指令集往往都以一地址指令、二地址指令和三 地址指令为主,而基于栈式架构的指令集却是以零地址指令为主。</li>
+</ol>
+<blockquote>
+<p>jvm是栈指令集架构，可移植性好</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" class="post-title-link" itemprop="url">内存分配与垃圾回收</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-09 19:31:00" itemprop="dateCreated datePublished" datetime="2021-03-09T19:31:00+08:00">2021-03-09</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-06 23:09:28" itemprop="dateModified" datetime="2021-07-06T23:09:28+08:00">2021-07-06</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/jvm/" itemprop="url" rel="index"><span itemprop="name">jvm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="jvm内存区域"><a href="#jvm内存区域" class="headerlink" title="jvm内存区域"></a>jvm内存区域</h1><p>之所以会选中jvm的内存区域划分为多个不同的内存区，是因为每一个独立的内存区都拥有各自的用途。<br>其中一部分的内存区域和jvm生命周期保持一致<br>另外一部分的内存区域和线程的生命周期保持一致</p>
+<p><img src="/images/pasted-17.png" alt="jvm内存区域" loading="lazy"></p>
+<h1 id="线程共享内存区"><a href="#线程共享内存区" class="headerlink" title="线程共享内存区"></a>线程共享内存区</h1><p>允许被所有线程共享访问的一类内存区，包括堆区、方法区和运行时常量池三个内存区。</p>
+<h2 id="堆区"><a href="#堆区" class="headerlink" title="堆区"></a>堆区</h2><p>堆（heap）,Java堆区在JVM启动的时候被创建，并且它在实际的内存空间中可以是不连续的。<br>堆（heap）区是一块用于存储对象实例的内存区，同时也是GC执行垃圾回收的重点区域，正式因为java堆区是GC重点回收区域，那么GC极有可能在大内存的使用和回收上成为性能瓶颈。</p>
+<blockquote>
+<p>为了解决问题，考虑是否一定需要将对象实例存储到Java堆区中。其中逃逸分析与栈上分配等优化技术同样也是降低GC回收频率与提升GC回收效率的方式。</p>
+</blockquote>
+<p>堆还分为新生代（YoungGen）和老年代（OldGen）,其中新生代也可以分为Eden空间、From Survivor空间和To Survivor空间。</p>
+<p><img src="/images/pasted-18.png" alt="堆区的分代" loading="lazy"></p>
+<p><code>-Xmx</code>表示堆区最大内存<br><code>-Xms</code>表示堆区起始内存<br>一旦堆中的内存大小大于最大内存，就会抛出OutOfMemoryError异常</p>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><table>
+<thead>
+<tr>
+<th>jdk版本</th>
+<th>方法区实现</th>
+<th>运行时常量池位置</th>
+<th>存储信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt;1.6</td>
+<td>PermGen space（永久代）</td>
+<td>PermGen space（永久代）</td>
+<td>运行时常量池、变量、字段和方法数据、构造函数和普通方法的字节码内容、类和实例和接口初始化需要用到的特殊方法等数据</td>
+</tr>
+<tr>
+<td>1.7</td>
+<td>PermGen space（永久代）</td>
+<td>Heap（堆）</td>
+<td>Heap（堆）</td>
+</tr>
+<tr>
+<td>1.8</td>
+<td>Metaspace（元空间）</td>
+<td>Heap（堆）</td>
+<td>Heap（堆）</td>
+</tr>
+</tbody></table>
+<p>由于主流的jdk版本采用的是1.8版本，这里我们主要介绍jdk1.8版本方法区<br>元空间（Metaspace），是方法区的一种实现，其中元空间是属于本地内存中的，之前的方法区的实现是存储在堆中。然后元空间存储类的元信息，而静态变量和常量池都并入堆中。</p>
+<h3 id="Jvm常量池"><a href="#Jvm常量池" class="headerlink" title="Jvm常量池"></a>Jvm常量池</h3><h4 id="Class文件常量池"><a href="#Class文件常量池" class="headerlink" title="Class文件常量池"></a>Class文件常量池</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">JavaBean</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> value = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">public</span> String s = <span class="string">&quot;abc&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> f = <span class="number">0x101</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setValue</span><span class="params">(<span class="keyword">int</span> v)</span></span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> temp = <span class="number">3</span>;</span><br><span class="line">        <span class="keyword">this</span>.value = temp + v;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getValue</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>编写.java文件编译为.class文件格式的二进制数据存放在磁盘中</p>
+</li>
+<li><p>非运行时常量池，在编译阶段以及确定</p>
+</li>
+<li><p>Class文件常量池存放<b>字面量</b>和<b>符号引用</b></p>
+<ul>
+<li><p>字面量</p>
+<ul>
+<li><p>第一种存储是文本字符串</p>
+<pre><code><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#9 = Utf8               s</span><br><span class="line">#3 = String             #31            // abc</span><br><span class="line">#31 = Utf8              abc</span><br></pre></td></tr></table></figure></code></pre>
+</li>
+<li><p>第二种存储用final修饰的成员变量，包括静态变量、实例变量和局部变量
+           </p>
+<pre><code><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#11 = Utf8               f</span><br><span class="line">#12 = Utf8               ConstantValue</span><br><span class="line">#13 = Integer            257</span><br></pre></td></tr></table></figure></code></pre>
+</li>
+<li><p>这里说明下，存在常量池的字面量，指的是数据的值，也就是<code>abc</code>和<code>0x101(257)</code>，通过对常量池的观察可知这两个字面量是确实存在于常量池的。而对于基本数据类型，也就是上面的<code>private int value = 1</code>，常量池只保留他的字段描述符<code>I(1反编译出来的结果)</code>和字段的名称<code>value</code>，他们的字面量不会存在于常量池中</p>
+</li>
+</ul>
+</li>
+<li><p>符号引用</p>
+<ul>
+<li>类和接口的全限定名，也就是<code>Ljava/lang/String;</code>这样，主要用于在运行时解析得到类的直接引用</li>
+<li>字段的名称和描述符，字段也就是类或者接口中声明的变量，包括类级别变量（static）和实例级的变量</li>
+<li>方法的名称和修饰符，也就是参数类型+返回值类型        </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h4><p>运行时常量池是方法区的一部分，所以也是全局共享的。jvm在执行过程中，需要经过<b>加载、连接(验证、准备、解析)、初始化</b>，在第一步的<b>加载</b>，虚拟机需要做下面3件事</p>
+<ul>
+<li>通过一个类的“全限定名”来获取此类的二进制字节流</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</li>
+<li>在内存中生成一个类代表这类的java.lang.Class对象，作为方法区这个类的各种数据访问的入口</li>
+</ul>
+<blockquote>
+<p>这个Class对象和实例对象是不同的，类对象是在类加载的时候生成的，实例对象是调用new之后创建的<br>上面第二条，将class字节流代表的静态存储结构转化为方法区的运行时数据结构，其中就包含class文件常量池进入运行时常量池的过程。不同的类公用一个运行时常量池，同时在进入运行时常量池的过程中，多个class文件中常量池中相同的字符串只会存在一份在运行时常量池中。</p>
+</blockquote>
+<p><font color='red'><b>运行时常量池的作用是存储class文件常量池中的符号信息。</b></font><br>运行时常量池中保存着一些class文件中描述的符号引用，同时在类加载的<b>“解析阶段”</b>还会将这些<b>符号引用</b>所翻译出来的<b>直接引用(直接指向实例对象的指针)</b>存储在运行时常量池中。</p>
+<blockquote>
+<p>运行时常量池相对于class常量池一大特性就是其具有<b>动态性</b>，<b>Java规范并不要求常量只能在运行时才产生</b>，也就是说运行时常量池中的内容并不全部来自class文件常量池，class文件常量池并非运行时常量池的唯一数据输入口；<b>在运行时可以通过代码生成常量并将其放入常量池中</b>，这种特性被用的较多的是String.intern()</p>
+</blockquote>
+<h4 id="全局字符串常量池"><a href="#全局字符串常量池" class="headerlink" title="全局字符串常量池"></a>全局字符串常量池</h4><ul>
+<li>不同于基本数据类型，String类型是一个final对象，他的字面量存在于class文件常量池中，但是运行期行为却与普通变量常量不同</li>
+<li>jdk1.7中，字符串常量池和类引用被移动到Java堆中(与运行时常量池分离)，因此不同版本的String行为也有差异</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String s0 = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">String s1 = <span class="keyword">new</span> String(<span class="string">&quot;hello&quot;</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一种的方式声明的字面量<code>hello</code>是在<font color='red'><b>编译器</b></font>就确定的，它会直接进入到class文件常量池中，当运行期间在全局字符串常量池中会保存它的一个引用，实际上最终还是要在堆中创建一个<code>yellow</code>对象</li>
+<li>第二种方式使用<code>new String()</code>，也就是调用了String类的构造函数，我们知道new指令是创建一个类的实例对象并完成加载初始化，因此这个字符串对象是在<font color='red'><b>运行期</b></font>确定的，创建的字符串对象是在堆内存上</li>
+<li><code>s0 == s1</code>，返回是false，s0和s1都存在堆上，但是地址肯定不同</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">String s1 = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">String s2 = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">String s3 = <span class="string">&quot;Hel&quot;</span> + <span class="string">&quot;lo&quot;</span>;</span><br><span class="line">String s4 = <span class="string">&quot;Hel&quot;</span> + <span class="keyword">new</span> String(<span class="string">&quot;lo&quot;</span>);</span><br><span class="line">String s5 = <span class="keyword">new</span> String(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">String s7 = <span class="string">&quot;H&quot;</span>;</span><br><span class="line">String s8 = <span class="string">&quot;ello&quot;</span>;</span><br><span class="line">String s9 = s7 + s8;</span><br><span class="line"></span><br><span class="line">System.out.println(s1 == s2);  <span class="comment">// true</span></span><br><span class="line">System.out.println(s1 == s3);  <span class="comment">// true</span></span><br><span class="line">System.out.println(s1 == s4);  <span class="comment">// false</span></span><br><span class="line">System.out.println(s1 == s9);  <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>s1 == s2<ul>
+<li>这个就很好理解了，因为字面量<code>Hello</code>在运行期间会进入到全局字符串常量池，同一份字面量只会保留一份，所有引用都指向这一份字符串，自然引用的地址也就相同了</li>
+</ul>
+</li>
+<li>s1 == s3<ul>
+<li>编译优化，编译器会直接在Class文件常量池存的是<code>Hello</code>，跟第一种是一样的</li>
+</ul>
+</li>
+<li>s1 != s4<ul>
+<li><code>new String(&quot;lo&quot;)</code>在堆中创建一个String对象，而<code>Hel</code>字面量是通过另一种操作在堆中创建对象，这两个在堆中不同的地方创建的对象是通过<code>StringBuilder.append</code>方法拼接出来的，并且最终会调用<code>StringBuilder.toString</code>方法输出，最终拼出来的String对象，地址肯定是不一样的<br>   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Create a copy, don&#x27;t share the array</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> String(value, <span class="number">0</span>, count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>s1 != s9<ul>
+<li>字面量会存在<code>Hello</code>、<code>H</code>、<code>ello</code>，运行期间会创建<code>H</code>和<code>ello</code>对象，通过<code>StringBuilder.append</code>方法拼接出来的，最终还是会重新生成String对象，地址肯定是不一样的。
+   <blockquote>
+<p>字符串常量池的概率：字符串常量池是Jvm所维护的一个字符串实例的引用表，在Hotspot vm中，他是一个叫做String Table的全局表。在字符串常量池中维护的是字符串实例的引用，底层C++实现就是一个HashTable。这些被维护的引用所指的字符串实例，被称为”被驻留的字符串“或”interned String“或通常所说的”进入了字符串常量池的字符串“。<br>运行时常量池在方法区(Non-heap)，而JDK1.7后，字符串常量池被移到了heap区，因此两者根本就不是一个概念</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="基本类型包装类对象常量池"><a href="#基本类型包装类对象常量池" class="headerlink" title="基本类型包装类对象常量池"></a>基本类型包装类对象常量池</h4><p><code>java</code>中基本类型的包装类的大部分都实现了常量池技术，这些类是<code>Byte、Short、Integer、Long、Character、Boolean</code>，另外两种浮点数没有实现。另外上面这5种整型的包装类也只是在对应值小于等于127时才可使用对象池，也即对象不负责创建和管理大于127的这些类的对象。其中会包含自动拆箱和自动装箱。</p>
+<h1 id="线程私有内存区"><a href="#线程私有内存区" class="headerlink" title="线程私有内存区"></a>线程私有内存区</h1><p>和线程共享内存区不同，线程私有内存区是不允许被所有线程共享访问的。线程私有内存区是只允许被所属的独立线程进行访问的一类内存区，包括PC寄存器、Java栈和本地方法栈。</p>
+<h2 id="PC寄存器"><a href="#PC寄存器" class="headerlink" title="PC寄存器"></a>PC寄存器</h2><p>由于JVM是基于栈的架构，任何的操作都需要入栈和出栈来完成，其中PC寄存器并不是物理寄存器，实际上是PC计数器。以下是特性</p>
+<ul>
+<li>PC寄存器用来存储下一条指令的地址</li>
+<li>每个线程都会有一个PC寄存器，线程私有的，生命周期和线程的生命周期保持一致。 </li>
+<li>任何时间一个线程都只有一个方法在执行，如果当前线程所执行的方法是一个Java方法，那么PC寄存器就会存储正在执行的字节码指令地址；如果当前线程所执行的方法是一个native方法，那么pc寄存器的值就是空(undefined)。</li>
+<li>它是唯一一个在Java虚拟机规范中没有规定任何OutOfMemoryError的区域</li>
+</ul>
+<h2 id="Java栈"><a href="#Java栈" class="headerlink" title="Java栈"></a>Java栈</h2><p>Java栈也称Java虚拟机栈，是线程私有的。Java栈存储栈帧(Stack Frame)<br>栈帧</p>
+<ul>
+<li>局部变量表<ul>
+<li>存储各类原始数据类型、对象引用(reference)、returnAddress类型</li>
+<li>returnAddress类型被定义为Java虚拟机内部的原始数据类型，该类型用于表示一条字节码指令的操作码(opcode)。</li>
+</ul>
+</li>
+<li>操作数栈</li>
+<li>动态链接</li>
+<li>方法出口<blockquote>
+<p>Java 栈允许被实现成固定大小的内存或者可动态扩展的内存大小<br>如果超过固定大小的内存就会抛出StackOverflowError错误<br>如果超过可动态扩展的内存就会抛出OutOfMemoryError错误</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>Native Method Stack，用于支持本地方法执行（native方法，比如c/c++代码）</p>
+<h1 id="自动内存管理"><a href="#自动内存管理" class="headerlink" title="自动内存管理"></a>自动内存管理</h1><p>程序内存管理是一个非常敏感的话题，对于c/c++而言，可以再语法层面上随意控制程序中一个对象的生命周期，随意创建一个对象，也能随意杀死一个对象，这种方式称之为手动内存管理。<br>手动内存管理是一把双刃剑，不好的地方会影响内存泄漏和内存溢出</p>
+<ul>
+<li>内存泄漏<ul>
+<li>比较一个常见的场景，就是释放一个链表所引用的所有空间时，却错误地释放链表的第一个元素，尽管剩下的元素不被引用，但是他们却离开了整个程序的控制范围。这样一来，链表中的元素所占用的内存空间永远不会被释放</li>
+<li>内存泄漏不会立马引起程序崩溃，慢慢在消耗内存，然后会瓦解</li>
+</ul>
+</li>
+<li>内存溢出<ul>
+<li>当使用的对象超出内存限制，一直无法释放时，就会产生内存溢出</li>
+</ul>
+</li>
+</ul>
+<p>但是Jvm是使用的<font color='red'><b>自动内存管理机制</b></font>，这样会降低内存泄漏和内存溢出的风险，但是这样会影响到一旦出现问题后，不太容易定位问题，还是需要了解jvm如何管理内容</p>
+<h2 id="内存分配原理"><a href="#内存分配原理" class="headerlink" title="内存分配原理"></a>内存分配原理</h2><p>Jvm包含三种引用类型，分别是类类型(class type)，数组类型(array type)和接口类型（interface type），这些引用类型的值则是由类实例、数组实例以及实现了某个接口的派生类实例负责动态创建，那么jvm中究竟是如何为这些类型创建对应的对象实例呢？</p>
+<ol>
+<li>语法层面使用new关键字创建一个Java对象</li>
+<li>new 指令的参数能否在常量池中定位到一个类的符号引用</li>
+<li>检查这个符号引用想对应的类是否已经成功经历过加载、解析和初始化</li>
+<li>当类完成装载步骤之后，就已经完全可以确定出创建对象实例所需要的内存大小</li>
+<li>jvm就会将其进行内存分配，以存储生成的对象实例</li>
+</ol>
+<p><img src="/images/pasted-19.png" alt="对象分配内存流程" loading="lazy"></p>
+<p>为新对象分配内存是一件非常严谨和复杂的任务，需要考虑下面三个问题</p>
+<ol>
+<li><p>内存如何分配？</p>
+<p> 如果内存空间以规整和有序的方式分布，即已有和未用的内存都各自一边，彼此之间维系着一个记录下一次分配起始点的标记指针，当为新对象分配内存时，只需要通过修改指针的偏移量将新对象分配在第一个空闲内存位置上。这种分配叫做<font color='red'><b>指针碰撞（Bump the Pointer）</b></font>，否则只能使用<font color='red'><b>空闲列表（Free List）</b></font>执行内存分配。</p>
+</li>
+<li><p>分配到哪里？</p>
+<p> Java堆区分为新生代（Young Gen）和老年代（Old Gen），其中新生代分为Eden、From Survivor、To Survivor，由于对象的创建在Jvm中非常频繁，因此在并发情况下从堆区中划分内存空间是非线程安全的，所以务必需要保证数据操作的原子性。基于线程安全的考虑，如果一个类在分配内存之前已经成功完成类装载步骤之后，Jvm优先选在在<font color='red'><b>TLAB（Thread Local Allocation Buffer，本地线程分配缓冲区）</b></font>中为对象实例分配内存空间。<br> TLAB在Java堆区中是一块线程私有区域，它包含在Eden空间中，除了可以避免一系列的非线程安全问题外，同时还能够提升内存分配的吞吐量，因此这种内存分配方式为<b>快速分配策略</b><br> 不是所有的对象实例都在TLAB成功分配，但Jvm确实是将TLAB作为内存分配的首选，在程序中，开发人员可以将<code>-XX:UseTLAB</code>是否开启TLAB空间。<br> <font color='red'><b>默认情况下，TLAB占Eden中的1%</b></font>，可以手动调整<code>-XX:TLABWasteTargetPercent</code>设置TLAB站Eden空间的百分比大小。<br> <font color='red'><b>一旦对象在TLAB空间分配内存失败时，Jvm就会尝试着通过使用加锁机制确保数据操作的原子性，从而直接在Eden空间中分配内存，如果Eden空间中也无法分配内存时，Jvm就会执行Mirror GC，直至最终可以在Eden空间分配内存为止。（如果是大对象直接在老年代中分配）</b></font>
+   </p>
+</li>
+<li><p>内存回收？</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/" class="post-title-link" itemprop="url">jvm初始化启动</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-02 11:21:00" itemprop="dateCreated datePublished" datetime="2021-03-02T11:21:00+08:00">2021-03-02</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-06 23:09:28" itemprop="dateModified" datetime="2021-07-06T23:09:28+08:00">2021-07-06</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/jvm/" itemprop="url" rel="index"><span itemprop="name">jvm</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="Launcher简介"><a href="#Launcher简介" class="headerlink" title="Launcher简介"></a>Launcher简介</h3><p>Launcher是一种用于启动jvm进程的启动器，关于Launcher的具体使用方式和标准选项配置，输入命令“java -help”，见下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">Usage: java [-options] class [args...]</span><br><span class="line">           (to execute a <span class="class"><span class="keyword">class</span>)</span></span><br><span class="line">   or  java [-options] -jar jarfile [args...]</span><br><span class="line">           (to execute a jar file)</span><br><span class="line">where options include:</span><br><span class="line">    -d32	  use a <span class="number">32</span>-bit data model <span class="keyword">if</span> available</span><br><span class="line">    -d64	  use a <span class="number">64</span>-bit data model <span class="keyword">if</span> available</span><br><span class="line">    -server	  to select the <span class="string">&quot;server&quot;</span> VM</span><br><span class="line">                  The <span class="keyword">default</span> VM is server,</span><br><span class="line">                  because you are running on a server-<span class="class"><span class="keyword">class</span> <span class="title">machine</span>.</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">    -<span class="title">cp</span> &lt;<span class="title">class</span> <span class="title">search</span> <span class="title">path</span> <span class="title">of</span> <span class="title">directories</span> <span class="title">and</span> <span class="title">zip</span>/<span class="title">jar</span> <span class="title">files</span>&gt;</span></span><br><span class="line"><span class="class">    -<span class="title">classpath</span> &lt;<span class="title">class</span> <span class="title">search</span> <span class="title">path</span> <span class="title">of</span> <span class="title">directories</span> <span class="title">and</span> <span class="title">zip</span>/<span class="title">jar</span> <span class="title">files</span>&gt;</span></span><br><span class="line">                  A : separated list of directories, JAR archives,</span><br><span class="line">                  and ZIP archives to search <span class="keyword">for</span> <span class="class"><span class="keyword">class</span> <span class="title">files</span>.</span></span><br><span class="line"><span class="class">    -<span class="title">D</span>&lt;<span class="title">name</span>&gt;</span>=&lt;value&gt;</span><br><span class="line">                  set a system property</span><br><span class="line">    -verbose:[class|gc|jni]</span><br><span class="line">                  enable verbose output</span><br><span class="line">    -version      print product version and exit</span><br><span class="line">    -version:&lt;value&gt;</span><br><span class="line">                  Warning: <span class="keyword">this</span> feature is deprecated and will be removed</span><br><span class="line">                  in a future release.</span><br><span class="line">                  require the specified version to run</span><br><span class="line">    -showversion  print product version and <span class="keyword">continue</span></span><br><span class="line">    -jre-restrict-search | -no-jre-restrict-search</span><br><span class="line">                  Warning: <span class="keyword">this</span> feature is deprecated and will be removed</span><br><span class="line">                  in a future release.</span><br><span class="line">                  include/exclude user <span class="keyword">private</span> JREs in the version search</span><br><span class="line">    -? -help      print <span class="keyword">this</span> help message</span><br><span class="line">    -X            print help on non-standard options</span><br><span class="line">    -ea[:&lt;packagename&gt;...|:&lt;classname&gt;]</span><br><span class="line">    -enableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]</span><br><span class="line">                  enable assertions with specified granularity</span><br><span class="line">    -da[:&lt;packagename&gt;...|:&lt;classname&gt;]</span><br><span class="line">    -disableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]</span><br><span class="line">                  disable assertions with specified granularity</span><br><span class="line">    -esa | -enablesystemassertions</span><br><span class="line">                  enable system assertions</span><br><span class="line">    -dsa | -disablesystemassertions</span><br><span class="line">                  disable system assertions</span><br><span class="line">    -agentlib:&lt;libname&gt;[=&lt;options&gt;]</span><br><span class="line">                  load <span class="keyword">native</span> agent library &lt;libname&gt;, e.g. -agentlib:hprof</span><br><span class="line">                  see also, -agentlib:jdwp=help and -agentlib:hprof=help</span><br><span class="line">    -agentpath:&lt;pathname&gt;[=&lt;options&gt;]</span><br><span class="line">                  load <span class="keyword">native</span> agent library by full pathname</span><br><span class="line">    -javaagent:&lt;jarpath&gt;[=&lt;options&gt;]</span><br><span class="line">                  load Java programming language agent, see java.lang.instrument</span><br><span class="line">    -splash:&lt;imagepath&gt;</span><br><span class="line">                  show splash screen with specified image</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里一定要注意，Launcher不是虚拟机实现，从严格意义上讲，Launcher只是一个封装了虚拟机的执行外壳。由它负责装载jre环境和windows平台下的jvm.dll动态链接库（linux平台下则是装载libjvm.so）,它必须调用虚拟机中的函数来完毕运行java程序的功能。所以，你在Hotspot的源码找不到启动程序的main函数。<br><font color='red'>openjdk7是有一个启动器的，在openjdk/hotspot/src/share/tools/layncher/java.c中main函数<br>openjdk8后，启动器在openjdk/jdk/src/share/bin/main.c中</font></p>
+</blockquote>
+<h3 id="HotSpot源码目录结构"><a href="#HotSpot源码目录结构" class="headerlink" title="HotSpot源码目录结构"></a>HotSpot源码目录结构</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">├─agent                            Serviceability Agent的客户端实现</span><br><span class="line">├─make                             用来build出HotSpot的各种配置文件</span><br><span class="line">├─src                              HotSpot VM的源代码</span><br><span class="line">│  ├─cpu                            CPU相关代码（汇编器、模板解释器、ad文件、部分runtime函数在这里实现）</span><br><span class="line">│  ├─os                             操作系相关代码</span><br><span class="line">│  ├─os_cpu                         操作系统+CPU的组合相关的代码</span><br><span class="line">│  └─share                          平台无关的共通代码</span><br><span class="line">│      ├─tools                        工具</span><br><span class="line">│      │  ├─hsdis                      反汇编插件</span><br><span class="line">│      │  ├─IdealGraphVisualizer       将server编译器的中间代码可视化的工具</span><br><span class="line">│      │  ├─launcher                   openjdk1<span class="number">.7</span>之前存在launcher目录，这里存放启动程序“java”</span><br><span class="line">│      │  ├─LogCompilation             将-XX:+LogCompilation输出的日志（hotspot.log）整理成更容易阅读的格式的工具</span><br><span class="line">│      │  └─ProjectCreator             生成Visual Studio的project文件的工具</span><br><span class="line">│      └─vm                           HotSpot VM的核心代码</span><br><span class="line">│          ├─adlc                       平台描述文件（上面的cpu或os_cpu里的*.ad文件）的编译器</span><br><span class="line">│          ├─asm                        汇编器接口</span><br><span class="line">│          ├─c1                         client编译器（又称“C1”）</span><br><span class="line">│          ├─ci                         动态编译器的公共服务/从动态编译器到VM的接口</span><br><span class="line">│          ├─classfile                  类文件的处理（包括类加载和系统符号表等）</span><br><span class="line">│          ├─code                       动态生成的代码的管理</span><br><span class="line">│          ├─compiler                   从VM调用动态编译器的接口</span><br><span class="line">│          ├─gc_implementation          GC的实现</span><br><span class="line">│          │  ├─concurrentMarkSweep      Concurrent Mark Sweep GC的实现</span><br><span class="line">│          │  ├─g1                       Garbage-First GC的实现（不使用老的分代式GC框架）</span><br><span class="line">│          │  ├─parallelScavenge         ParallelScavenge GC的实现（server VM默认，不使用老的分代式GC框架）</span><br><span class="line">│          │  ├─parNew                   ParNew GC的实现</span><br><span class="line">│          │  └─shared                   GC的共通实现</span><br><span class="line">│          ├─gc_interface               GC的接口</span><br><span class="line">│          ├─interpreter                解释器，包括“模板解释器”（官方版在用）和“C++解释器”（官方版不在用）</span><br><span class="line">│          ├─libadt                     一些抽象数据结构</span><br><span class="line">│          ├─memory                     内存管理相关（老的分代式GC框架也在这里）</span><br><span class="line">│          ├─oops                       HotSpot VM的对象系统的实现</span><br><span class="line">│          ├─opto                       server编译器（又称“C2”或“Opto”）</span><br><span class="line">│          ├─prims                      HotSpot VM的对外接口，包括部分标准库的<span class="keyword">native</span>部分和JVMTI实现</span><br><span class="line">│          ├─runtime                    运行时支持库（包括线程管理、编译器调度、锁、反射等）</span><br><span class="line">│          ├─services                   主要是用来支持JMX之类的管理功能的接口</span><br><span class="line">│          ├─shark                      基于LLVM的JIT编译器（官方版里没有使用）</span><br><span class="line">│          └─utilities                  一些基本的工具类</span><br><span class="line">└─test                             单元测试</span><br></pre></td></tr></table></figure>
+<h3 id="使用Launcher启动jvm"><a href="#使用Launcher启动jvm" class="headerlink" title="使用Launcher启动jvm"></a>使用Launcher启动jvm</h3><p>调用栈</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">openjdk/jdk/src/share/bin/main.c::WinMain/main</span><br><span class="line">  openjdk/jdk/src/share/bin/java.c::JLI_Launch</span><br><span class="line">    openjdk/jdk/src/solaris/bin/java_md_solinux.c::LoadJavaVM # Load JVM Library: libjvm.so</span><br><span class="line">    openjdk/jdk/src/solaris/bin/java_md_solinux.c::JVMInit # Create JVM</span><br><span class="line">      openjdk/jdk/src/share/bin/java.c::ContinueInNewThread</span><br><span class="line">        openjdk/jdk/src/solaris/bin/java_md_solinux.c::ContinueInNewThread0(JavaMain, threadStackSize, (<span class="keyword">void</span>*)&amp;args);</span><br><span class="line">          pthread_create(&amp;tid, &amp;attr, (<span class="keyword">void</span> *(*)(<span class="keyword">void</span>*))continuation, (<span class="keyword">void</span>*)args)</span><br><span class="line">            openjdk/jdk/src/share/bin/java.c::JavaMain</span><br><span class="line">              openjdk/jdk/src/share/bin/java.c::InitializeJVM</span><br><span class="line">                openjdk\hotspot\src\share\vm\prims\jni.cpp::JNI_CreateJavaVM</span><br></pre></td></tr></table></figure>
+<p>调用过程</p>
+<ol>
+<li>main函数<br>启动函数</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> WINAPI</span><br><span class="line">WinMain(HINSTANCE inst, HINSTANCE previnst, LPSTR cmdline, <span class="keyword">int</span> cmdshow)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> margc;</span><br><span class="line">    <span class="keyword">char</span>** margv;</span><br><span class="line">    <span class="keyword">const</span> jboolean const_javaw = JNI_TRUE;</span><br><span class="line"></span><br><span class="line">    __initenv = _environ;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* JAVAW */</span></span></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">main(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> margc;</span><br><span class="line">    <span class="keyword">char</span>** margv;</span><br><span class="line">    <span class="keyword">const</span> jboolean const_javaw = JNI_FALSE;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* JAVAW */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> _WIN32</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (getenv(JLDEBUG_ENV_ENTRY) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Windows original main args:\n&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span> (i = <span class="number">0</span> ; i &lt; __argc ; i++) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;wwwd_args[%d] = %s\n&quot;</span>, i, __argv[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    JLI_CmdToArgs(GetCommandLine());</span><br><span class="line">    margc = JLI_GetStdArgc();</span><br><span class="line">    <span class="comment">// add one more to mark the end</span></span><br><span class="line">    margv = (<span class="keyword">char</span> **)JLI_MemAlloc((margc + <span class="number">1</span>) * (<span class="keyword">sizeof</span>(<span class="keyword">char</span> *)));</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        StdArg *stdargs = JLI_GetStdArgs();</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span> ; i &lt; margc ; i++) &#123;</span><br><span class="line">            margv[i] = stdargs[i].arg;</span><br><span class="line">        &#125;</span><br><span class="line">        margv[i] = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* *NIXES */</span></span></span><br><span class="line">    margc = argc;</span><br><span class="line">    margv = argv;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* WIN32 */</span></span></span><br><span class="line">	# 调用launcher</span><br><span class="line">    <span class="keyword">return</span> JLI_Launch(margc, margv,</span><br><span class="line">                   <span class="keyword">sizeof</span>(const_jargs) / <span class="keyword">sizeof</span>(<span class="keyword">char</span> *), const_jargs,</span><br><span class="line">                   <span class="keyword">sizeof</span>(const_appclasspath) / <span class="keyword">sizeof</span>(<span class="keyword">char</span> *), const_appclasspath,</span><br><span class="line">                   FULL_VERSION,</span><br><span class="line">                   DOT_VERSION,</span><br><span class="line">                   (const_progname != <span class="literal">NULL</span>) ? const_progname : *margv,</span><br><span class="line">                   (const_launcher != <span class="literal">NULL</span>) ? const_launcher : *margv,</span><br><span class="line">                   (const_jargs != <span class="literal">NULL</span>) ? JNI_TRUE : JNI_FALSE,</span><br><span class="line">                   const_cpwildcard, const_javaw, const_ergo_class);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>JLI_Launch<br>创建运行环境</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Entry point.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">JLI_Launch(<span class="keyword">int</span> argc, <span class="keyword">char</span> ** argv,              <span class="comment">/* main argc, argc */</span></span><br><span class="line">        <span class="keyword">int</span> jargc, <span class="keyword">const</span> <span class="keyword">char</span>** jargv,          <span class="comment">/* java args */</span></span><br><span class="line">        <span class="keyword">int</span> appclassc, <span class="keyword">const</span> <span class="keyword">char</span>** appclassv,  <span class="comment">/* app classpath */</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">char</span>* fullversion,                <span class="comment">/* full version defined */</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">char</span>* dotversion,                 <span class="comment">/* dot version defined */</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">char</span>* pname,                      <span class="comment">/* program name */</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">char</span>* lname,                      <span class="comment">/* launcher name */</span></span><br><span class="line">        jboolean javaargs,                      <span class="comment">/* JAVA_ARGS */</span></span><br><span class="line">        jboolean cpwildcard,                    <span class="comment">/* classpath wildcard*/</span></span><br><span class="line">        jboolean javaw,                         <span class="comment">/* windows-only javaw */</span></span><br><span class="line">        jint ergo                               <span class="comment">/* ergonomics class policy */</span></span><br><span class="line">)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> mode = LM_UNKNOWN;</span><br><span class="line">    <span class="keyword">char</span> *what = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *cpath = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> *main_class = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> ret;</span><br><span class="line">    InvocationFunctions ifn;</span><br><span class="line">    jlong start, end;</span><br><span class="line">    <span class="keyword">char</span> jvmpath[MAXPATHLEN];</span><br><span class="line">    <span class="keyword">char</span> jrepath[MAXPATHLEN];</span><br><span class="line">    <span class="keyword">char</span> jvmcfg[MAXPATHLEN];</span><br><span class="line"></span><br><span class="line">    _fVersion = fullversion;</span><br><span class="line">    _dVersion = dotversion;</span><br><span class="line">    _launcher_name = lname;</span><br><span class="line">    _program_name = pname;</span><br><span class="line">    _is_java_args = javaargs;</span><br><span class="line">    _wc_enabled = cpwildcard;</span><br><span class="line">    _ergo_policy = ergo;</span><br><span class="line"></span><br><span class="line">    InitLauncher(javaw);</span><br><span class="line">    DumpState();</span><br><span class="line">    <span class="keyword">if</span> (JLI_IsTraceLauncher()) &#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Command line args:\n&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; argc ; i++) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;argv[%d] = %s\n&quot;</span>, i, argv[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        AddOption(<span class="string">&quot;-Dsun.java.launcher.diag=true&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Make sure the specified version of the JRE is running.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * There are three things to note about the SelectVersion() routine:</span></span><br><span class="line"><span class="comment">     *  1) If the version running isn&#x27;t correct, this routine doesn&#x27;t</span></span><br><span class="line"><span class="comment">     *     return (either the correct version has been exec&#x27;d or an error</span></span><br><span class="line"><span class="comment">     *     was issued).</span></span><br><span class="line"><span class="comment">     *  2) Argc and Argv in this scope are *not* altered by this routine.</span></span><br><span class="line"><span class="comment">     *     It is the responsibility of subsequent code to ignore the</span></span><br><span class="line"><span class="comment">     *     arguments handled by this routine.</span></span><br><span class="line"><span class="comment">     *  3) As a side-effect, the variable &quot;main_class&quot; is guaranteed to</span></span><br><span class="line"><span class="comment">     *     be set (if it should ever be set).  This isn&#x27;t exactly the</span></span><br><span class="line"><span class="comment">     *     poster child for structured programming, but it is a small</span></span><br><span class="line"><span class="comment">     *     price to pay for not processing a jar file operand twice.</span></span><br><span class="line"><span class="comment">     *     (Note: This side effect has been disabled.  See comment on</span></span><br><span class="line"><span class="comment">     *     bugid 5030265 below.)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    SelectVersion(argc, argv, &amp;main_class);</span><br><span class="line"></span><br><span class="line">    CreateExecutionEnvironment(&amp;argc, &amp;argv,</span><br><span class="line">                               jrepath, <span class="keyword">sizeof</span>(jrepath),</span><br><span class="line">                               jvmpath, <span class="keyword">sizeof</span>(jvmpath),</span><br><span class="line">                               jvmcfg,  <span class="keyword">sizeof</span>(jvmcfg));</span><br><span class="line"></span><br><span class="line">    ifn.CreateJavaVM = <span class="number">0</span>;</span><br><span class="line">    ifn.GetDefaultJavaVMInitArgs = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (JLI_IsTraceLauncher()) &#123;</span><br><span class="line">        start = CounterGet();</span><br><span class="line">    &#125;</span><br><span class="line">		</span><br><span class="line">    # 加载虚拟机动态链接库，并初始化ifn的函数指针</span><br><span class="line">    <span class="keyword">if</span> (!LoadJavaVM(jvmpath, &amp;ifn)) &#123;</span><br><span class="line">        <span class="keyword">return</span>(<span class="number">6</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (JLI_IsTraceLauncher()) &#123;</span><br><span class="line">        end   = CounterGet();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    JLI_TraceLauncher(<span class="string">&quot;%ld micro seconds to LoadJavaVM\n&quot;</span>,</span><br><span class="line">             (<span class="keyword">long</span>)(jint)Counter2Micros(end-start));</span><br><span class="line"></span><br><span class="line">    ++argv;</span><br><span class="line">    --argc;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (IsJavaArgs()) &#123;</span><br><span class="line">        <span class="comment">/* Preprocess wrapper arguments */</span></span><br><span class="line">        TranslateApplicationArgs(jargc, jargv, &amp;argc, &amp;argv);</span><br><span class="line">        <span class="keyword">if</span> (!AddApplicationOptions(appclassc, appclassv)) &#123;</span><br><span class="line">            <span class="keyword">return</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* Set default CLASSPATH */</span></span><br><span class="line">        cpath = getenv(<span class="string">&quot;CLASSPATH&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (cpath == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            cpath = <span class="string">&quot;.&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        SetClassPath(cpath);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Parse command line options; if the return value of</span></span><br><span class="line"><span class="comment">     * ParseArguments is false, the program should exit.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (!ParseArguments(&amp;argc, &amp;argv, &amp;mode, &amp;what, &amp;ret, jrepath))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>(ret);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Override class path if -jar flag was specified */</span></span><br><span class="line">    <span class="keyword">if</span> (mode == LM_JAR) &#123;</span><br><span class="line">        SetClassPath(what);     <span class="comment">/* Override class path */</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* set the -Dsun.java.command pseudo property */</span></span><br><span class="line">    SetJavaCommandLineProp(what, argc, argv);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Set the -Dsun.java.launcher pseudo property */</span></span><br><span class="line">    SetJavaLauncherProp();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* set the -Dsun.java.launcher.* platform properties */</span></span><br><span class="line">    SetJavaLauncherPlatformProps();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> JVMInit(&amp;ifn, threadStackSize, argc, argv, mode, what, ret);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那对应的LoadJavaVM是什么?见下面代码<br>其中设置ifn函数的属性</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">jboolean</span><br><span class="line">LoadJavaVM(<span class="keyword">const</span> <span class="keyword">char</span> *jvmpath, InvocationFunctions *ifn)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">void</span> *libjvm;</span><br><span class="line"></span><br><span class="line">    JLI_TraceLauncher(<span class="string">&quot;JVM path is %s\n&quot;</span>, jvmpath);</span><br><span class="line"></span><br><span class="line">    libjvm = dlopen(jvmpath, RTLD_NOW + RTLD_GLOBAL);</span><br><span class="line">    <span class="keyword">if</span> (libjvm == <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(__solaris__) &amp;&amp; defined(__sparc) &amp;&amp; !defined(_LP64) <span class="comment">/* i.e. 32-bit sparc */</span></span></span><br><span class="line">      FILE * fp;</span><br><span class="line">      Elf32_Ehdr elf_head;</span><br><span class="line">      <span class="keyword">int</span> count;</span><br><span class="line">      <span class="keyword">int</span> location;</span><br><span class="line"></span><br><span class="line">      fp = fopen(jvmpath, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">      <span class="keyword">if</span> (fp == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        JLI_ReportErrorMessage(DLL_ERROR2, jvmpath, dlerror());</span><br><span class="line">        <span class="keyword">return</span> JNI_FALSE;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* read in elf header */</span></span><br><span class="line">      count = fread((<span class="keyword">void</span>*)(&amp;elf_head), <span class="keyword">sizeof</span>(Elf32_Ehdr), <span class="number">1</span>, fp);</span><br><span class="line">      fclose(fp);</span><br><span class="line">      <span class="keyword">if</span> (count &lt; <span class="number">1</span>) &#123;</span><br><span class="line">        JLI_ReportErrorMessage(DLL_ERROR2, jvmpath, dlerror());</span><br><span class="line">        <span class="keyword">return</span> JNI_FALSE;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">/*</span></span><br><span class="line"><span class="comment">       * Check for running a server vm (compiled with -xarch=v8plus)</span></span><br><span class="line"><span class="comment">       * on a stock v8 processor.  In this case, the machine type in</span></span><br><span class="line"><span class="comment">       * the elf header would not be included the architecture list</span></span><br><span class="line"><span class="comment">       * provided by the isalist command, which is turn is gotten from</span></span><br><span class="line"><span class="comment">       * sysinfo.  This case cannot occur on 64-bit hardware and thus</span></span><br><span class="line"><span class="comment">       * does not have to be checked for in binaries with an LP64 data</span></span><br><span class="line"><span class="comment">       * model.</span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line">      <span class="keyword">if</span> (elf_head.e_machine == EM_SPARC32PLUS) &#123;</span><br><span class="line">        <span class="keyword">char</span> buf[<span class="number">257</span>];  <span class="comment">/* recommended buffer size from sysinfo man</span></span><br><span class="line"><span class="comment">                           page */</span></span><br><span class="line">        <span class="keyword">long</span> length;</span><br><span class="line">        <span class="keyword">char</span>* location;</span><br><span class="line"></span><br><span class="line">        length = sysinfo(SI_ISALIST, buf, <span class="number">257</span>);</span><br><span class="line">        <span class="keyword">if</span> (length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            location = JLI_StrStr(buf, <span class="string">&quot;sparcv8plus &quot;</span>);</span><br><span class="line">          <span class="keyword">if</span> (location == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            JLI_ReportErrorMessage(JVM_ERROR3);</span><br><span class="line">            <span class="keyword">return</span> JNI_FALSE;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">        JLI_ReportErrorMessage(DLL_ERROR1, __LINE__);</span><br><span class="line">        JLI_ReportErrorMessage(DLL_ERROR2, jvmpath, dlerror());</span><br><span class="line">        <span class="keyword">return</span> JNI_FALSE;</span><br><span class="line">    &#125;</span><br><span class="line"># 设置ifn函数引用</span><br><span class="line">    ifn-&gt;CreateJavaVM = (CreateJavaVM_t)</span><br><span class="line">        dlsym(libjvm, <span class="string">&quot;JNI_CreateJavaVM&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (ifn-&gt;CreateJavaVM == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        JLI_ReportErrorMessage(DLL_ERROR2, jvmpath, dlerror());</span><br><span class="line">        <span class="keyword">return</span> JNI_FALSE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ifn-&gt;GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)</span><br><span class="line">        dlsym(libjvm, <span class="string">&quot;JNI_GetDefaultJavaVMInitArgs&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (ifn-&gt;GetDefaultJavaVMInitArgs == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        JLI_ReportErrorMessage(DLL_ERROR2, jvmpath, dlerror());</span><br><span class="line">        <span class="keyword">return</span> JNI_FALSE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ifn-&gt;GetCreatedJavaVMs = (GetCreatedJavaVMs_t)</span><br><span class="line">        dlsym(libjvm, <span class="string">&quot;JNI_GetCreatedJavaVMs&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (ifn-&gt;GetCreatedJavaVMs == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        JLI_ReportErrorMessage(DLL_ERROR2, jvmpath, dlerror());</span><br><span class="line">        <span class="keyword">return</span> JNI_FALSE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> JNI_TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那对应JVMInit是什么？</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span></span><br><span class="line">JVMInit(InvocationFunctions* ifn, jlong threadStackSize,</span><br><span class="line">        <span class="keyword">int</span> argc, <span class="keyword">char</span> **argv,</span><br><span class="line">        <span class="keyword">int</span> mode, <span class="keyword">char</span> *what, <span class="keyword">int</span> ret)</span><br><span class="line">&#123;</span><br><span class="line">    ShowSplashScreen();</span><br><span class="line">    <span class="keyword">return</span> ContinueInNewThread(ifn, threadStackSize, argc, argv, mode, what, ret);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>ContinueInNewThread函数</li>
+</ol>
+<p>调用ContinueInNewThread0函数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span></span><br><span class="line">ContinueInNewThread(InvocationFunctions* ifn, jlong threadStackSize,</span><br><span class="line">                    <span class="keyword">int</span> argc, <span class="keyword">char</span> **argv,</span><br><span class="line">                    <span class="keyword">int</span> mode, <span class="keyword">char</span> *what, <span class="keyword">int</span> ret)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * If user doesn&#x27;t specify stack size, check if VM has a preference.</span></span><br><span class="line"><span class="comment">     * Note that HotSpot no longer supports JNI_VERSION_1_1 but it will</span></span><br><span class="line"><span class="comment">     * return its default stack size through the init args structure.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (threadStackSize == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="class"><span class="keyword">struct</span> <span class="title">JDK1_1InitArgs</span> <span class="title">args1_1</span>;</span></span><br><span class="line">      <span class="built_in">memset</span>((<span class="keyword">void</span>*)&amp;args1_1, <span class="number">0</span>, <span class="keyword">sizeof</span>(args1_1));</span><br><span class="line">      args1_1.version = JNI_VERSION_1_1;</span><br><span class="line">      ifn-&gt;GetDefaultJavaVMInitArgs(&amp;args1_1);  <span class="comment">/* ignore return value */</span></span><br><span class="line">      <span class="keyword">if</span> (args1_1.javaStackSize &gt; <span class="number">0</span>) &#123;</span><br><span class="line">         threadStackSize = args1_1.javaStackSize;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#123; <span class="comment">/* Create a new thread to create JVM and invoke main method */</span></span><br><span class="line">      JavaMainArgs args;</span><br><span class="line">      <span class="keyword">int</span> rslt;</span><br><span class="line"></span><br><span class="line">      args.argc = argc;</span><br><span class="line">      args.argv = argv;</span><br><span class="line">      args.mode = mode;</span><br><span class="line">      args.what = what;</span><br><span class="line">      args.ifn = *ifn;</span><br><span class="line"></span><br><span class="line">      rslt = ContinueInNewThread0(JavaMain, threadStackSize, (<span class="keyword">void</span>*)&amp;args);</span><br><span class="line">      <span class="comment">/* If the caller has deemed there is an error we</span></span><br><span class="line"><span class="comment">       * simply return that, otherwise we return the value of</span></span><br><span class="line"><span class="comment">       * the callee</span></span><br><span class="line"><span class="comment">       */</span></span><br><span class="line">      <span class="keyword">return</span> (ret != <span class="number">0</span>) ? ret : rslt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>ContinueInNewThread0函数</li>
+</ol>
+<p>创建一个新的线程，然后运行JavaMain函数。启动新的线程，Launcher就会阻塞原有线程，其中int (JNICALL *continuation)(void *)这个参数就是ContinueInNewThread参数中的JavaMain函数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span></span><br><span class="line">ContinueInNewThread0(<span class="keyword">int</span> (JNICALL *continuation)(<span class="keyword">void</span> *), jlong stack_size, <span class="keyword">void</span> * args) &#123;</span><br><span class="line">    <span class="keyword">int</span> rslt;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __linux__</span></span><br><span class="line">    <span class="keyword">pthread_t</span> tid;</span><br><span class="line">    <span class="keyword">pthread_attr_t</span> attr;</span><br><span class="line">    pthread_attr_init(&amp;attr);</span><br><span class="line">    pthread_attr_setdetachstate(&amp;attr, PTHREAD_CREATE_JOINABLE);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (stack_size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      pthread_attr_setstacksize(&amp;attr, stack_size);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pthread_create(&amp;tid, &amp;attr, (<span class="keyword">void</span> *(*)(<span class="keyword">void</span>*))continuation, (<span class="keyword">void</span>*)args) == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">void</span> * tmp;</span><br><span class="line">      pthread_join(tid, &amp;tmp);</span><br><span class="line">      rslt = (<span class="keyword">int</span>)tmp;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     <span class="comment">/*</span></span><br><span class="line"><span class="comment">      * Continue execution in current thread if for some reason (e.g. out of</span></span><br><span class="line"><span class="comment">      * memory/LWP)  a new thread can&#x27;t be created. This will likely fail</span></span><br><span class="line"><span class="comment">      * later in continuation as JNI_CreateJavaVM needs to create quite a</span></span><br><span class="line"><span class="comment">      * few new threads, anyway, just give it a try..</span></span><br><span class="line"><span class="comment">      */</span></span><br><span class="line">      rslt = continuation(args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    pthread_attr_destroy(&amp;attr);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span> <span class="comment">/* ! __linux__ */</span></span></span><br><span class="line">    <span class="keyword">thread_t</span> tid;</span><br><span class="line">    <span class="keyword">long</span> flags = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (thr_create(<span class="literal">NULL</span>, stack_size, (<span class="keyword">void</span> *(*)(<span class="keyword">void</span> *))continuation, args, flags, &amp;tid) == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">void</span> * tmp;</span><br><span class="line">      thr_join(tid, <span class="literal">NULL</span>, &amp;tmp);</span><br><span class="line">      rslt = (<span class="keyword">int</span>)tmp;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* See above. Continue in current thread if thr_create() failed */</span></span><br><span class="line">      rslt = continuation(args);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* __linux__ */</span></span></span><br><span class="line">    <span class="keyword">return</span> rslt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>JavaMain函数</li>
+</ol>
+<p>InitializeJVM就是初始化java虚拟机，然后LoadMainClass加载主类</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> JNICALL</span><br><span class="line">JavaMain(<span class="keyword">void</span> * _args)</span><br><span class="line">&#123;</span><br><span class="line">    JavaMainArgs *args = (JavaMainArgs *)_args;</span><br><span class="line">    <span class="keyword">int</span> argc = args-&gt;argc;</span><br><span class="line">    <span class="keyword">char</span> **argv = args-&gt;argv;</span><br><span class="line">    <span class="keyword">int</span> mode = args-&gt;mode;</span><br><span class="line">    <span class="keyword">char</span> *what = args-&gt;what;</span><br><span class="line">    InvocationFunctions ifn = args-&gt;ifn;</span><br><span class="line"></span><br><span class="line">    JavaVM *vm = <span class="number">0</span>;</span><br><span class="line">    JNIEnv *env = <span class="number">0</span>;</span><br><span class="line">    jclass mainClass = <span class="literal">NULL</span>;</span><br><span class="line">    jclass appClass = <span class="literal">NULL</span>; <span class="comment">// actual application class being launched</span></span><br><span class="line">    jmethodID mainID;</span><br><span class="line">    jobjectArray mainArgs;</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    jlong start, end;</span><br><span class="line"></span><br><span class="line">    RegisterThread();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Initialize the virtual machine */</span></span><br><span class="line">    start = CounterGet();</span><br><span class="line">    <span class="keyword">if</span> (!InitializeJVM(&amp;vm, &amp;env, &amp;ifn)) &#123;</span><br><span class="line">        JLI_ReportErrorMessage(JVM_ERROR1);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (showSettings != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        ShowSettings(env, showSettings);</span><br><span class="line">        CHECK_EXCEPTION_LEAVE(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (printVersion || showVersion) &#123;</span><br><span class="line">        PrintJavaVersion(env, showVersion);</span><br><span class="line">        CHECK_EXCEPTION_LEAVE(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">if</span> (printVersion) &#123;</span><br><span class="line">            LEAVE();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* If the user specified neither a class name nor a JAR file */</span></span><br><span class="line">    <span class="keyword">if</span> (printXUsage || printUsage || what == <span class="number">0</span> || mode == LM_UNKNOWN) &#123;</span><br><span class="line">        PrintUsage(env, printXUsage);</span><br><span class="line">        CHECK_EXCEPTION_LEAVE(<span class="number">1</span>);</span><br><span class="line">        LEAVE();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    FreeKnownVMs();  <span class="comment">/* after last possible PrintUsage() */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (JLI_IsTraceLauncher()) &#123;</span><br><span class="line">        end = CounterGet();</span><br><span class="line">        JLI_TraceLauncher(<span class="string">&quot;%ld micro seconds to InitializeJVM\n&quot;</span>,</span><br><span class="line">               (<span class="keyword">long</span>)(jint)Counter2Micros(end-start));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* At this stage, argc/argv have the application&#x27;s arguments */</span></span><br><span class="line">    <span class="keyword">if</span> (JLI_IsTraceLauncher())&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%s is &#x27;%s&#x27;\n&quot;</span>, launchModeNames[mode], what);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;App&#x27;s argc is %d\n&quot;</span>, argc);</span><br><span class="line">        <span class="keyword">for</span> (i=<span class="number">0</span>; i &lt; argc; i++) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;    argv[%2d] = &#x27;%s&#x27;\n&quot;</span>, i, argv[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ret = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Get the application&#x27;s main class.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * See bugid 5030265.  The Main-Class name has already been parsed</span></span><br><span class="line"><span class="comment">     * from the manifest, but not parsed properly for UTF-8 support.</span></span><br><span class="line"><span class="comment">     * Hence the code here ignores the value previously extracted and</span></span><br><span class="line"><span class="comment">     * uses the pre-existing code to reextract the value.  This is</span></span><br><span class="line"><span class="comment">     * possibly an end of release cycle expedient.  However, it has</span></span><br><span class="line"><span class="comment">     * also been discovered that passing some character sets through</span></span><br><span class="line"><span class="comment">     * the environment has &quot;strange&quot; behavior on some variants of</span></span><br><span class="line"><span class="comment">     * Windows.  Hence, maybe the manifest parsing code local to the</span></span><br><span class="line"><span class="comment">     * launcher should never be enhanced.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * Hence, future work should either:</span></span><br><span class="line"><span class="comment">     *     1)   Correct the local parsing code and verify that the</span></span><br><span class="line"><span class="comment">     *          Main-Class attribute gets properly passed through</span></span><br><span class="line"><span class="comment">     *          all environments,</span></span><br><span class="line"><span class="comment">     *     2)   Remove the vestages of maintaining main_class through</span></span><br><span class="line"><span class="comment">     *          the environment (and remove these comments).</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * This method also correctly handles launching existing JavaFX</span></span><br><span class="line"><span class="comment">     * applications that may or may not have a Main-Class manifest entry.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    mainClass = LoadMainClass(env, mode, what);</span><br><span class="line">    CHECK_EXCEPTION_NULL_LEAVE(mainClass);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * In some cases when launching an application that needs a helper, e.g., a</span></span><br><span class="line"><span class="comment">     * JavaFX application with no main method, the mainClass will not be the</span></span><br><span class="line"><span class="comment">     * applications own main class but rather a helper class. To keep things</span></span><br><span class="line"><span class="comment">     * consistent in the UI we need to track and report the application main class.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    appClass = GetApplicationClass(env);</span><br><span class="line">    NULL_CHECK_RETURN_VALUE(appClass, <span class="number">-1</span>);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * PostJVMInit uses the class name as the application name for GUI purposes,</span></span><br><span class="line"><span class="comment">     * for example, on OSX this sets the application name in the menu bar for</span></span><br><span class="line"><span class="comment">     * both SWT and JavaFX. So we&#x27;ll pass the actual application class here</span></span><br><span class="line"><span class="comment">     * instead of mainClass as that may be a launcher or helper class instead</span></span><br><span class="line"><span class="comment">     * of the application class.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    PostJVMInit(env, appClass, vm);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * The LoadMainClass not only loads the main class, it will also ensure</span></span><br><span class="line"><span class="comment">     * that the main method&#x27;s signature is correct, therefore further checking</span></span><br><span class="line"><span class="comment">     * is not required. The main method is invoked here so that extraneous java</span></span><br><span class="line"><span class="comment">     * stacks are not in the application stack trace.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    mainID = (*env)-&gt;GetStaticMethodID(env, mainClass, <span class="string">&quot;main&quot;</span>,</span><br><span class="line">                                       <span class="string">&quot;([Ljava/lang/String;)V&quot;</span>);</span><br><span class="line">    CHECK_EXCEPTION_NULL_LEAVE(mainID);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Build platform specific argument array */</span></span><br><span class="line">    mainArgs = CreateApplicationArgs(env, argv, argc);</span><br><span class="line">    CHECK_EXCEPTION_NULL_LEAVE(mainArgs);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Invoke main method. */</span></span><br><span class="line">    (*env)-&gt;CallStaticVoidMethod(env, mainClass, mainID, mainArgs);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * The launcher&#x27;s exit code (in the absence of calls to</span></span><br><span class="line"><span class="comment">     * System.exit) will be non-zero if main threw an exception.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ret = (*env)-&gt;ExceptionOccurred(env) == <span class="literal">NULL</span> ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line">    LEAVE();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>CHECK_EXCEPTION_NULL_LEAVE() &amp; CHECK_EXCEPTION_LEAVE() &amp; LEAVE()<br>其中这些方法会调用下面代码</p>
+<blockquote>
+<p>逻辑是当java程序执行完，Launcher会调用DetachCurrentThread断开与主程序之间的连接。当成功断开与主程序之间的连接，Launcher就会等待程序中所有的非守护线程（non-daemon）全部执行结束，然后对jvm进行销毁，调用DestroyJavaVM</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Always detach the main thread so that it appears to have ended when</span></span><br><span class="line"><span class="comment"> * the application&#x27;s main method exits.  This will invoke the</span></span><br><span class="line"><span class="comment"> * uncaught exception handler machinery if main threw an</span></span><br><span class="line"><span class="comment"> * exception.  An uncaught exception handler cannot change the</span></span><br><span class="line"><span class="comment"> * launcher&#x27;s return code except by calling System.exit.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Wait for all non-daemon threads to end, then destroy the VM.</span></span><br><span class="line"><span class="comment"> * This will actually create a trivial new Java waiter thread</span></span><br><span class="line"><span class="comment"> * named &quot;DestroyJavaVM&quot;, but this will be seen as a different</span></span><br><span class="line"><span class="comment"> * thread from the one that executed main, even though they are</span></span><br><span class="line"><span class="comment"> * the same C thread.  This allows mainThread.join() and</span></span><br><span class="line"><span class="comment"> * mainThread.isAlive() to work as expected.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LEAVE() \</span></span><br><span class="line">    <span class="keyword">do</span> &#123; \</span><br><span class="line">        <span class="keyword">if</span> ((*vm)-&gt;DetachCurrentThread(vm) != JNI_OK) &#123; \</span><br><span class="line">            JLI_ReportErrorMessage(JVM_ERROR2); \</span><br><span class="line">            ret = <span class="number">1</span>; \</span><br><span class="line">        &#125; \</span><br><span class="line">        <span class="keyword">if</span> (JNI_TRUE) &#123; \</span><br><span class="line">            (*vm)-&gt;DestroyJavaVM(vm); \</span><br><span class="line">            <span class="keyword">return</span> ret; \</span><br><span class="line">        &#125; \</span><br><span class="line">    &#125; <span class="keyword">while</span> (JNI_FALSE)</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHECK_EXCEPTION_NULL_LEAVE(CENL_exception) \</span></span><br><span class="line">    <span class="keyword">do</span> &#123; \</span><br><span class="line">        <span class="keyword">if</span> ((*env)-&gt;ExceptionOccurred(env)) &#123; \</span><br><span class="line">            JLI_ReportExceptionDescription(env); \</span><br><span class="line">            LEAVE(); \</span><br><span class="line">        &#125; \</span><br><span class="line">        <span class="keyword">if</span> ((CENL_exception) == <span class="literal">NULL</span>) &#123; \</span><br><span class="line">            JLI_ReportErrorMessage(JNI_ERROR); \</span><br><span class="line">            LEAVE(); \</span><br><span class="line">        &#125; \</span><br><span class="line">    &#125; <span class="keyword">while</span> (JNI_FALSE)</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CHECK_EXCEPTION_LEAVE(CEL_return_value) \</span></span><br><span class="line">    <span class="keyword">do</span> &#123; \</span><br><span class="line">        <span class="keyword">if</span> ((*env)-&gt;ExceptionOccurred(env)) &#123; \</span><br><span class="line">            JLI_ReportExceptionDescription(env); \</span><br><span class="line">            ret = (CEL_return_value); \</span><br><span class="line">            LEAVE(); \</span><br><span class="line">        &#125; \</span><br><span class="line">    &#125; <span class="keyword">while</span> (JNI_FALSE)</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>InitializeJVM函数</li>
+</ol>
+<p>初始化java虚拟机<br>这里需要看下InvocationFunctions ifn函数的结构，然后就比较好理解了。之前对函数的赋值，然后创建虚拟机时调用。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    CreateJavaVM_t CreateJavaVM;</span><br><span class="line">    GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs;</span><br><span class="line">    GetCreatedJavaVMs_t GetCreatedJavaVMs;</span><br><span class="line">&#125; InvocationFunctions;</span><br></pre></td></tr></table></figure>
+<p>见InitializeJVM函数主代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Initializes the Java Virtual Machine. Also frees options array when</span></span><br><span class="line"><span class="comment"> * finished.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> jboolean</span><br><span class="line">InitializeJVM(JavaVM **pvm, JNIEnv **penv, InvocationFunctions *ifn)</span><br><span class="line">&#123;</span><br><span class="line">    JavaVMInitArgs args;</span><br><span class="line">    jint r;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;args, <span class="number">0</span>, <span class="keyword">sizeof</span>(args));</span><br><span class="line">    args.version  = JNI_VERSION_1_2;</span><br><span class="line">    args.nOptions = numOptions;</span><br><span class="line">    args.options  = options;</span><br><span class="line">    args.ignoreUnrecognized = JNI_FALSE;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (JLI_IsTraceLauncher()) &#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;JavaVM args:\n    &quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;version 0x%08lx, &quot;</span>, (<span class="keyword">long</span>)args.version);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;ignoreUnrecognized is %s, &quot;</span>,</span><br><span class="line">               args.ignoreUnrecognized ? <span class="string">&quot;JNI_TRUE&quot;</span> : <span class="string">&quot;JNI_FALSE&quot;</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;nOptions is %ld\n&quot;</span>, (<span class="keyword">long</span>)args.nOptions);</span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; numOptions; i++)</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;    option[%2d] = &#x27;%s&#x27;\n&quot;</span>,</span><br><span class="line">                   i, args.options[i].optionString);</span><br><span class="line">    &#125;</span><br><span class="line">	# 调用InvocationFunctions函数创建java虚拟机</span><br><span class="line">    r = ifn-&gt;CreateJavaVM(pvm, (<span class="keyword">void</span> **)penv, &amp;args);</span><br><span class="line">    JLI_MemFree(options);</span><br><span class="line">    <span class="keyword">return</span> r == JNI_OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="7">
+<li>LoadMainClass函数</li>
+</ol>
+<p>获取java程序启动类和方法，然后调用CallStaticObjectMethod方法，该函数会调用到jni_invoke_static方法</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Loads a class and verifies that the main class is present and it is ok to</span></span><br><span class="line"><span class="comment"> * call it for more details refer to the java implementation.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> jclass</span><br><span class="line">LoadMainClass(JNIEnv *env, <span class="keyword">int</span> mode, <span class="keyword">char</span> *name)</span><br><span class="line">&#123;</span><br><span class="line">    jmethodID mid;</span><br><span class="line">    jstring str;</span><br><span class="line">    jobject result;</span><br><span class="line">    jlong start, end;</span><br><span class="line">    jclass cls = GetLauncherHelperClass(env);</span><br><span class="line">    NULL_CHECK0(cls);</span><br><span class="line">    <span class="keyword">if</span> (JLI_IsTraceLauncher()) &#123;</span><br><span class="line">        start = CounterGet();</span><br><span class="line">    &#125;</span><br><span class="line">    NULL_CHECK0(mid = (*env)-&gt;GetStaticMethodID(env, cls,</span><br><span class="line">                <span class="string">&quot;checkAndLoadMain&quot;</span>,</span><br><span class="line">                <span class="string">&quot;(ZILjava/lang/String;)Ljava/lang/Class;&quot;</span>));</span><br><span class="line"></span><br><span class="line">    str = NewPlatformString(env, name);</span><br><span class="line">    result = (*env)-&gt;CallStaticObjectMethod(env, cls, mid, USE_STDERR, mode, str);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (JLI_IsTraceLauncher()) &#123;</span><br><span class="line">        end   = CounterGet();</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%ld micro seconds to load main class\n&quot;</span>,</span><br><span class="line">               (<span class="keyword">long</span>)(jint)Counter2Micros(end-start));</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;----%s----\n&quot;</span>, JLDEBUG_ENV_ENTRY);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (jclass)result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>jni.cpp</li>
+</ol>
+<p>这里会调用JavaCalls::call，会调用到java主类。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">jni_invoke_static</span><span class="params">(JNIEnv *env, JavaValue* result, jobject receiver, JNICallType call_type, jmethodID method_id, JNI_ArgumentPusher *args, TRAPS)</span> </span>&#123;</span><br><span class="line">  <span class="function">methodHandle <span class="title">method</span><span class="params">(THREAD, Method::resolve_jmethod_id(method_id))</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Create object to hold arguments for the JavaCall, and associate it with</span></span><br><span class="line">  <span class="comment">// the jni parser</span></span><br><span class="line">  <span class="function">ResourceMark <span class="title">rm</span><span class="params">(THREAD)</span></span>;</span><br><span class="line">  <span class="keyword">int</span> number_of_parameters = method-&gt;size_of_parameters();</span><br><span class="line">  <span class="function">JavaCallArguments <span class="title">java_args</span><span class="params">(number_of_parameters)</span></span>;</span><br><span class="line">  args-&gt;set_java_argument_object(&amp;java_args);</span><br><span class="line"></span><br><span class="line">  assert(method-&gt;is_static(), <span class="string">&quot;method should be static&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Fill out JavaCallArguments object</span></span><br><span class="line">  args-&gt;iterate( Fingerprinter(method).fingerprint() );</span><br><span class="line">  <span class="comment">// Initialize result type</span></span><br><span class="line">  result-&gt;set_type(args-&gt;get_ret_type());</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Invoke the method. Result is returned as oop.</span></span><br><span class="line">  JavaCalls::call(result, method, &amp;java_args, CHECK);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Convert result</span></span><br><span class="line">  <span class="keyword">if</span> (result-&gt;get_type() == T_OBJECT || result-&gt;get_type() == T_ARRAY) &#123;</span><br><span class="line">    result-&gt;set_jobject(JNIHandles::make_local(env, (oop) result-&gt;get_jobject()));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>具体细节不用多扣，掌握流程和算法即可。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">李俊龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

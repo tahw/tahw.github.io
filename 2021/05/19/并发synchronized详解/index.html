@@ -1,15 +1,262 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>synchronized | 李俊龙's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">synchronized</h1><a id="logo" href="/.">李俊龙's Blog</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">synchronized</h1><div class="post-meta">2021-05-19<span> | </span><span class="category"><a href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></span></div><div class="post-content"><h1 id="如何解决并发问题"><a href="#如何解决并发问题" class="headerlink" title="如何解决并发问题"></a>如何解决并发问题</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;实际上，所有的并发模式在解决并发安全问题时，采用的方案都是序列化访问临界资源。即在同一时刻，只能有一个线程访问临界资源，也称作同步互质访问。<br>Java中提供了两种方式来实现同步互质访问：<b><font color='red'>synchronized和lock</font></b>。<br>同步器的本质就是加锁，加锁的目的：序列化访问临界资源。</p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="如何解决并发问题&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;实际上，所有的并发模式在解决并发安全问题时，采用的方案都是序列化访问临界资源。即在同一时刻，只能有一个线程访问临界资源，也称作同步互质访问。Java中提供了两种方式来实现同步互质访问：synchronized和lock。同步器的本质就是加锁，加锁的目的：序列化访问临界资源。  当多个线程执行一个方法时，该方法的局部变量并不是临界资源，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="synchronized">
+<meta property="og:url" content="https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="天真有邪">
+<meta property="og:description" content="如何解决并发问题&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;实际上，所有的并发模式在解决并发安全问题时，采用的方案都是序列化访问临界资源。即在同一时刻，只能有一个线程访问临界资源，也称作同步互质访问。Java中提供了两种方式来实现同步互质访问：synchronized和lock。同步器的本质就是加锁，加锁的目的：序列化访问临界资源。  当多个线程执行一个方法时，该方法的局部变量并不是临界资源，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-43.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-44.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-46.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-45.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-47.png">
+<meta property="article:published_time" content="2021-05-19T01:02:00.000Z">
+<meta property="article:modified_time" content="2021-07-07T04:23:12.335Z">
+<meta property="article:author" content="李俊龙">
+<meta property="article:tag" content="并发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://theme-next.js.org/images/pasted-43.png">
+
+
+<link rel="canonical" href="https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/","path":"2021/05/19/并发synchronized详解/","title":"synchronized"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>synchronized | 天真有邪</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">天真有邪</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">如何解决并发问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%94%81%E5%8F%91%E5%B1%95%E5%8E%86%E5%8F%B2"><span class="nav-number">2.</span> <span class="nav-text">锁发展历史</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#synchronized%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">synchronized原理详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#synchronized%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">synchronized底层原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#monitor%E7%9B%91%E8%A7%86%E5%99%A8%E9%94%81"><span class="nav-number">3.2.</span> <span class="nav-text">monitor监视器锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFmonitor"><span class="nav-number">3.3.</span> <span class="nav-text">什么是monitor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="nav-number">3.4.</span> <span class="nav-text">对象的内存布局</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mark-Word"><span class="nav-number">3.4.1.</span> <span class="nav-text">Mark Word</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%81%E7%9A%84%E8%86%A8%E8%83%80%E5%8D%87%E7%BA%A7%E8%BF%87%E7%A8%8B"><span class="nav-number">3.4.2.</span> <span class="nav-text">锁的膨胀升级过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%8F%E5%90%91%E9%94%81"><span class="nav-number">3.4.2.1.</span> <span class="nav-text">偏向锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81"><span class="nav-number">3.4.2.2.</span> <span class="nav-text">轻量级锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E6%97%8B%E9%94%81"><span class="nav-number">3.4.2.3.</span> <span class="nav-text">自旋锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%94%81%E6%B6%88%E9%99%A4"><span class="nav-number">3.4.2.4.</span> <span class="nav-text">锁消除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%94%81%E7%B2%97%E5%8C%96"><span class="nav-number">3.4.2.5.</span> <span class="nav-text">锁粗化</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">李俊龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          synchronized
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-19 09:02:00" itemprop="dateCreated datePublished" datetime="2021-05-19T09:02:00+08:00">2021-05-19</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-07 12:23:12" itemprop="dateModified" datetime="2021-07-07T12:23:12+08:00">2021-07-07</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">并发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="如何解决并发问题"><a href="#如何解决并发问题" class="headerlink" title="如何解决并发问题"></a>如何解决并发问题</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;实际上，所有的并发模式在解决并发安全问题时，采用的方案都是序列化访问临界资源。即在同一时刻，只能有一个线程访问临界资源，也称作同步互质访问。<br>Java中提供了两种方式来实现同步互质访问：<b><font color='red'>synchronized和lock</font></b>。<br>同步器的本质就是加锁，加锁的目的：序列化访问临界资源。</p>
 <blockquote>
 <p>当多个线程执行一个方法时，该方法的局部变量并不是临界资源，因为这些局部变量是在每个线程的私有栈中，因此不具备共享性，不会导致线程安全问题</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> total = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        CountDownLatch countDownLatch = <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    countDownLatch.await();</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">1000</span>; j++) &#123;</span><br><span class="line">                        total++;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line">        Thread.sleep(<span class="number">200</span>);</span><br><span class="line">        countDownLatch.countDown();</span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">        System.out.println(total);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>这样的方式先采用<code>countDownLatch.await()</code>，然后再执行<code>countDownLatch.countDown()</code>，可以最大限度实现并发，这里的<code>CountDownLatch</code>为1，结果肯定是小于10000，解决方式可以采用<code>synchronized</code>和<code>lock</code></p>
+<a id="more"></a>
+
 <h1 id="锁发展历史"><a href="#锁发展历史" class="headerlink" title="锁发展历史"></a>锁发展历史</h1><ol>
 <li><code>jdk&lt;1.6</code>是jdk自带的，这是第一代加锁方式，但是这种锁非常的重，一旦加锁，都是采用os实现的加锁方式，这里就会发生上下文切换，空间切换，非常缓慢。</li>
 <li>doug li看<code>synchronized</code>太慢了，自己开发了一个并发包，juc，性能非常好，纯java写的，里面还实现了jdk没有的特性，虽然底层还是调用了一个java内置的函数。</li>
 <li>oracle收购sun公司后，优化了synchronized，锁的膨胀升级，锁粗化，锁消除，现在的性能和aqs差不多。</li>
 </ol>
-<p><img src="/images/pasted-43.png" alt="锁的升级历史"></p>
+<p><img src="/images/pasted-43.png" alt="锁的升级历史" loading="lazy"></p>
 <h1 id="synchronized原理详解"><a href="#synchronized原理详解" class="headerlink" title="synchronized原理详解"></a>synchronized原理详解</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;这里主要还是聊<code>jdk&gt;=1/6</code>后的<code>synchronized</code>。<br>&nbsp;&nbsp;&nbsp;&nbsp;<code>synchronized</code>内置锁是一种对象锁（锁的是对象而非引用），作用粒度是对象，可以用来实现对临界资源的访问，是可重入的。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">a</span><span class="params">()</span> 锁的是这个实例对象</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">a</span><span class="params">()</span> 锁的是这个类对象</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">a</span><span class="params">()</span></span>&#123; 锁的是括号里的这个对象</span><br><span class="line">	<span class="keyword">synchronized</span>(Object.class)</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
 <h2 id="synchronized底层原理"><a href="#synchronized底层原理" class="headerlink" title="synchronized底层原理"></a>synchronized底层原理</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;synchronized是基于<b><font color='red'>JVM内置锁实现，通过内部对象Monitor（监视器锁）实现。基于进入与退出Monitor对象实现方法与代码块同步，监视器锁的实现依赖操作系统的Mutex Lock（互斥锁）实现，它是一个重量级锁性能低。（在&gt;=jdk1.6，实现重量级锁是monitor锁，轻量级锁、偏向锁不是使用monitor锁）</font></b>当然JVM内置锁在jdk&gt;=1.6后做了升级优化，锁粗化（Lock Coarsening）、锁消除（Lock Elimination）、轻量级锁（LightWeight Locking）、偏向锁（Biased Locking）、适应性自旋锁（adaptive Spinning）等技术减少锁的开销。</p>
@@ -28,17 +275,16 @@
 </li>
 </ul>
 <p>下面这个例子，其中有一个<code>monitorenter</code>和两个<code>monitorexit</code>，两个中的一个是异常情况下的退出</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">private</span> Object object = <span class="keyword">new</span> Object();</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sync</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (object)&#123;</span><br><span class="line">            System.out.println(<span class="number">111</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">#对应的字节码</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sync</span><span class="params">()</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       <span class="number">0</span>: aload_0</span><br><span class="line">       <span class="number">1</span>: getfield      #<span class="number">3</span>                  <span class="comment">// Field object:Ljava/lang/Object;</span></span><br><span class="line">       <span class="number">4</span>: dup</span><br><span class="line">       <span class="number">5</span>: astore_1</span><br><span class="line">       <span class="number">6</span>: monitorenter</span><br><span class="line">       <span class="number">7</span>: getstatic     #<span class="number">4</span>                  <span class="comment">// Field java/lang/System.out:Ljava/io/PrintStream;</span></span><br><span class="line">      <span class="number">10</span>: bipush        <span class="number">111</span></span><br><span class="line">      <span class="number">12</span>: invokevirtual #<span class="number">5</span>                  <span class="comment">// Method java/io/PrintStream.println:(I)V</span></span><br><span class="line">      <span class="number">15</span>: aload_1</span><br><span class="line">      <span class="number">16</span>: monitorexit</span><br><span class="line">      <span class="number">17</span>: goto          <span class="number">25</span></span><br><span class="line">      <span class="number">20</span>: astore_2</span><br><span class="line">      <span class="number">21</span>: aload_1</span><br><span class="line">      <span class="number">22</span>: monitorexit</span><br><span class="line">      <span class="number">23</span>: aload_2</span><br><span class="line">      <span class="number">24</span>: athrow</span><br><span class="line">      <span class="number">25</span>: <span class="keyword">return</span></span><br></pre></td></tr></table></figure>
-
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">private</span> Object object = <span class="keyword">new</span> Object();</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sync</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (object)&#123;</span><br><span class="line">            System.out.println(<span class="number">111</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">#对应的字节码</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sync</span><span class="params">()</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       <span class="number">0</span>: aload_0</span><br><span class="line">       1: getfield      #3                  // Field object:Ljava/lang/Object;</span><br><span class="line">       <span class="number">4</span>: dup</span><br><span class="line">       <span class="number">5</span>: astore_1</span><br><span class="line">       <span class="number">6</span>: monitorenter</span><br><span class="line">       7: getstatic     #4                  // Field java/lang/System.out:Ljava/io/PrintStream;</span><br><span class="line">      <span class="number">10</span>: bipush        <span class="number">111</span></span><br><span class="line">      12: invokevirtual #5                  // Method java/io/PrintStream.println:(I)V</span><br><span class="line">      <span class="number">15</span>: aload_1</span><br><span class="line">      <span class="number">16</span>: monitorexit</span><br><span class="line">      <span class="number">17</span>: goto          <span class="number">25</span></span><br><span class="line">      <span class="number">20</span>: astore_2</span><br><span class="line">      <span class="number">21</span>: aload_1</span><br><span class="line">      <span class="number">22</span>: monitorexit</span><br><span class="line">      <span class="number">23</span>: aload_2</span><br><span class="line">      <span class="number">24</span>: athrow</span><br><span class="line">      <span class="number">25</span>: <span class="keyword">return</span></span><br></pre></td></tr></table></figure>
 <p>下面这个例子是修饰在方法上，看字节码，里面的flags增加了<code>ACC_SYNCHRONIZED</code>，虽然没有加上monitor对象，但是jvm也能根据这个标识来实现方法的同步，当调用指令将会检查方法的<code>ACC_SYNCHRONIZED</code>访问标志是否被设置，如果设置了，执行线程将先获取monitor，获取成功之后才能执行方法体，方法执行完了再释放monitor。</p>
-<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> synchronized <span class="keyword">void</span> <span class="title">syncO</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.<span class="built_in">println</span>(<span class="number">111</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"># 对应字节码</span><br><span class="line"><span class="function"><span class="keyword">public</span> synchronized <span class="keyword">void</span> <span class="title">syncO</span><span class="params">()</span></span>;</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC, ACC_SYNCHRONIZED</span><br><span class="line">    Code:</span><br><span class="line">      stack=<span class="number">2</span>, locals=<span class="number">1</span>, args_size=<span class="number">1</span></span><br><span class="line">         <span class="number">0</span>: getstatic     #<span class="number">4</span>                  <span class="comment">// Field java/lang/System.out:Ljava/io/PrintStream;</span></span><br><span class="line">         <span class="number">3</span>: bipush        <span class="number">111</span></span><br><span class="line">         <span class="number">5</span>: invokevirtual #<span class="number">5</span>                  <span class="comment">// Method java/io/PrintStream.println:(I)V</span></span><br><span class="line">         <span class="number">8</span>: <span class="keyword">return</span></span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line <span class="number">14</span>: <span class="number">0</span></span><br><span class="line">        line <span class="number">15</span>: <span class="number">8</span></span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            <span class="number">0</span>       <span class="number">9</span>     <span class="number">0</span>  <span class="keyword">this</span>   Ljuc/juc04/SynchronizedDemo;            </span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> synchronized <span class="keyword">void</span> <span class="title">syncO</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.<span class="built_in">println</span>(<span class="number">111</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"># 对应字节码</span><br><span class="line"><span class="function"><span class="keyword">public</span> synchronized <span class="keyword">void</span> <span class="title">syncO</span><span class="params">()</span></span>;</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC, ACC_SYNCHRONIZED</span><br><span class="line">    Code:</span><br><span class="line">      <span class="built_in">stack</span>=<span class="number">2</span>, locals=<span class="number">1</span>, args_size=<span class="number">1</span></span><br><span class="line">         <span class="number">0</span>: getstatic     #<span class="number">4</span>                  <span class="comment">// Field java/lang/System.out:Ljava/io/PrintStream;</span></span><br><span class="line">         <span class="number">3</span>: bipush        <span class="number">111</span></span><br><span class="line">         <span class="number">5</span>: invokevirtual #<span class="number">5</span>                  <span class="comment">// Method java/io/PrintStream.println:(I)V</span></span><br><span class="line">         <span class="number">8</span>: <span class="keyword">return</span></span><br><span class="line">      LineNumberTable:</span><br><span class="line">        <span class="built_in">line</span> <span class="number">14</span>: <span class="number">0</span></span><br><span class="line">        <span class="built_in">line</span> <span class="number">15</span>: <span class="number">8</span></span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            <span class="number">0</span>       <span class="number">9</span>     <span class="number">0</span>  <span class="keyword">this</span>   Ljuc/juc04/SynchronizedDemo;            </span><br></pre></td></tr></table></figure>
 <p><b><font color='red'>两种同步方法本质上没有区别，只是方法的同步是一种隐式的方法来实现，无需通过字节码来完成。两个指令的执行是jvm通过调用操作系统的互斥源于mutex来实现，被阻塞的线程会被挂起，等待重新调度，会导致”用户态和内核态“两个态切换。</font></b></p>
 <blockquote>
 <p>Synchronized的语义底层是通过一个monitor的对象来完成，其实wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则 会抛出java.lang.IllegalMonitorStateException的异常的原因。</p>
 </blockquote>
 <h2 id="什么是monitor"><a href="#什么是monitor" class="headerlink" title="什么是monitor"></a>什么是monitor</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;<code>monitor</code>可以把它理解为一个同步工具，也可以描述为一个同步机制，它通常被描述一个对象。<b><font color='red'>所有的java对象都是monitor，每一个java对象都有成为monitor的潜质。因为在java设计中，每一个java对象都带一把看不见的锁，它叫做内部锁或者monitor锁。也就是synchronized的对象锁。MarkWord锁标志位为10，其中指针指向monitor对象的起始地址。</font></b></p>
 <p>在jdk中Monitor由ObjectMonitor.hpp文件实现的（c++实现）。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ObjectMonitor</span>() &#123;</span><br><span class="line">   _header       = <span class="literal">NULL</span>;</span><br><span class="line">   _count        = <span class="number">0</span>; <span class="comment">//记录个数</span></span><br><span class="line">   _waiters      = <span class="number">0</span>,</span><br><span class="line">   _recursions   = <span class="number">0</span>;</span><br><span class="line">   _object       = <span class="literal">NULL</span>;</span><br><span class="line">   _owner        = <span class="literal">NULL</span>; <span class="comment">// 线程拥有者</span></span><br><span class="line">   _WaitSet      = <span class="literal">NULL</span>; <span class="comment">// 等待wait状态的线程，会被加入到这里</span></span><br><span class="line">   _WaitSetLock  = <span class="number">0</span> ;</span><br><span class="line">   _Responsible  = <span class="literal">NULL</span> ;</span><br><span class="line">   _succ         = <span class="literal">NULL</span> ;</span><br><span class="line">   _cxq          = <span class="literal">NULL</span> ;</span><br><span class="line">   FreeNext      = <span class="literal">NULL</span> ;</span><br><span class="line">   _EntryList    = <span class="literal">NULL</span> ;<span class="comment">// 处于等待锁block状态的线程，会被加入到这里</span></span><br><span class="line">   _SpinFreq     = <span class="number">0</span> ;</span><br><span class="line">   _SpinClock    = <span class="number">0</span> ;</span><br><span class="line">   OwnerIsThread = <span class="number">0</span> ;</span><br><span class="line">   _previous_owner_tid = <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ObjectMonitor() &#123;</span><br><span class="line">   _header       = <span class="literal">NULL</span>;</span><br><span class="line">   _count        = <span class="number">0</span>; <span class="comment">//记录个数</span></span><br><span class="line">   _waiters      = <span class="number">0</span>,</span><br><span class="line">   _recursions   = <span class="number">0</span>;</span><br><span class="line">   _object       = <span class="literal">NULL</span>;</span><br><span class="line">   _owner        = <span class="literal">NULL</span>; <span class="comment">// 线程拥有者</span></span><br><span class="line">   _WaitSet      = <span class="literal">NULL</span>; <span class="comment">// 等待wait状态的线程，会被加入到这里</span></span><br><span class="line">   _WaitSetLock  = <span class="number">0</span> ;</span><br><span class="line">   _Responsible  = <span class="literal">NULL</span> ;</span><br><span class="line">   _succ         = <span class="literal">NULL</span> ;</span><br><span class="line">   _cxq          = <span class="literal">NULL</span> ;</span><br><span class="line">   FreeNext      = <span class="literal">NULL</span> ;</span><br><span class="line">   _EntryList    = <span class="literal">NULL</span> ;<span class="comment">// 处于等待锁block状态的线程，会被加入到这里</span></span><br><span class="line">   _SpinFreq     = <span class="number">0</span> ;</span><br><span class="line">   _SpinClock    = <span class="number">0</span> ;</span><br><span class="line">   OwnerIsThread = <span class="number">0</span> ;</span><br><span class="line">   _previous_owner_tid = <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p><code>ObjectMonitor</code>中有两个队列，<code>_WaitSet</code>和<code>_EntryList</code>，用来保存ObjectWaiter对象列表（每个等待锁的线程都会被封装成ObjectWaiter对象），<code>_owner</code>指向持有<code>ObjectMonitor</code>对象的线程，多个线程访问一个同步代码时：</p>
 <ol>
 <li>首先会进入<code>_EntryList</code>，当线程获取到对象的monitor后，进入<code>_owner</code>区域并把monitor的<code>_owner</code>为当前线程，同时<code>_count</code>计数器会加1</li>
@@ -63,16 +309,15 @@
 </ul>
 </li>
 </ul>
-<p><img src="/images/pasted-44.png" alt="对象内存布局"></p>
+<p><img src="/images/pasted-44.png" alt="对象内存布局" loading="lazy"></p>
 <h3 id="Mark-Word"><a href="#Mark-Word" class="headerlink" title="Mark Word"></a>Mark Word</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;现在我们虚拟机基本是64位的，而64位的对象头有点浪费空间,JVM默认会开启指针压缩，所以基本上也是按32位的形式记录对象头的，手动设置<code>‐XX:+UseCompressedOops</code></p>
-<p><img src="/images/pasted-46.png" alt="32位Mark Word"></p>
-<p><img src="/images/pasted-45.png" alt="64位Mark Word"></p>
+<p><img src="/images/pasted-46.png" alt="32位Mark Word" loading="lazy"></p>
+<p><img src="/images/pasted-45.png" alt="64位Mark Word" loading="lazy"></p>
 <p>mark word，有方法可以去看吗？</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 1. 引入下面pom</span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.openjdk.jol<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jol-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.15<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"># 2.打印对象头，object是锁对象</span><br><span class="line">System.out.println(ClassLayout.parseInstance(object).toPrintable());</span><br></pre></td></tr></table></figure>
-
-<h3 id="锁的膨胀升级过程"><a href="#锁的膨胀升级过程" class="headerlink" title="锁的膨胀升级过程"></a>锁的膨胀升级过程</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;锁的状态总共有四种，无锁状态、偏向锁、轻量级锁、重量级锁。锁可以从偏向锁升级到轻量级锁，再升级到重量级锁，锁的升级是单向的，只能从低到高，不会出现锁的降级。<br><img src="/images/pasted-47.png" alt="锁的膨胀升级"></p>
+<h3 id="锁的膨胀升级过程"><a href="#锁的膨胀升级过程" class="headerlink" title="锁的膨胀升级过程"></a>锁的膨胀升级过程</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;锁的状态总共有四种，无锁状态、偏向锁、轻量级锁、重量级锁。锁可以从偏向锁升级到轻量级锁，再升级到重量级锁，锁的升级是单向的，只能从低到高，不会出现锁的降级。<br><img src="/images/pasted-47.png" alt="锁的膨胀升级" loading="lazy"></p>
 <h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;偏向锁是在jdk1.6引入的新锁，它是一种针对加锁的优化手段，经过研究发现，在大多情况下，锁不仅不存在多线程竞争，而且总是有同一线程多次获得，因此为了减少同一线程获取锁（会涉及一些cas操作，耗时）的代价而引入偏向锁。偏向锁的核心思想是，如果一个线程获得了锁，那么锁就进入偏向模式，此时Mark Word的结构也变为偏向锁的结构，当这个线程再次请求锁时，无需再做任何同步的操作，从而节省锁的申请过程，提供了性能。所以，对于没有锁竞争的场合，偏向锁有很好的效果，毕竟极有可能连续多次是同一线程申请相同的锁。但是对于锁竞争比较激烈的场合，偏向锁就失效了，因为这个场合极有可能申请锁的线程是不相同的，因此使用偏向锁就得不偿失，<b><font color='red'>需要注意的是，偏向锁失败后，并不会直接升级重量级锁，而是先升级轻量级锁。</font></b></p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">默认开启偏向锁 </span><br><span class="line"><span class="section">开启偏向锁：-XX:+UseBiasedLocking -XX:BiasedLockingStartupDelay=0 </span></span><br><span class="line"><span class="section">关闭偏向锁：-XX:-UseBiasedLocking</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">默认开启偏向锁 </span><br><span class="line">开启偏向锁：-<span class="attr">XX:</span>+UseBiasedLocking -<span class="attr">XX:</span>BiasedLockingStartupDelay=<span class="number">0</span> </span><br><span class="line">关闭偏向锁：-<span class="attr">XX:</span>-UseBiasedLocking</span><br></pre></td></tr></table></figure>
 <p>下面是偏向锁的例子</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Thread.sleep(<span class="number">5000</span>);</span><br><span class="line">      Object o = <span class="keyword">new</span> Object();</span><br><span class="line">      System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line">      <span class="keyword">synchronized</span> (o)&#123;</span><br><span class="line">          System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
 <p>打印Mark Word</p>
@@ -83,7 +328,6 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Thread.sleep(<span class="number">5000</span>);</span><br><span class="line">      <span class="keyword">final</span> Object o = <span class="keyword">new</span> Object();</span><br><span class="line">      System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line">      <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">synchronized</span> (o)&#123;</span><br><span class="line">                  System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;).start();</span><br><span class="line">      <span class="comment">// 等待的时间如果长的话，接下来mark word不一定是轻量级锁，如果等待3s有可能是偏向锁，看资源已经释放</span></span><br><span class="line">      Thread.sleep(<span class="number">30</span>); </span><br><span class="line">      <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">              <span class="keyword">synchronized</span> (o)&#123;</span><br><span class="line">                  System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;).start();</span><br></pre></td></tr></table></figure>
 <p>打印Mark Word</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">java</span>.lang.Object object internals:</span><br><span class="line"><span class="attribute">OFF</span>  SZ   TYPE DESCRIPTION               VALUE</span><br><span class="line">  <span class="attribute">0</span>   <span class="number">8</span>        (object header: mark)     <span class="number">0</span>x<span class="number">0000000000000005</span> (biasable; age: <span class="number">0</span>)</span><br><span class="line">  <span class="attribute">8</span>   <span class="number">4</span>        (object header: class)    <span class="number">0</span>xf<span class="number">80001</span>e<span class="number">5</span></span><br><span class="line"> <span class="attribute">12</span>   <span class="number">4</span>        (object alignment gap)    </span><br><span class="line"><span class="attribute">Instance</span> size: <span class="number">16</span> bytes</span><br><span class="line"><span class="attribute">Space</span> losses: <span class="number">0</span> bytes internal + <span class="number">4</span> bytes external = <span class="number">4</span> bytes total</span><br><span class="line"></span><br><span class="line"><span class="attribute">java</span>.lang.Object object internals:</span><br><span class="line"><span class="attribute">OFF</span>  SZ   TYPE DESCRIPTION               VALUE</span><br><span class="line">  <span class="attribute">0</span>   <span class="number">8</span>        (object header: mark)     <span class="number">0</span>x<span class="number">00007</span>f<span class="number">81460</span>aa<span class="number">805</span> (biased: <span class="number">0</span>x<span class="number">0000001</span>fe<span class="number">05182</span>aa; epoch: <span class="number">0</span>; age: <span class="number">0</span>)</span><br><span class="line">  <span class="attribute">8</span>   <span class="number">4</span>        (object header: class)    <span class="number">0</span>xf<span class="number">80001</span>e<span class="number">5</span></span><br><span class="line"> <span class="attribute">12</span>   <span class="number">4</span>        (object alignment gap)    </span><br><span class="line"><span class="attribute">Instance</span> size: <span class="number">16</span> bytes</span><br><span class="line"><span class="attribute">Space</span> losses: <span class="number">0</span> bytes internal + <span class="number">4</span> bytes external = <span class="number">4</span> bytes total</span><br><span class="line"></span><br><span class="line"><span class="attribute">java</span>.lang.Object object internals:</span><br><span class="line"><span class="attribute">OFF</span>  SZ   TYPE DESCRIPTION               VALUE</span><br><span class="line">  <span class="attribute">0</span>   <span class="number">8</span>        (object header: mark)     <span class="number">0</span>x<span class="number">0000700003528960</span> (thin lock: <span class="number">0</span>x<span class="number">0000700003528960</span>)</span><br><span class="line">  <span class="attribute">8</span>   <span class="number">4</span>        (object header: class)    <span class="number">0</span>xf<span class="number">80001</span>e<span class="number">5</span></span><br><span class="line"> <span class="attribute">12</span>   <span class="number">4</span>        (object alignment gap)    </span><br><span class="line"><span class="attribute">Instance</span> size: <span class="number">16</span> bytes</span><br><span class="line"><span class="attribute">Space</span> losses: <span class="number">0</span> bytes internal + <span class="number">4</span> bytes external = <span class="number">4</span> bytes total</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <p>还有一个例子，是调用对象的hashCode会导致偏向锁升级为轻量级锁</p>
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="module-access"><span class="module"><span class="identifier">Thread</span>.</span></span>sleep(<span class="number">5000</span>);</span><br><span class="line">        Object o = <span class="keyword">new</span> <span class="constructor">Object()</span>;</span><br><span class="line">        <span class="module-access"><span class="module"><span class="identifier">System</span>.</span></span>out.println(<span class="module-access"><span class="module"><span class="identifier">ClassLayout</span>.</span></span>parse<span class="constructor">Instance(<span class="params">o</span>)</span>.<span class="keyword">to</span><span class="constructor">Printable()</span>);</span><br><span class="line">        synchronized (o)&#123;</span><br><span class="line">            <span class="module-access"><span class="module"><span class="identifier">System</span>.</span></span>out.println(<span class="module-access"><span class="module"><span class="identifier">ClassLayout</span>.</span></span>parse<span class="constructor">Instance(<span class="params">o</span>)</span>.<span class="keyword">to</span><span class="constructor">Printable()</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="module-access"><span class="module"><span class="identifier">System</span>.</span></span>out.println(o.hash<span class="constructor">Code()</span>); <span class="comment">// 会将偏向锁升级为轻量级锁</span></span><br><span class="line">        <span class="module-access"><span class="module"><span class="identifier">System</span>.</span></span>out.println(<span class="module-access"><span class="module"><span class="identifier">ClassLayout</span>.</span></span>parse<span class="constructor">Instance(<span class="params">o</span>)</span>.<span class="keyword">to</span><span class="constructor">Printable()</span>); <span class="comment">//可重偏向</span></span><br><span class="line">        synchronized (o)&#123;</span><br><span class="line">            <span class="module-access"><span class="module"><span class="identifier">System</span>.</span></span>out.println(<span class="module-access"><span class="module"><span class="identifier">ClassLayout</span>.</span></span>parse<span class="constructor">Instance(<span class="params">o</span>)</span>.<span class="keyword">to</span><span class="constructor">Printable()</span>); <span class="comment">// 轻量级锁</span></span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
 <p>打印的Mark Word</p>
@@ -107,4 +351,75 @@
 
 
 
-</div><div class="tags"><a href="/tags/%E5%B9%B6%E5%8F%91/"><i class="fa fa-tag"></i>并发</a></div><div class="post-nav"><a class="pre" href="/2021/05/26/AQS/">AQS</a><a class="next" href="/2021/05/15/MESI/">MESI</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">并发</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/flink/" style="font-size: 15px;">flink</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/07/06/BlockingQueue/">BlockingQueue</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/26/AQS/">AQS</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">synchronized</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/15/MESI/">MESI</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">JMM内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">操作系统的底层认识</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">内存分配与垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/">字节码文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">字节码编译原理</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">李俊龙's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag"># 并发</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/15/MESI/" rel="prev" title="MESI">
+                  <i class="fa fa-chevron-left"></i> MESI
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/26/AQS/" rel="next" title="AQS">
+                  AQS <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">李俊龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

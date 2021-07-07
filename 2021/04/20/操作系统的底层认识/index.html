@@ -1,5 +1,254 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content=""><title>操作系统的底层认识 | 李俊龙's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/normalize.css/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/purecss/build/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//cdn.jsdelivr.net/npm/clipboard/dist/clipboard.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.js"></script><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/codeseven/toastr/build/toastr.min.css"><meta name="generator" content="Hexo 5.3.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">操作系统的底层认识</h1><a id="logo" href="/.">李俊龙's Blog</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">操作系统的底层认识</h1><div class="post-meta">2021-04-20<span> | </span><span class="category"><a href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></span></div><div class="post-content"><h1 id="冯诺依曼计算机模型"><a href="#冯诺依曼计算机模型" class="headerlink" title="冯诺依曼计算机模型"></a>冯诺依曼计算机模型</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;现在计算机模型都是基于-<font color='red'><b>冯诺依曼计算机模型</b></font><br>&nbsp;&nbsp;&nbsp;&nbsp;计算机在运行时，先从内存中取出第一条指令，通过控制器的译码，按指令的要求，从存储器中取出数据进行指定的运算和逻辑操作等加工，然后再按地址把结果送到内存中。接下来，再取出第二条指令，在控制器的指挥下完成规定操作，依次进行下去。直至遇到停止指令。<br>&nbsp;&nbsp;&nbsp;&nbsp;程序与数据一样存储，按程序编排的顺序，一步一步的取出指令，自动完成指令规定的操作是计算机最基本的工作模型。这个就是冯.诺依曼计算机模型。</p>
-<p><img src="/images/pasted-20.png" alt="冯诺依曼计算机模型"></p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="冯诺依曼计算机模型&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;现在计算机模型都是基于-冯诺依曼计算机模型&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;计算机在运行时，先从内存中取出第一条指令，通过控制器的译码，按指令的要求，从存储器中取出数据进行指定的运算和逻辑操作等加工，然后再按地址把结果送到内存中。接下来，再取出第二条指令，在控制器的指挥下完成规定操作，依次进行下去。直至遇到停止指令。&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统的底层认识">
+<meta property="og:url" content="https://theme-next.js.org/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/index.html">
+<meta property="og:site_name" content="天真有邪">
+<meta property="og:description" content="冯诺依曼计算机模型&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;现在计算机模型都是基于-冯诺依曼计算机模型&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;计算机在运行时，先从内存中取出第一条指令，通过控制器的译码，按指令的要求，从存储器中取出数据进行指定的运算和逻辑操作等加工，然后再按地址把结果送到内存中。接下来，再取出第二条指令，在控制器的指挥下完成规定操作，依次进行下去。直至遇到停止指令。&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-20.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-21.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-22.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-23.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-24.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-26.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-25.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-28.png">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-27.png">
+<meta property="article:published_time" content="2021-04-20T04:31:00.000Z">
+<meta property="article:modified_time" content="2021-07-06T15:09:28.766Z">
+<meta property="article:author" content="李俊龙">
+<meta property="article:tag" content="并发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://theme-next.js.org/images/pasted-20.png">
+
+
+<link rel="canonical" href="https://theme-next.js.org/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/","path":"2021/04/20/操作系统的底层认识/","title":"操作系统的底层认识"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>操作系统的底层认识 | 天真有邪</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">天真有邪</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%AF%E8%AF%BA%E4%BE%9D%E6%9B%BC%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">冯诺依曼计算机模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BA%94%E5%A4%A7%E6%A0%B8%E5%BF%83%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-number">1.1.</span> <span class="nav-text">计算机五大核心组成部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%B0%E4%BB%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">现代计算机模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpu%E6%8C%87%E4%BB%A4%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.</span> <span class="nav-text">cpu指令结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU%E7%BC%93%E5%AD%98%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.</span> <span class="nav-text">CPU缓存结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU%E8%AF%BB%E5%8F%96%E5%AD%98%E5%82%A8%E5%99%A8%E6%95%B0%E6%8D%AE%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="nav-number">1.4.1.</span> <span class="nav-text">CPU读取存储器数据的过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU%E4%B8%BA%E4%BD%95%E6%9C%89%E4%B8%80%E4%B8%AA%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="nav-number">1.4.2.</span> <span class="nav-text">CPU为何有一个高速缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU%E8%BF%90%E8%A1%8C%E5%AE%89%E5%85%A8%E7%AD%89%E7%BA%A7"><span class="nav-number">1.4.3.</span> <span class="nav-text">CPU运行安全等级</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">操作系统内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E7%A9%BA%E9%97%B4%E4%BF%9D%E6%8A%A4"><span class="nav-number">2.1.</span> <span class="nav-text">执行空间保护</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B-ULT"><span class="nav-number">2.1.1.</span> <span class="nav-text">用户线程模型(ULT)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B-KLT"><span class="nav-number">2.1.2.</span> <span class="nav-text">内核线程模型(KLT)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">进程和线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">线程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%8C%87%E4%BB%A4%E9%9B%86%E6%9E%B6%E6%9E%84"><span class="nav-number">4.</span> <span class="nav-text">虚拟机指令集架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E6%8C%87%E4%BB%A4%E9%9B%86%E6%9E%B6%E6%9E%84"><span class="nav-number">4.1.</span> <span class="nav-text">栈指令集架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E6%8C%87%E4%BB%A4%E9%9B%86%E6%9E%B6%E6%9E%84"><span class="nav-number">4.2.</span> <span class="nav-text">寄存器指令集架构</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">李俊龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          操作系统的底层认识
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-20 12:31:00" itemprop="dateCreated datePublished" datetime="2021-04-20T12:31:00+08:00">2021-04-20</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-06 23:09:28" itemprop="dateModified" datetime="2021-07-06T23:09:28+08:00">2021-07-06</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">并发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="冯诺依曼计算机模型"><a href="#冯诺依曼计算机模型" class="headerlink" title="冯诺依曼计算机模型"></a>冯诺依曼计算机模型</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;现在计算机模型都是基于-<font color='red'><b>冯诺依曼计算机模型</b></font><br>&nbsp;&nbsp;&nbsp;&nbsp;计算机在运行时，先从内存中取出第一条指令，通过控制器的译码，按指令的要求，从存储器中取出数据进行指定的运算和逻辑操作等加工，然后再按地址把结果送到内存中。接下来，再取出第二条指令，在控制器的指挥下完成规定操作，依次进行下去。直至遇到停止指令。<br>&nbsp;&nbsp;&nbsp;&nbsp;程序与数据一样存储，按程序编排的顺序，一步一步的取出指令，自动完成指令规定的操作是计算机最基本的工作模型。这个就是冯.诺依曼计算机模型。</p>
+<p><img src="/images/pasted-20.png" alt="冯诺依曼计算机模型" loading="lazy"></p>
 <h2 id="计算机五大核心组成部分"><a href="#计算机五大核心组成部分" class="headerlink" title="计算机五大核心组成部分"></a>计算机五大核心组成部分</h2><ol>
 <li>控制器(control)：是整个计算机的中枢神经，其功能是对程序规定的控制信息进行解释，根据其要求进行控制，调度程序、数据、地址，协调计算机各部分工作及内存与外设的访问等。</li>
 <li>运算器(Datapath)：对数据进行各种算数运算和逻辑运算，即对数据进行加工</li>
@@ -8,7 +257,7 @@
 <li>输出(Output system)：输出设备与输入设备同样是计算机的重要组成部分，它把外 算机的中间结果或最后结果、机内的各种数据符号及文字或各种控制信号等信息输出出来。 微机常用的输出设备有显示终端CRT、打印机、激光印字机、绘图仪及磁带、光盘机等。</li>
 </ol>
 <h2 id="现代计算机模型"><a href="#现代计算机模型" class="headerlink" title="现代计算机模型"></a>现代计算机模型</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;现在的计算机就是通过冯诺依曼计算机模型来应用出来的，见下图。其中我们最主要是关心CPU和内存。</p>
-<p><img src="/images/pasted-21.png" alt="现代计算机模型"></p>
+<p><img src="/images/pasted-21.png" alt="现代计算机模型" loading="lazy"></p>
 <h2 id="cpu指令结构"><a href="#cpu指令结构" class="headerlink" title="cpu指令结构"></a>cpu指令结构</h2><p>cpu内部结构</p>
 <ul>
 <li>控制单元<ul>
@@ -24,7 +273,7 @@
 </ul>
 </li>
 </ul>
-<p><img src="/images/pasted-22.png" alt="cpu内部结构"></p>
+<p><img src="/images/pasted-22.png" alt="cpu内部结构" loading="lazy"></p>
 <h2 id="CPU缓存结构"><a href="#CPU缓存结构" class="headerlink" title="CPU缓存结构"></a>CPU缓存结构</h2><p>现在CPU为了提升执行效率，减少cpu与内存的交互，一般在CPU设置多级缓存</p>
 <ul>
 <li>L1 cache，分为指令缓存和数据缓存，逻辑核独占</li>
@@ -34,19 +283,17 @@
 </blockquote>
 </li>
 </ul>
-<p><img src="/images/pasted-23.png" alt="cpu缓存结构"></p>
+<p><img src="/images/pasted-23.png" alt="cpu缓存结构" loading="lazy"></p>
 <ul>
 <li>存储器的大小：内存&gt;L3&gt;L2&gt;L1&gt;寄存器</li>
 <li>存储器速度快慢排序：寄存器&gt;L1&gt;L2&gt;L3&gt;内存</li>
 <li>缓存最小的存储单位是-缓存行(cache line)，缓存大小默认64Byte，如果对象大小大于64Byte，可以采用多个缓存行存储</li>
 </ul>
 <h3 id="CPU读取存储器数据的过程"><a href="#CPU读取存储器数据的过程" class="headerlink" title="CPU读取存储器数据的过程"></a>CPU读取存储器数据的过程</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">1</span>. CPU要取寄存器X的值，直接读取寄存器</span><br><span class="line"><span class="attribute">2</span>. CPU要取L<span class="number">1</span> cache的某个值，把cacheline锁住，把数据拿来，解锁。没有锁住就慢了</span><br><span class="line"><span class="attribute">3</span>. CPU要取L<span class="number">2</span> cache的某个值，L<span class="number">2</span>开始加锁，加锁以后把数据复制到L<span class="number">1</span>，执行上面的L<span class="number">1</span>的步骤，再解锁</span><br><span class="line"><span class="attribute">4</span>. CPU要取L<span class="number">3</span> cache的某个值，L<span class="number">3</span>复制到L<span class="number">2</span>，L<span class="number">2</span>复制到L<span class="number">1</span>，L<span class="number">1</span>复制寄存器</span><br><span class="line"><span class="attribute">5</span>. CPU要取内存中的数据，通知内存控制器占用总线带宽，通知内存加锁，发起内存读请求，等待回应，回应数据保存，复制到L<span class="number">3</span>，然后复制到L<span class="number">2</span>，然后复制到L<span class="number">1</span>，最后复制到寄存器，之后解除总线锁定</span><br></pre></td></tr></table></figure>
-
 <h3 id="CPU为何有一个高速缓存"><a href="#CPU为何有一个高速缓存" class="headerlink" title="CPU为何有一个高速缓存"></a>CPU为何有一个高速缓存</h3><p>CPU在摩尔定律指导下，每18个月翻一番的速度，而内存和硬盘速度远不及CPU速度。为了解决这个问题，CPU中内置了少量的高速缓存以解决I/o速度和CPU运算速度之间的不匹配问题。在CPU访问存储设备时，无论是存储数据或者指令，都趋于一片连续的区域中，这就叫做局部性原则</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">时间局部性：如果一个信息正在被访问，那么近期它很有可能还会被访问。比如循环、递归、方法的反复调用等。</span><br><span class="line">空间局部性：如果一个存储器的位置被引用，那么将来它附近的位置也会被引用。比如顺序执行的代码、连续创建的两个对象、数组等。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">时间局部性：如果一个信息正在被访问，那么近期它很有可能还会被访问。比如循环、递归、方法的反复调用等。</span><br><span class="line">空间局部性：如果一个存储器的位置被引用，那么将来它附近的位置也会被引用。比如顺序执行的代码、连续创建的两个对象、数组等。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>空间局部性的例子</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"># first 比 second方式快一点，是因为再引用数组位置时，它附近的位置也引用了，导致会快一点</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RUNS = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> rows = <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> cols = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Long[][] data = <span class="keyword">new</span> Long[rows][cols];</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rows; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; cols; j++) &#123;</span><br><span class="line">                data[i][j] = <span class="number">1L</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;first&quot;</span>);</span><br><span class="line">        <span class="keyword">long</span> first = System.currentTimeMillis();</span><br><span class="line">        Long firstNum = <span class="number">0L</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> r = <span class="number">0</span>; r &lt; RUNS; r++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; rows; i++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; cols; j++) &#123;</span><br><span class="line">                    firstNum += data[i][j];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;firstNum=&quot;</span>+firstNum);</span><br><span class="line">        System.out.println(<span class="string">&quot;first =&quot;</span>+(System.currentTimeMillis()-first)); <span class="comment">//2700</span></span><br><span class="line">        System.out.println(<span class="string">&quot;second&quot;</span>);</span><br><span class="line">        <span class="keyword">long</span> second = System.currentTimeMillis();</span><br><span class="line">        Long secondNum = <span class="number">0L</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> r = <span class="number">0</span>; r &lt; RUNS; r++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; cols; i++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; rows; j++) &#123;</span><br><span class="line">                    secondNum += data[j][i];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;secondNum=&quot;</span>+secondNum);</span><br><span class="line">        System.out.println(<span class="string">&quot;second =&quot;</span>+(System.currentTimeMillis()-second));  <span class="comment">// 3249</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
 <h3 id="CPU运行安全等级"><a href="#CPU运行安全等级" class="headerlink" title="CPU运行安全等级"></a>CPU运行安全等级</h3><ul>
 <li>ring0<ul>
 <li>操作系统内部的指令</li>
@@ -77,19 +324,19 @@
 <li>CPU从ring3切换到ring0，销毁</li>
 </ol>
 </blockquote>
-<h1 id="操作系统内存管理"><a href="#操作系统内存管理" class="headerlink" title="操作系统内存管理"></a>操作系统内存管理</h1><h2 id="执行空间保护"><a href="#执行空间保护" class="headerlink" title="执行空间保护"></a>执行空间保护</h2><p>操作系统有用户空间与系统空间两个概念，目的也是为了做到程序运行安全隔离与稳定，以32位4G大小内存的空间来说。它的寻址地址为2^32个地址。<br><img src="/images/pasted-24.png" alt="内容空间"></p>
+<h1 id="操作系统内存管理"><a href="#操作系统内存管理" class="headerlink" title="操作系统内存管理"></a>操作系统内存管理</h1><h2 id="执行空间保护"><a href="#执行空间保护" class="headerlink" title="执行空间保护"></a>执行空间保护</h2><p>操作系统有用户空间与系统空间两个概念，目的也是为了做到程序运行安全隔离与稳定，以32位4G大小内存的空间来说。它的寻址地址为2^32个地址。<br><img src="/images/pasted-24.png" alt="内容空间" loading="lazy"></p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;Linux为内核代码和数据结构预留了几个页框，这些页永远不会被转出到磁盘上。从0x00000000到0xC0000000（PAGE_OFFSET）的线性地址可由用户代码和内核代码进行引用（<font color='red'><b>用户空间</b></font>），从0xC0000000（PAGE_OFFSET）到0xFFFFFFFF的线性地址只能由内核代码进行访问（<font color='red'><b>内核空间</b></font>）。内核空间及其数据结构都必须位于在1GB的地址空间中，但是对于此地址空间而言，更大的消费者是物理地址虚拟映射。而3GB可以用于用户应用程序。<br>&nbsp;&nbsp;&nbsp;&nbsp;进程与线程只能运行在用户模式（user mode）与内核模式(kernel mode)下。用户程序运行在用户模式下，而系统调用运行在内核模式下。这两种使用的堆栈是不一样的。用户方式下用的是 一般的堆栈(用户空间的堆栈)，而内核方式下用的是固定大小的堆栈（内核空间的堆栈，一般为一个内存页的大小），即每个进程与线程其实有两个堆栈，分别运行与用户态与内核态。</p>
 <h3 id="用户线程模型-ULT"><a href="#用户线程模型-ULT" class="headerlink" title="用户线程模型(ULT)"></a>用户线程模型(ULT)</h3><p>用户程序实现，不依赖系统内核，应用提供创建、同步、调度和管理线程的函数来创建用户线程。不需要用户态/内核态切换，速度快。内核对ULT无感知，线程阻塞则进程（包括它所有的线程）阻塞。</p>
-<p><img src="/images/pasted-26.png" alt="用户线程模型"></p>
+<p><img src="/images/pasted-26.png" alt="用户线程模型" loading="lazy"></p>
 <h3 id="内核线程模型-KLT"><a href="#内核线程模型-KLT" class="headerlink" title="内核线程模型(KLT)"></a>内核线程模型(KLT)</h3><p>内核保存线程的状态和上下文信息，线程阻塞不会引起进程阻塞。在多处理器系统上，多线程在多处理器上并行运行。线程的创建、调度和管理由内核完成，效率比ULT慢，比进程效率快。</p>
-<p><img src="/images/pasted-25.png" alt="内核线程模型"></p>
+<p><img src="/images/pasted-25.png" alt="内核线程模型" loading="lazy"></p>
 <blockquote>
 <p>那JVM是什么线程模型呢？其实JVM是采用KLT。</p>
 </blockquote>
 <h1 id="进程和线程"><a href="#进程和线程" class="headerlink" title="进程和线程"></a>进程和线程</h1><h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><p>现代操作系统在运行一个程序时，会为其创造一个进程。进程是OS资源分配的最小单元。像启动一个java程序，计算机就会启动一个进程。</p>
 <h2 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h2><p>线程是OS调度CPU的最小单元。也叫做轻量级进程。在一个进程里可以有多个线程，这些线程都拥有各自的计数器、堆栈和局部变量表等属性。并且能够访问共享的内存变量。CPU在这些线程上高速切换，让使用者感觉到这些线程在同时执行，即并发的概念。</p>
-<p><img src="/images/pasted-28.png" alt="线程上下文切换过程"></p>
-<p><code>vmstat 1，其中cs就是上下文切换，上下文存放在TSS（Task State Segment）</code><br><img src="/images/pasted-27.png" alt="线程上下文切换"></p>
+<p><img src="/images/pasted-28.png" alt="线程上下文切换过程" loading="lazy"></p>
+<p><code>vmstat 1，其中cs就是上下文切换，上下文存放在TSS（Task State Segment）</code><br><img src="/images/pasted-27.png" alt="线程上下文切换" loading="lazy"></p>
 <h1 id="虚拟机指令集架构"><a href="#虚拟机指令集架构" class="headerlink" title="虚拟机指令集架构"></a>虚拟机指令集架构</h1><p>虚拟机指令集架构主要分为两种：</p>
 <ol>
 <li>栈指令集架构</li>
@@ -111,4 +358,76 @@
 <blockquote>
 <p>jvm是栈指令集架构，可移植性好</p>
 </blockquote>
-</div><div class="tags"><a href="/tags/%E5%B9%B6%E5%8F%91/"><i class="fa fa-tag"></i>并发</a></div><div class="post-nav"><a class="pre" href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">JMM内存模型</a><a class="next" href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">内存分配与垃圾回收</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/jvm/">jvm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B9%B6%E5%8F%91/">并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">并发</a> <a href="/tags/jvm/" style="font-size: 15px;">jvm</a> <a href="/tags/flink/" style="font-size: 15px;">flink</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/07/06/BlockingQueue/">BlockingQueue</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/26/AQS/">AQS</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">synchronized</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/05/15/MESI/">MESI</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">JMM内存模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/04/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%A4%E8%AF%86/">操作系统的底层认识</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">内存分配与垃圾回收</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/02/jvm%E5%88%9D%E5%A7%8B%E5%8C%96/">jvm初始化启动</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/03/01/%E5%AD%97%E8%8A%82%E7%A0%81%E6%96%87%E4%BB%B6/">字节码文件</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/01/29/%E5%AD%97%E8%8A%82%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">字节码编译原理</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2021 <a href="/." rel="nofollow">李俊龙's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox/dist/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js" successtext="复制成功!"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag"># 并发</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/09/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" rel="prev" title="内存分配与垃圾回收">
+                  <i class="fa fa-chevron-left"></i> 内存分配与垃圾回收
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/22/JMM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" rel="next" title="JMM内存模型">
+                  JMM内存模型 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">李俊龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
