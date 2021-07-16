@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Atmoic类原子操作&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;原子本意是不能被进一步分隔的最小粒子，而原子操作为不可被中断的一个或者一个系列操作。 处理器实现原子操作 缓存行加锁 总线加锁  jvm实现原子操作 锁 cas cas是通过CMPXCHG指令来实现的，自旋cas，直至成功">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Atmoic&amp;Unsafe详解">
+<meta property="og:url" content="https://theme-next.js.org/2021/07/15/Atmoic-Unsafe%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="天真有邪">
+<meta property="og:description" content="Atmoic类原子操作&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;原子本意是不能被进一步分隔的最小粒子，而原子操作为不可被中断的一个或者一个系列操作。 处理器实现原子操作 缓存行加锁 总线加锁  jvm实现原子操作 锁 cas cas是通过CMPXCHG指令来实现的，自旋cas，直至成功">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-70.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/pasted-69.jpg">
+<meta property="article:published_time" content="2021-07-15T09:07:15.000Z">
+<meta property="article:modified_time" content="2021-07-16T08:05:18.218Z">
+<meta property="article:author" content="李俊龙">
+<meta property="article:tag" content="并发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://theme-next.js.org/images/pasted-70.jpg">
+
+
+<link rel="canonical" href="https://theme-next.js.org/2021/07/15/Atmoic-Unsafe%E8%AF%A6%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2021/07/15/Atmoic-Unsafe%E8%AF%A6%E8%A7%A3/","path":"2021/07/15/Atmoic-Unsafe详解/","title":"Atmoic&Unsafe详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Atmoic&Unsafe详解 | 天真有邪</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">天真有邪</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Atmoic%E7%B1%BB"><span class="nav-number">1.</span> <span class="nav-text">Atmoic类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C"><span class="nav-number">1.1.</span> <span class="nav-text">原子操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%99%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">处理器实现原子操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jvm%E5%AE%9E%E7%8E%B0%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C"><span class="nav-number">1.3.</span> <span class="nav-text">jvm实现原子操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cas%E5%BA%94%E7%94%A8-%E5%8E%9F%E5%AD%90%E7%B1%BB"><span class="nav-number">1.4.</span> <span class="nav-text">cas应用-原子类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#api%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.5.</span> <span class="nav-text">api介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.6.</span> <span class="nav-text">原理介绍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Unsafe"><span class="nav-number">2.</span> <span class="nav-text">Unsafe</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Unsafe%E8%83%BD%E5%8A%9B"><span class="nav-number">2.1.</span> <span class="nav-text">Unsafe能力</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Unsafe-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">2.1.1.</span> <span class="nav-text">Unsafe-内存管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unsafe-cas"><span class="nav-number">2.1.2.</span> <span class="nav-text">Unsafe-cas</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unsafe-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-number">2.1.3.</span> <span class="nav-text">Unsafe-线程调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unsafe-%E5%86%85%E5%AD%98%E5%B1%8F%E9%9A%9C"><span class="nav-number">2.1.4.</span> <span class="nav-text">Unsafe-内存屏障</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">2.2.</span> <span class="nav-text">注意事项</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">李俊龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/07/15/Atmoic-Unsafe%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Atmoic&Unsafe详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-15 17:07:15" itemprop="dateCreated datePublished" datetime="2021-07-15T17:07:15+08:00">2021-07-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-16 16:05:18" itemprop="dateModified" datetime="2021-07-16T16:05:18+08:00">2021-07-16</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">并发</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Atmoic类"><a href="#Atmoic类" class="headerlink" title="Atmoic类"></a>Atmoic类</h1><h2 id="原子操作"><a href="#原子操作" class="headerlink" title="原子操作"></a>原子操作</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;原子本意是不能被进一步分隔的最小粒子，而原子操作为不可被中断的一个或者一个系列操作。</p>
+<h2 id="处理器实现原子操作"><a href="#处理器实现原子操作" class="headerlink" title="处理器实现原子操作"></a>处理器实现原子操作</h2><ol>
+<li>缓存行加锁</li>
+<li>总线加锁</li>
+</ol>
+<h2 id="jvm实现原子操作"><a href="#jvm实现原子操作" class="headerlink" title="jvm实现原子操作"></a>jvm实现原子操作</h2><ol>
+<li>锁</li>
+<li>cas<ul>
+<li>cas是通过CMPXCHG指令来实现的，自旋cas，直至成功</li>
+</ul>
+</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="cas应用-原子类"><a href="#cas应用-原子类" class="headerlink" title="cas应用-原子类"></a>cas应用-原子类</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;原子类也是juc里面的，也是doug li写的，原子类目录是<code>java.util.concurrent.atomic.*</code>。</p>
+<ol>
+<li>原子更新基本类型类<ol>
+<li>AtomicInteger<ul>
+<li>原子更新整型</li>
+</ul>
+</li>
+<li>AtomicLong<ul>
+<li>原子更新长整型</li>
+</ul>
+</li>
+<li>AtomicBoolean<ul>
+<li>原子更新布尔类型</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>原子更新数组类型类<ol>
+<li>AtomicIntegerArray<ul>
+<li>原子更新整型数组元素</li>
+</ul>
+</li>
+<li>AtomicLongArray<ul>
+<li>原子更新长整型数组元素</li>
+</ul>
+</li>
+<li>AtomicReferenceArray<ul>
+<li>原子类型引用类型数组元素</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>原子更新引用类型类（原子更新多个字段）<ol>
+<li>AtomicReference<ul>
+<li>原子更新引用类型</li>
+</ul>
+</li>
+<li>AtomicReferenceArray<ul>
+<li>原子更新引用类型数组</li>
+</ul>
+</li>
+<li>AtomicMarkableReference<ul>
+<li>原子更新带有标记位的引用类型</li>
+</ul>
+</li>
+<li>AtomicStampedReference<ul>
+<li>原子更新带有版本的引用类型（解决cas aba问题）</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>属性原子修改器(Updater)<ol>
+<li>AtomicIntegerFieldUpdater<ul>
+<li>原子更新整型类型字段</li>
+</ul>
+</li>
+<li>AtomicLongFieldUpdater<ul>
+<li>原子更新长整型类型字段</li>
+</ul>
+</li>
+<li>AtomicReferenceFieldUpdater<ul>
+<li>原子更新引用类型的字段</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>属性原子修改器都是抽象类，每次使用都是必须使用newUpdater创建一个更新器。<font color='red'><b>那这个时候还需要注意的是，字段还必须设置成public volatile</b></font></p>
+</blockquote>
+<h2 id="api介绍"><a href="#api介绍" class="headerlink" title="api介绍"></a>api介绍</h2><ol>
+<li>AtomicInteger使用<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomicIntegerTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger atomicInteger = <span class="keyword">new</span> AtomicInteger();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        CountDownLatch countDownLatch = <span class="keyword">new</span> CountDownLatch(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(()-&gt;&#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    countDownLatch.await();</span><br><span class="line">                    System.out.println(Thread.currentThread().getName());</span><br><span class="line">                    atomicInteger.incrementAndGet();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line">        Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">        countDownLatch.countDown();</span><br><span class="line">        Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">        System.out.println(atomicInteger.get());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>AtomicIntegerArray使用<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这里需要注意的是，数组Integer原子操作不会操作原有的数组</span></span><br><span class="line"><span class="comment"> * AtomicIntegerArray这个是数组拷贝</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomicIntegerArrayTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] arr = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>,<span class="number">2</span>&#125;;</span><br><span class="line">        AtomicIntegerArray atomicIntegerArray = <span class="keyword">new</span> AtomicIntegerArray(arr);</span><br><span class="line">        atomicIntegerArray.getAndSet(<span class="number">0</span>,<span class="number">10</span>);</span><br><span class="line">        System.out.println(atomicIntegerArray.get(<span class="number">0</span>));</span><br><span class="line">        System.out.println(arr[<span class="number">0</span>]); <span class="comment">// 数组数据没有改</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>AtomicIntegerFieldUpdater使用<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 注意：</span></span><br><span class="line"><span class="comment"> * private volatile Integer code; 这样的申明是有问题的</span></span><br><span class="line"><span class="comment"> * 1. java.lang.IllegalAccessException</span></span><br><span class="line"><span class="comment"> * 2. Must be integer type</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomicIntegerFieldUpdaterTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        AtomicIntegerFieldUpdater atomicIntegerFieldUpdater = AtomicIntegerFieldUpdater.newUpdater(Student.class,<span class="string">&quot;code&quot;</span>);</span><br><span class="line">        Student student = <span class="keyword">new</span> Student(<span class="number">1</span>,<span class="string">&quot;jianghe&quot;</span>);</span><br><span class="line">        atomicIntegerFieldUpdater.getAndIncrement(student);</span><br><span class="line">        System.out.println(atomicIntegerFieldUpdater.get(student));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Data</span></span><br><span class="line">    <span class="meta">@NoArgsConstructor</span></span><br><span class="line">    <span class="meta">@AllArgsConstructor</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="keyword">int</span> code;</span><br><span class="line">        <span class="keyword">private</span> String name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>AtomicReferenceFieldUpdater<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 注意，这个ReferenceField是需要安装类型的</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomicReferenceFieldUpdaterTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        AtomicReferenceFieldUpdater atomicReferenceFieldUpdater = AtomicReferenceFieldUpdater.newUpdater(Student.class,Integer.class,<span class="string">&quot;code&quot;</span>);</span><br><span class="line">        Student student = <span class="keyword">new</span> Student(<span class="number">1</span>,<span class="string">&quot;jianghe&quot;</span>);</span><br><span class="line">        atomicReferenceFieldUpdater.compareAndSet(student,<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">        System.out.println(student.getCode());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Data</span></span><br><span class="line">    <span class="meta">@NoArgsConstructor</span></span><br><span class="line">    <span class="meta">@AllArgsConstructor</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">volatile</span> Integer code;</span><br><span class="line">        <span class="keyword">private</span> String name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>AtomicStampedReference使用<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 解决ABA问题</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomicStampedReferenceTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Integer a = <span class="number">1</span>;</span><br><span class="line">        AtomicStampedReference atomicStampedReference = <span class="keyword">new</span> AtomicStampedReference(a,<span class="number">1</span>);</span><br><span class="line">        atomicStampedReference.compareAndSet(<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">        System.out.println(atomicStampedReference.getReference());</span><br><span class="line">        System.out.println(a); <span class="comment">// 原值是不会变的</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="原理介绍"><a href="#原理介绍" class="headerlink" title="原理介绍"></a>原理介绍</h2>这里通过<code>AtomicInteger</code>的使用来介绍原理，是通过<code>Unsafe</code>来实现的，想操作<code>Unsafe</code>类，这个也是固定的写法<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StudentIntegerFieldUpdater</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 这里必须是申明为volatile，类属性可以访问</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">long</span> code;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StudentIntegerFieldUpdater</span><span class="params">(Integer code, String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Unsafe unsafe = UnsafeInstance.getUnsafe();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> codeOffset;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            codeOffset = unsafe.objectFieldOffset</span><br><span class="line">                    (StudentIntegerFieldUpdater.class.getDeclaredField(<span class="string">&quot;code&quot;</span>));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception ex) &#123; <span class="keyword">throw</span> <span class="keyword">new</span> Error(ex); &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateCode</span><span class="params">(Integer oldV,Integer newV)</span></span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> b = unsafe.compareAndSwapInt(<span class="keyword">this</span>, codeOffset, oldV,newV);</span><br><span class="line">        System.out.println(b);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        StudentIntegerFieldUpdater studentIntegerFieldUpdater = <span class="keyword">new</span> StudentIntegerFieldUpdater(<span class="number">10</span>,<span class="string">&quot;jianghe&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;偏移量：&quot;</span>+codeOffset);</span><br><span class="line">        System.out.println(ClassLayout.parseInstance(studentIntegerFieldUpdater).toPrintable());</span><br><span class="line">        studentIntegerFieldUpdater.updateCode(<span class="number">10</span>,<span class="number">11</span>);</span><br><span class="line">        System.out.println(studentIntegerFieldUpdater.code);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+输出结果<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">偏移量：<span class="number">16</span></span><br><span class="line"># WARNING: Unable to attach Serviceability Agent. You can try again with escalated privileges. Two options: a) use -Djol.tryWithSudo=true to try with sudo; b) echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope</span><br><span class="line">juc.juc08.StudentIntegerFieldUpdater object internals:</span><br><span class="line">OFF  SZ               TYPE DESCRIPTION                       VALUE</span><br><span class="line">  <span class="number">0</span>   <span class="number">8</span>                    (object header: mark)             <span class="number">0x0000000000000001</span> (non-biasable; age: <span class="number">0</span>)</span><br><span class="line">  <span class="number">8</span>   <span class="number">4</span>                    (object header: <span class="class"><span class="keyword">class</span>)            0<span class="title">xf800c105</span></span></span><br><span class="line"><span class="class"> 12   4   <span class="title">java</span>.<span class="title">lang</span>.<span class="title">String</span> <span class="title">StudentIntegerFieldUpdater</span>.<span class="title">name</span>   (<span class="title">object</span>)</span></span><br><span class="line"><span class="class"> 16   8               <span class="title">long</span> <span class="title">StudentIntegerFieldUpdater</span>.<span class="title">code</span>   10</span></span><br><span class="line">Instance size: 24 bytes</span><br><span class="line">Space losses: <span class="number">0</span> bytes internal + <span class="number">0</span> bytes external = <span class="number">0</span> bytes total</span><br><span class="line"></span><br><span class="line"><span class="keyword">true</span></span><br><span class="line"><span class="number">11</span></span><br></pre></td></tr></table></figure>
+这里可以看到输出结果，偏移量是16，<font color='red'><b>那么偏移量到底是什么？通过对象头可以看到，offset为16表示的是<code>StudentIntegerFieldUpdater.code</code>=&gt;10，其实就是通过偏移量得到对象的内存值</b></font>，然后再去操作</li>
+</ol>
+<h1 id="Unsafe"><a href="#Unsafe" class="headerlink" title="Unsafe"></a>Unsafe</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;那Unsafe如此重要，那Unsafe是什么呢？Unsafe是sun.misc下面的一个类，主要提供一些低级别、不安全的操作，如直接访问系统内存资源、自主管理内存资源，这些方法在提升Java运行效率、增强Java语言底层资源操作能力方面起了很大作用。但由于Unsafe类使java像c一样操作内存空间，这样肯定是有问题，会导致程序出错的几率变大，一定要对Unsafe使用一定非常注意</p>
+<h2 id="Unsafe能力"><a href="#Unsafe能力" class="headerlink" title="Unsafe能力"></a>Unsafe能力</h2><ol>
+<li>内存操作</li>
+<li>cas</li>
+<li>内存屏障</li>
+<li>获取释放锁</li>
+<li>线程阻塞<br><img src="/images/pasted-70.jpg" alt="Unsafe" loading="lazy"></li>
+</ol>
+<h3 id="Unsafe-内存管理"><a href="#Unsafe-内存管理" class="headerlink" title="Unsafe-内存管理"></a>Unsafe-内存管理</h3><p>Unsafe操作的native方法，是<font color='red'><b>堆外内存</b></font>的分配、扩展、拷贝、释放、设置特定值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 分配内存</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">long</span> <span class="title">allocateMemory</span><span class="params">(<span class="keyword">long</span> var1)</span></span>;</span><br><span class="line"><span class="comment">// 扩展内存</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">long</span> <span class="title">reallocateMemory</span><span class="params">(<span class="keyword">long</span> var1, <span class="keyword">long</span> var3)</span></span>;</span><br><span class="line"><span class="comment">// 设置内存值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">setMemory</span><span class="params">(Object var1, <span class="keyword">long</span> var2, <span class="keyword">long</span> var4, <span class="keyword">byte</span> var6)</span></span>;</span><br><span class="line"><span class="comment">// 内存拷贝</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">copyMemory</span><span class="params">(Object var1, <span class="keyword">long</span> var2, Object var4, <span class="keyword">long</span> var5, <span class="keyword">long</span> var7)</span></span>;</span><br><span class="line"><span class="comment">// 释放内存</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">freeMemory</span><span class="params">(<span class="keyword">long</span> var1)</span></span>;</span><br><span class="line"><span class="comment">// 获取地址的byte值</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">byte</span> <span class="title">getByte</span><span class="params">(<span class="keyword">long</span> var1)</span></span>;</span><br></pre></td></tr></table></figure>
+<hr>
+<p><font color='red'><b>堆外内存</b></font></p>
+<ol>
+<li>堆外内存是不受jvm管理，垃圾回收也不是自动回收的</li>
+<li>使用堆外内存的原因<ol>
+<li>对垃圾回收停顿的改善。由于堆外内存是直接受操作系统管理而不是jvm，所以当我们使用堆外内存的时候，即可保持较小的的堆内内存的规模，减少GC停顿的影响</li>
+<li>提升程序I/O操作的性能。通常在I/O通信过程中，会存在堆内内存到堆外内存的数据拷贝，对于需要频繁进行内存间数据拷贝且生命周期较短的暂存数据，都建议存在堆外内存</li>
+</ol>
+</li>
+</ol>
+<p>DirectByteBuffer是堆外内存的典型例子，通常在通信过程中当做缓冲池，如Netty等NIO网络使用<br><img src="/images/pasted-69.jpg" alt="DirectByteBuffer" loading="lazy"></p>
+<h3 id="Unsafe-cas"><a href="#Unsafe-cas" class="headerlink" title="Unsafe-cas"></a>Unsafe-cas</h3><p>原子类操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">boolean</span> <span class="title">compareAndSwapObject</span><span class="params">(Object var1, <span class="keyword">long</span> var2, Object var4, Object var5)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">boolean</span> <span class="title">compareAndSwapInt</span><span class="params">(Object var1, <span class="keyword">long</span> var2, <span class="keyword">int</span> var4, <span class="keyword">int</span> var5)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">boolean</span> <span class="title">compareAndSwapLong</span><span class="params">(Object var1, <span class="keyword">long</span> var2, <span class="keyword">long</span> var4, <span class="keyword">long</span> var6)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="Unsafe-线程调度"><a href="#Unsafe-线程调度" class="headerlink" title="Unsafe-线程调度"></a>Unsafe-线程调度</h3><p>线程阻塞、唤醒、锁机制</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">unpark</span><span class="params">(Object var1)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">park</span><span class="params">(<span class="keyword">boolean</span> var1, <span class="keyword">long</span> var2)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Deprecated</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">monitorEnter</span><span class="params">(Object var1)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Deprecated</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">monitorExit</span><span class="params">(Object var1)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Deprecated</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">boolean</span> <span class="title">tryMonitorEnter</span><span class="params">(Object var1)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="Unsafe-内存屏障"><a href="#Unsafe-内存屏障" class="headerlink" title="Unsafe-内存屏障"></a>Unsafe-内存屏障</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 禁止load操作重排序</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">loadFence</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">// 禁止store操作重排序</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">storeFence</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">// 禁止load、store操作重排序</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">fullFence</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<p>哪里有使用呢？<code>StampedLock</code>，其中validate方法，校验数据是否一致，通过unsafe.loadFence()加入load屏障</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* </span></span><br><span class="line"><span class="comment">* Returns true if the lock has not been exclusively acquired</span></span><br><span class="line"><span class="comment">* since issuance of the given stamp. Always returns false if the</span></span><br><span class="line"><span class="comment">* stamp is zero. Always returns true if the stamp represents a</span></span><br><span class="line"><span class="comment">* currently held lock. Invoking this method with a value not</span></span><br><span class="line"><span class="comment">* obtained from &#123;<span class="doctag">@link</span> #tryOptimisticRead&#125; or a locking method</span></span><br><span class="line"><span class="comment">* for this lock has no defined effect or result.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> stamp a stamp</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> true&#125; if the lock has not been exclusively acquired</span></span><br><span class="line"><span class="comment">* since issuance of the given stamp; else false</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">validate</span><span class="params">(<span class="keyword">long</span> stamp)</span> </span>&#123;</span><br><span class="line">    U.loadFence();</span><br><span class="line">    <span class="keyword">return</span> (stamp &amp; SBITS) == (state &amp; SBITS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>如果直接Unsafe.getUnsafe()来获取Unsafe是有问题的，因为如果不是系统类加载器来获取的话会报错的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Unsafe <span class="title">getUnsafe</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Class var0 = Reflection.getCallerClass();</span><br><span class="line">    <span class="keyword">if</span> (!VM.isSystemDomainLoader(var0.getClassLoader())) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(<span class="string">&quot;Unsafe&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> theUnsafe;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那如果想获取Unsafe的话，可以通过反射来获取</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Unsafe <span class="title">getUnsafe</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Field field = Unsafe.class.getDeclaredField(<span class="string">&quot;theUnsafe&quot;</span>);</span><br><span class="line">        field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        <span class="keyword">return</span> (Unsafe)field.get(<span class="keyword">null</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B9%B6%E5%8F%91/" rel="tag"># 并发</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/07/%E5%B9%B6%E5%8F%91CountDownLatch-Semaphore%E8%AF%A6%E8%A7%A3/" rel="prev" title="并发CountDownLatch&Semaphore详解">
+                  <i class="fa fa-chevron-left"></i> 并发CountDownLatch&Semaphore详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">李俊龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
