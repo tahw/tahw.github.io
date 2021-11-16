@@ -20,34 +20,23 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="flink是什么？ Apache Flink is a framework and distributed processing engine for stateful computations over unbounded and bounded data streams.apache flink是一个框架和分布式处理引擎，用于对无界与有界数据流进行状态计算  为什么选择flink? 流数据更">
-<meta property="og:type" content="article">
-<meta property="og:title" content="flink介绍">
-<meta property="og:url" content="https://theme-next.js.org/2021/01/10/flink-init/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="天真有邪">
+<meta property="og:url" content="https://theme-next.js.org/page/5/index.html">
 <meta property="og:site_name" content="天真有邪">
-<meta property="og:description" content="flink是什么？ Apache Flink is a framework and distributed processing engine for stateful computations over unbounded and bounded data streams.apache flink是一个框架和分布式处理引擎，用于对无界与有界数据流进行状态计算  为什么选择flink? 流数据更">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://theme-next.js.org/images/pasted-1.png">
-<meta property="og:image" content="https://theme-next.js.org/images/pasted-2.png">
-<meta property="og:image" content="https://theme-next.js.org/images/pasted-3.png">
-<meta property="og:image" content="https://theme-next.js.org/images/pasted-4.png">
-<meta property="og:image" content="https://theme-next.js.org/images/pasted-0.png">
-<meta property="article:published_time" content="2021-01-10T11:26:00.000Z">
-<meta property="article:modified_time" content="2021-07-06T15:09:28.777Z">
 <meta property="article:author" content="李俊龙">
-<meta property="article:tag" content="flink">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://theme-next.js.org/images/pasted-1.png">
 
 
-<link rel="canonical" href="https://theme-next.js.org/2021/01/10/flink-init/">
+<link rel="canonical" href="https://theme-next.js.org/page/5/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2021/01/10/flink-init/","path":"2021/01/10/flink-init/","title":"flink介绍"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"page/5/index.html","title":""}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>flink介绍 | 天真有邪</title>
+<title>天真有邪</title>
   
 
 
@@ -113,7 +102,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -126,7 +115,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#flink%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">flink是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9flink"><span class="nav-number">2.</span> <span class="nav-text">为什么选择flink?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%AA%E4%BA%9B%E4%B8%9A%E5%8A%A1%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">哪些业务需要使用?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E5%AF%B9%E6%AF%94"><span class="nav-number">4.</span> <span class="nav-text">应用场景对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flink-%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">5.</span> <span class="nav-text">flink 架构图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flink-cdc-change-data-capture-etl%E4%BE%8B%E5%AD%90"><span class="nav-number">6.</span> <span class="nav-text">flink cdc(change data capture) etl例子</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -183,17 +171,16 @@
 </noscript>
 
 
-    <div class="main-inner post posts-expand">
+    <div class="main-inner index posts-expand">
 
-
-  
+    
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/01/10/flink-init/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -206,9 +193,9 @@
       <meta itemprop="name" content="天真有邪">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          flink介绍
-        </h1>
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/01/10/flink-init/" class="post-title-link" itemprop="url">flink介绍</a>
+        </h2>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -247,7 +234,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p><img src="/images/pasted-1.png" loading="lazy"></p>
+          <p><img src="/images/pasted-1.png" loading="lazy"></p>
 <h3 id="flink是什么？"><a href="#flink是什么？" class="headerlink" title="flink是什么？"></a>flink是什么？</h3><blockquote>
 <p>Apache Flink is a framework and distributed processing engine for stateful computations over unbounded and bounded data streams.<br>apache flink是一个<font color='red'><strong>框架</strong></font>和<font color='red'><strong>分布式处理引擎</strong></font>，用于对<font color='red'><strong>无界</strong></font>与<font color='red'><strong>有界</strong></font>数据流进行<font color='red'><strong>状态</strong></font>计算</p>
 </blockquote>
@@ -359,6 +346,7 @@
 </ol>
 <h3 id="flink-cdc-change-data-capture-etl例子"><a href="#flink-cdc-change-data-capture-etl例子" class="headerlink" title="flink cdc(change data capture) etl例子"></a>flink cdc(change data capture) etl例子</h3><p><a target="_blank" rel="noopener" href="https://github.com/ververica/flink-cdc-connectors/wiki/%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B">https://github.com/ververica/flink-cdc-connectors/wiki/%E4%B8%AD%E6%96%87%E6%95%99%E7%A8%8B</a></p>
 
+      
     </div>
 
     
@@ -366,21 +354,8 @@
     
 
     <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/flink/" rel="tag"># flink</a>
-          </div>
-
-        
-
-          <div class="post-nav">
-            <div class="post-nav-item">
-            </div>
-            <div class="post-nav-item">
-                <a href="/2021/01/15/%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84/" rel="next" title="学习路径">
-                  学习路径 <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
+        <div class="post-eof"></div>
+      
     </footer>
   </article>
 </div>
@@ -388,7 +363,9 @@
 
 
 
-
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
+  </nav>
 
 </div>
   </main>
