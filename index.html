@@ -129,20 +129,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -172,6 +172,191 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/12/10/mysql%E4%BC%98%E5%8C%96%E4%B9%8B%E5%85%B3%E8%81%94%E5%AD%97%E6%AE%B5COLLATE%E4%B8%8D%E5%8C%B9%E9%85%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/12/10/mysql%E4%BC%98%E5%8C%96%E4%B9%8B%E5%85%B3%E8%81%94%E5%AD%97%E6%AE%B5COLLATE%E4%B8%8D%E5%8C%B9%E9%85%8D/" class="post-title-link" itemprop="url">mysql优化之关联字段COLLATE不匹配</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-12-10 11:44:58" itemprop="dateCreated datePublished" datetime="2021-12-10T11:44:58+08:00">2021-12-10</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-12-21 14:09:22" itemprop="dateModified" datetime="2021-12-21T14:09:22+08:00">2021-12-21</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="mysql优化之关联字段COLLATE不匹配"><a href="#mysql优化之关联字段COLLATE不匹配" class="headerlink" title="mysql优化之关联字段COLLATE不匹配"></a>mysql优化之关联字段COLLATE不匹配</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;最近正在学习dubbo知识，这里临时插入一个mysql的知识点，也算给自己扫盲。也就是下面两个知识点</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> mysql join collate 不一样，转换查询非常耗时</li>
+<li><input checked="" disabled="" type="checkbox"> mysql唯一索引不区分大小写，该字段（重复名称）无法区分（例如w,W就不能区分）</li>
+</ul>
+<h2 id="collate"><a href="#collate" class="headerlink" title="collate"></a>collate</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;这个字段是来说明mysql如果对该列进行排序和比较，会影响order by的顺序，会影响到where条件中大于小于筛选出来的结果，也会影响distinct、group by、having语句的查询结果</p>
+<h3 id="utf8mb4-bin-amp-utf8-bin"><a href="#utf8mb4-bin-amp-utf8-bin" class="headerlink" title="utf8mb4_bin &amp; utf8_bin"></a>utf8mb4_bin &amp; utf8_bin</h3><ul>
+<li>UTF-8是使用1~4个字节，一种变长的编码格式，字符编码。mb4即 most bytes 4，使用4个字节来表示完整的UTF-8</li>
+<li>mysql的 utf8 编码最大字符长度为 3 字节，如果遇到 4 字节的宽字符就会插入异常了</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/10/mysql%E4%BC%98%E5%8C%96%E4%B9%8B%E5%85%B3%E8%81%94%E5%AD%97%E6%AE%B5COLLATE%E4%B8%8D%E5%8C%B9%E9%85%8D/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/11/18/dubbo%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/11/18/dubbo%E5%BA%94%E7%94%A8/" class="post-title-link" itemprop="url">dubbo应用</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-11-18 09:56:21" itemprop="dateCreated datePublished" datetime="2021-11-18T09:56:21+08:00">2021-11-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-12-21 13:39:18" itemprop="dateModified" datetime="2021-12-21T13:39:18+08:00">2021-12-21</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/dubbo/" itemprop="url" rel="index"><span itemprop="name">dubbo</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Dubbo应用"><a href="#Dubbo应用" class="headerlink" title="Dubbo应用"></a>Dubbo应用</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;Dubbo应用介绍一下dubbo里面的一些特性，相对比较泛泛，详细可以看官网。只是为后续读取dubbo源码来打下基础。这里介绍的版本2.7.*，最新版本的3.0丰富了很多特性，可以借鉴官网看下</p>
+<h2 id="dubbo如何使用"><a href="#dubbo如何使用" class="headerlink" title="dubbo如何使用"></a>dubbo如何使用</h2><p>通过一个简单的api，来说明dubbo使用</p>
+<h3 id="demo-api"><a href="#demo-api" class="headerlink" title="demo api"></a>demo api</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">HelloService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">(String name)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 回调</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> name</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> callBack</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">default</span> String <span class="title">hello</span><span class="params">(String name, String key, HelloServiceCallBack callBack)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异步调用</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> name</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">default</span> CompletableFuture&lt;String&gt; <span class="title">helloAsync</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/18/dubbo%E5%BA%94%E7%94%A8/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -425,221 +610,6 @@
 <p>文本二</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">0ffefb040ff24a8baf220d9292531186</span><br><span class="line">dfba616e86ba48abaffb9ad059442004</span><br><span class="line">9da16e1e4e874afbacb612e45759f3c9</span><br><span class="line">a32c77ca70954f2dad94e4848650840c</span><br><span class="line">624b289564fc4e088388e6aaad4cc2cf</span><br><span class="line">042e2485ae77445f867f2dec18a4b867</span><br><span class="line">6a911d3dc73e4ac9bee277d4731e1b8d</span><br><span class="line">b8b5c37ed4d746bd825ca862c7c0b80f</span><br></pre></td></tr></table></figure>
 <h2 id="diff"><a href="#diff" class="headerlink" title="diff"></a>diff</h2><h2 id="tr"><a href="#tr" class="headerlink" title="tr"></a>tr</h2>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/07/30/ConcurrentHashMap%E8%AF%A6%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李俊龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天真有邪">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/07/30/ConcurrentHashMap%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">ConcurrentHashMap详解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-07-30 11:12:43" itemprop="dateCreated datePublished" datetime="2021-07-30T11:12:43+08:00">2021-07-30</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-08-17 17:27:54" itemprop="dateModified" datetime="2021-08-17T17:27:54+08:00">2021-08-17</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">并发</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="ConcurrentHashMap"><a href="#ConcurrentHashMap" class="headerlink" title="ConcurrentHashMap"></a>ConcurrentHashMap</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;安全、并发场景集合操作</p>
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><table>
-<thead>
-<tr>
-<th align="left">版本</th>
-<th align="left">结构</th>
-<th align="left">实现</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">1.7</td>
-<td align="left">分段数组+数组+链表</td>
-<td align="left">cas、分段锁（Reentrantlock）</td>
-</tr>
-<tr>
-<td align="left">1.8+</td>
-<td align="left">数组+链表+红黑树</td>
-<td align="left">cas、synchronized</td>
-</tr>
-</tbody></table>
-<h2 id="ConcurrentHashMap-jdk1-7解析"><a href="#ConcurrentHashMap-jdk1-7解析" class="headerlink" title="ConcurrentHashMap jdk1.7解析"></a>ConcurrentHashMap jdk1.7解析</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ConcurrentHashMap concurrentHashMap = <span class="keyword">new</span> ConcurrentHashMap();</span><br><span class="line">concurrentHashMap.put(<span class="number">1</span>, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-<p>在真正去了解的时候我们先看下ConcurrentHashMap有什么特殊参数</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcurrentHashMap</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractMap</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">ConcurrentMap</span>&lt;<span class="title">K</span>, <span class="title">V</span>&gt;, <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The default initial capacity for this table,</span></span><br><span class="line"><span class="comment">     * used when not otherwise specified in a constructor.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_INITIAL_CAPACITY = <span class="number">16</span>; <span class="comment">// 默认初始化容量</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The default load factor for this table, used when not</span></span><br><span class="line"><span class="comment">     * otherwise specified in a constructor.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> DEFAULT_LOAD_FACTOR = <span class="number">0.75f</span>; <span class="comment">// 默认加载因子</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The default concurrency level for this table, used when not</span></span><br><span class="line"><span class="comment">     * otherwise specified in a constructor.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CONCURRENCY_LEVEL = <span class="number">16</span>; <span class="comment">// 默认并行度等级，这个是控制冲突量，影响Segment数组大小，Segment数组一旦确定不会更改</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The maximum capacity, used if a higher value is implicitly</span></span><br><span class="line"><span class="comment">     * specified by either of the constructors with arguments.  MUST</span></span><br><span class="line"><span class="comment">     * be a power of two &lt;= 1&lt;&lt;30 to ensure that entries are indexable</span></span><br><span class="line"><span class="comment">     * using ints.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXIMUM_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">30</span>; <span class="comment">// 最大HashEntry数组长度大小，必须是2^n的数</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The minimum capacity for per-segment tables.  Must be a power</span></span><br><span class="line"><span class="comment">     * of two, at least two to avoid immediate resizing on next use</span></span><br><span class="line"><span class="comment">     * after lazy construction.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MIN_SEGMENT_TABLE_CAPACITY = <span class="number">2</span>; <span class="comment">// 最小HashEntry数组长度大小，必须是2^n的数</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The maximum number of segments to allow; used to bound</span></span><br><span class="line"><span class="comment">     * constructor arguments. Must be power of two less than 1 &lt;&lt; 24.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_SEGMENTS = <span class="number">1</span> &lt;&lt; <span class="number">16</span>; <span class="comment">// slightly conservative 最大Segment数组长度，也是并行度最大</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Number of unsynchronized retries in size and containsValue</span></span><br><span class="line"><span class="comment">     * methods before resorting to locking. This is used to avoid</span></span><br><span class="line"><span class="comment">     * unbounded retries if tables undergo continuous modification</span></span><br><span class="line"><span class="comment">     * which would make it impossible to obtain an accurate result.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RETRIES_BEFORE_LOCK = <span class="number">2</span>; <span class="comment">// 在加锁之前尝试次数（无锁尝试）</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Mask value for indexing into segments. The upper bits of a</span></span><br><span class="line"><span class="comment">     * key&#x27;s hash code are used to choose the segment.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> segmentMask; <span class="comment">// segment数组掩码</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Shift value for indexing within segments.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> segmentShift; <span class="comment">// segment数组迁移数</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The segments, each of which is a specialized hash table.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">final</span> Segment&lt;K,V&gt;[] segments; <span class="comment">// segment数组</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Segments are specialized versions of hash tables.  This</span></span><br><span class="line"><span class="comment">     * subclasses from ReentrantLock opportunistically, just to</span></span><br><span class="line"><span class="comment">     * simplify some locking and avoid separate construction.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Segment</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">ReentrantLock</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123; <span class="comment">// 注意，这里继承ReentrantLock可重入锁，那就是Segment也会有ReentrantLock的特性</span></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Segments maintain a table of entry lists that are always</span></span><br><span class="line"><span class="comment">         * kept in a consistent state, so can be read (via volatile</span></span><br><span class="line"><span class="comment">         * reads of segments and tables) without locking.  This</span></span><br><span class="line"><span class="comment">         * requires replicating nodes when necessary during table</span></span><br><span class="line"><span class="comment">         * resizing, so the old lists can be traversed by readers</span></span><br><span class="line"><span class="comment">         * still using old version of table.</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * This class defines only mutative methods requiring locking.</span></span><br><span class="line"><span class="comment">         * Except as noted, the methods of this class perform the</span></span><br><span class="line"><span class="comment">         * per-segment versions of ConcurrentHashMap methods.  (Other</span></span><br><span class="line"><span class="comment">         * methods are integrated directly into ConcurrentHashMap</span></span><br><span class="line"><span class="comment">         * methods.) These mutative methods use a form of controlled</span></span><br><span class="line"><span class="comment">         * spinning on contention via methods scanAndLock and</span></span><br><span class="line"><span class="comment">         * scanAndLockForPut. These intersperse tryLocks with</span></span><br><span class="line"><span class="comment">         * traversals to locate nodes.  The main benefit is to absorb</span></span><br><span class="line"><span class="comment">         * cache misses (which are very common for hash tables) while</span></span><br><span class="line"><span class="comment">         * obtaining locks so that traversal is faster once</span></span><br><span class="line"><span class="comment">         * acquired. We do not actually use the found nodes since they</span></span><br><span class="line"><span class="comment">         * must be re-acquired under lock anyway to ensure sequential</span></span><br><span class="line"><span class="comment">         * consistency of updates (and in any case may be undetectably</span></span><br><span class="line"><span class="comment">         * stale), but they will normally be much faster to re-locate.</span></span><br><span class="line"><span class="comment">         * Also, scanAndLockForPut speculatively creates a fresh node</span></span><br><span class="line"><span class="comment">         * to use in put if no node is found.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">2249069246763182397L</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * The maximum number of times to tryLock in a prescan before</span></span><br><span class="line"><span class="comment">         * possibly blocking on acquire in preparation for a locked</span></span><br><span class="line"><span class="comment">         * segment operation. On multiprocessors, using a bounded</span></span><br><span class="line"><span class="comment">         * number of retries maintains cache acquired while locating</span></span><br><span class="line"><span class="comment">         * nodes.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_SCAN_RETRIES =</span><br><span class="line">            Runtime.getRuntime().availableProcessors() &gt; <span class="number">1</span> ? <span class="number">64</span> : <span class="number">1</span>; <span class="comment">// 最大扫描尝试次数</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * The per-segment table. Elements are accessed via</span></span><br><span class="line"><span class="comment">         * entryAt/setEntryAt providing volatile semantics.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">transient</span> <span class="keyword">volatile</span> HashEntry&lt;K,V&gt;[] table; <span class="comment">// 每个Segment有HashEntry&lt;K,V&gt;[]元素</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * The number of elements. Accessed only either within locks</span></span><br><span class="line"><span class="comment">         * or among other volatile reads that maintain visibility.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">transient</span> <span class="keyword">int</span> count;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * The total number of mutative operations in this segment.</span></span><br><span class="line"><span class="comment">         * Even though this may overflows 32 bits, it provides</span></span><br><span class="line"><span class="comment">         * sufficient accuracy for stability checks in CHM isEmpty()</span></span><br><span class="line"><span class="comment">         * and size() methods.  Accessed only either within locks or</span></span><br><span class="line"><span class="comment">         * among other volatile reads that maintain visibility.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">transient</span> <span class="keyword">int</span> modCount;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * The table is rehashed when its size exceeds this threshold.</span></span><br><span class="line"><span class="comment">         * (The value of this field is always &lt;tt&gt;(int)(capacity *</span></span><br><span class="line"><span class="comment">         * loadFactor)&lt;/tt&gt;.)</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">transient</span> <span class="keyword">int</span> threshold; <span class="comment">// HashTable的阈值</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/07/30/ConcurrentHashMap%E8%AF%A6%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/07/19/HashMap%E8%AF%A6%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李俊龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天真有邪">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/07/19/HashMap%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">HashMap详解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-07-19 11:19:37" itemprop="dateCreated datePublished" datetime="2021-07-19T11:19:37+08:00">2021-07-19</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-15 17:32:29" itemprop="dateModified" datetime="2021-11-15T17:32:29+08:00">2021-11-15</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%B9%B6%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">并发</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><table>
-<thead>
-<tr>
-<th align="left">版本</th>
-<th align="left">结构</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">1.7</td>
-<td align="left">数组+链表</td>
-</tr>
-<tr>
-<td align="left">1.8+</td>
-<td align="left">数组+链表+红黑树</td>
-</tr>
-</tbody></table>
-<h2 id="HashMap-jdk1-7解析"><a href="#HashMap-jdk1-7解析" class="headerlink" title="HashMap jdk1.7解析"></a>HashMap jdk1.7解析</h2><p>这里通过下面的例子，来介绍HashMap1.7源码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HashMap&lt;String,String&gt; map = <span class="keyword">new</span> HashMap(<span class="number">11</span>);</span><br><span class="line">map.put(<span class="string">&quot;1&quot;</span>,<span class="string">&quot;1&quot;</span>);</span><br></pre></td></tr></table></figure>
-<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>我们看下初始化做了什么事情？见下面代码。初始化容量、加载因子，那这里有个疑问？传进来的初始化容量是11，那数组的容量就是11？这里回答下，数组的长度不是11，那是多少呢？我们接下来看</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">*  构造函数</span></span><br><span class="line"><span class="comment">*  <span class="doctag">@param</span> initialCapacity 初始化容量</span></span><br><span class="line"><span class="comment">*  <span class="doctag">@param</span> loadFactor 加载因子0.75</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;Illegal initial capacity: &quot;</span> +</span><br><span class="line">                                            initialCapacity);</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; MAXIMUM_CAPACITY)</span><br><span class="line">        initialCapacity = MAXIMUM_CAPACITY;</span><br><span class="line">    <span class="keyword">if</span> (loadFactor &lt;= <span class="number">0</span> || Float.isNaN(loadFactor))</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;Illegal load factor: &quot;</span> +</span><br><span class="line">                                            loadFactor);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.loadFactor = loadFactor;</span><br><span class="line">    threshold = initialCapacity;</span><br><span class="line">    init();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/07/19/HashMap%E8%AF%A6%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
       
     </div>
 
