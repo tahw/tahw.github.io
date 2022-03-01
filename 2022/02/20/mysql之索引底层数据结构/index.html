@@ -38,9 +38,10 @@
 <meta property="og:image" content="https://theme-next.js.org/images/mysql-1-8.jpg">
 <meta property="og:image" content="https://theme-next.js.org/images/mysql-1-10.png">
 <meta property="og:image" content="https://theme-next.js.org/images/mysql-1-11.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-13.png">
 <meta property="og:image" content="https://theme-next.js.org/images/mysql-1-12.png">
 <meta property="article:published_time" content="2022-02-20T09:58:03.000Z">
-<meta property="article:modified_time" content="2022-03-01T11:21:35.200Z">
+<meta property="article:modified_time" content="2022-03-01T14:07:57.781Z">
 <meta property="article:author" content="李俊龙">
 <meta property="article:tag" content="mysql">
 <meta name="twitter:card" content="summary">
@@ -133,7 +134,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">mysql之索引底层数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">索引数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash%E8%A1%A8"><span class="nav-number">2.1.</span> <span class="nav-text">Hash表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">2.2.</span> <span class="nav-text">二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">2.3.</span> <span class="nav-text">红黑树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Btree"><span class="nav-number">2.4.</span> <span class="nav-text">Btree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Tree"><span class="nav-number">2.5.</span> <span class="nav-text">B+Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree%E7%BB%93%E6%9E%84"><span class="nav-number">2.5.1.</span> <span class="nav-text">B+Tree结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="nav-number">3.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Myisam"><span class="nav-number">3.1.</span> <span class="nav-text">Myisam</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Innodb"><span class="nav-number">3.2.</span> <span class="nav-text">Innodb</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D%E8%A7%84%E5%88%99"><span class="nav-number">4.</span> <span class="nav-text">索引最左匹配规则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84"><span class="nav-number">5.</span> <span class="nav-text">附</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">mysql之索引底层数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">索引数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash%E8%A1%A8"><span class="nav-number">2.1.</span> <span class="nav-text">Hash表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">2.2.</span> <span class="nav-text">二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">2.3.</span> <span class="nav-text">红黑树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Btree"><span class="nav-number">2.4.</span> <span class="nav-text">Btree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Tree"><span class="nav-number">2.5.</span> <span class="nav-text">B+Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree%E7%BB%93%E6%9E%84"><span class="nav-number">2.5.1.</span> <span class="nav-text">B+Tree结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BTree%E5%92%8CB-Tree%E4%B8%8D%E5%90%8C%E4%B9%8B%E5%A4%84"><span class="nav-number">3.</span> <span class="nav-text">BTree和B+Tree不同之处</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="nav-number">4.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Myisam%EF%BC%88%E9%9D%9E%E8%81%9A%E9%9B%86%E7%B4%A2%E5%BC%95%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">Myisam（非聚集索引）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Innodb"><span class="nav-number">4.2.</span> <span class="nav-text">Innodb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Innodb%E5%BC%95%E7%94%B3%E9%97%AE%E9%A2%98"><span class="nav-number">4.3.</span> <span class="nav-text">Innodb引申问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D%E8%A7%84%E5%88%99"><span class="nav-number">5.</span> <span class="nav-text">索引最左匹配规则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84"><span class="nav-number">6.</span> <span class="nav-text">附</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -232,7 +233,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-01 19:21:35" itemprop="dateModified" datetime="2022-03-01T19:21:35+08:00">2022-03-01</time>
+        <time title="修改时间：2022-03-01 22:07:57" itemprop="dateModified" datetime="2022-03-01T22:07:57+08:00">2022-03-01</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -320,6 +321,25 @@
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 非叶子节点能存储多少索引记录</span><br><span class="line">(页 - File Header - Page Hear - File Trailer - ...) / (主键 + 记录的偏移量 + ...)</span><br><span class="line">(16kB - 38B - 56B - 8B - ...) / (4B + 4B + ...)</span><br><span class="line">约等于2000</span><br></pre></td></tr></table></figure>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 叶子节点能存储多少索引记录</span><br><span class="line">(页 - File Header - Page Hear - File Trailer - ...) / (主键 + 数据 + 记录的偏移量 + ...)</span><br><span class="line">(16kB - 38B - 56B - 8B - ...) / (4B + 1KB + 4B + ...)</span><br><span class="line">约等于15</span><br></pre></td></tr></table></figure>
 <p><font color='red'><b>树高为3的B+Tree能存多少索引数据呢？ 2000 * 2000 * 15 = 60000000 条记录，千万级数量级</b></font></p>
+<h1 id="BTree和B-Tree不同之处"><a href="#BTree和B-Tree不同之处" class="headerlink" title="BTree和B+Tree不同之处"></a>BTree和B+Tree不同之处</h1><table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="center">非叶子节点是否有数据</th>
+<th align="center">叶子节点之间是否有指针</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">B</td>
+<td align="center">有</td>
+<td align="center">没有</td>
+</tr>
+<tr>
+<td align="center">B+</td>
+<td align="center">没有</td>
+<td align="center">有</td>
+</tr>
+</tbody></table>
 <h1 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h1><p>mysql中的数据用各种不同的技术存储在文件（或者内存）中。这些技术中的每一种技术都使用不同的存储机制、索引技术、锁定水平并且最终提供广泛的不同的功能和能力。</p>
 <p>mysql常见的存储引擎有哪些？</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW ENGINES;</span><br></pre></td></tr></table></figure>
@@ -409,7 +429,7 @@
 </tbody></table>
 <p><font color='red'><b>存储引擎是基于表的，而不是数据库。mysql默认存储引擎就是innodb</b></font></p>
 <p>这里说明下比较常用的两种存储引擎Myisam和Innodb</p>
-<h2 id="Myisam"><a href="#Myisam" class="headerlink" title="Myisam"></a>Myisam</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create table myisam_test</span><br><span class="line">(</span><br><span class="line">    id   int  not null primary key,</span><br><span class="line">    name varchar(40) null</span><br><span class="line">) engine &#x3D; MyISAM;</span><br></pre></td></tr></table></figure>
+<h2 id="Myisam（非聚集索引）"><a href="#Myisam（非聚集索引）" class="headerlink" title="Myisam（非聚集索引）"></a>Myisam（非聚集索引）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create table myisam_test</span><br><span class="line">(</span><br><span class="line">    id   int  not null primary key,</span><br><span class="line">    name varchar(40) null</span><br><span class="line">) engine &#x3D; MyISAM;</span><br></pre></td></tr></table></figure>
 <p>创建上面这张表，指定存储引擎MyISAM，创建成功后会生成下面三个文件<code>*.frm、*.MYI、*.MYD</code>，其中前缀是表名。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">*.frm framework简写，表名相关信息</span><br><span class="line">*.MYI MyISAM Index，索引信息</span><br><span class="line">*.MYD MyISAM DATA，数据</span><br></pre></td></tr></table></figure>
 <p><img src="/images/mysql-1-7.jpg" alt="MyISAM存储文件" loading="lazy"></p>
@@ -417,12 +437,29 @@
 <h2 id="Innodb"><a href="#Innodb" class="headerlink" title="Innodb"></a>Innodb</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create table innodb_test</span><br><span class="line">(</span><br><span class="line">    id   int  not null primary key,</span><br><span class="line">    name varchar(40) null</span><br><span class="line">) engine &#x3D; innodb;</span><br></pre></td></tr></table></figure>
 <p>创建上面这张表，指定存储引擎Innodb，创建成功后会生成下面三个文件<code>*.frm、*.ibd</code>，其中前缀是表名。<br><img src="/images/mysql-1-8.jpg" loading="lazy"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">*.frm framework简写，表名相关信息</span><br><span class="line">*.ibd 索引信息和数据</span><br></pre></td></tr></table></figure>
-<p><img src="/images/mysql-1-10.png" alt="Innodb主键索引存储数据" loading="lazy"><br>上图中，<b><font color='red'>主键索引</font>中，叶子节点存储的是这一行数据</b></p>
-<p><img src="/images/mysql-1-11.png" alt="Innodb非主键索引存储数据" loading="lazy"><br>上图中，<b><font color='red'>非主键索引</font>中，叶子节点存储的是这一行数据主键值，然后拿到主键值后再到主键索引B+Tree拿到那一行数据</b></p>
-<h1 id="索引最左匹配规则"><a href="#索引最左匹配规则" class="headerlink" title="索引最左匹配规则"></a>索引最左匹配规则</h1><p><img src="/images/mysql-1-12.png" alt="索引最左匹配规则" loading="lazy"></p>
+<p><img src="/images/mysql-1-10.png" alt="Innodb主键索引存储数据" loading="lazy"><br>上图中，<b><font color='red'>主键索引（聚集索引）</font>中，叶子节点存储的是这一行数据</b></p>
+<p><img src="/images/mysql-1-11.png" alt="Innodb非主键索引存储数据" loading="lazy"><br>上图中，<b><font color='red'>非主键索引（非聚集索引）</font>中，叶子节点存储的是这一行数据主键值，然后拿到主键值后再到主键索引B+Tree拿到那一行数据</b></p>
+<blockquote>
+<p>聚集索引就是叶子节点包含完整的数据</p>
+</blockquote>
+<h2 id="Innodb引申问题"><a href="#Innodb引申问题" class="headerlink" title="Innodb引申问题"></a>Innodb引申问题</h2><ul>
+<li>为什么建议Innodb创建表时要建主键，并且必须是使用整形的自增主键？<ol>
+<li>在创建存储引擎是Innodb的表时，一定会创建主键索引，指定了主键那就使用主键，如果没有指定主键，那就依次的比较列，如果有一列值都不一样的话，就用这个列做主键，来构建主键索引B+Tree，如果这个列没有找到合适的，mysql会把隐藏列（类似于rowid）做主键。<font color='red'><b>这里显而易见，如果我们不建主键，mysql会做上面的事情，多么消耗时间，我们自己创建好，节省时间和计算能力</b></font></li>
+<li>为什么要使用整形呢？<font color='red'><b>在我们B+Tree的时候，节点从左到右都是递增的，在范围查找的时候，整形可以比较很快拿到数据，反而（拿uuid做例子来比较）构建索引的时候需要一个一个字符比较，非常繁琐，也浪费空间，整形也是非常节省空间的</b></font></li>
+<li>为什么使用自增呢？这个就比较难理解了，要理解可以见下图，<font color='red'><b>先插入5后插4，发现B+Tree会拆节点和平衡树，而自增插入是不会的</b></font><br><img src="/images/mysql-1-13.png" alt="自增" loading="lazy"></li>
+</ol>
+</li>
+<li>为什么非主键索引（非聚集索引）叶子节点的内容存储的是主键值？<ol>
+<li>保证数据的一致</li>
+<li>节省存储的空间</li>
+</ol>
+</li>
+</ul>
+<h1 id="索引最左匹配规则"><a href="#索引最左匹配规则" class="headerlink" title="索引最左匹配规则"></a>索引最左匹配规则</h1><p>先看下联合索引的底层存储结构<br><img src="/images/mysql-1-12.png" alt="联合索引的底层存储结构" loading="lazy"></p>
 <ol>
 <li>单个节点内的数据是递增的</li>
 <li>节点间从左到右也是递增的</li>
+<li>先根据第一个字段排序，然后再去根据第二个字段排序，再去根据第三个字段排序</li>
 </ol>
 <h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><p>在线的数据结构的网址：<a target="_blank" rel="noopener" href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html">https://www.cs.usfca.edu/~galles/visualization/Algorithms.html</a></p>
 
