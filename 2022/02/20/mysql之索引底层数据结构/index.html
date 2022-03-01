@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="mysql之索引底层数据结构索引：A database index is a data structure that improves the speed of operations in a table. Indexes can be created using one or more columns, providing the basis for both rapid random look">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql之索引底层数据结构">
+<meta property="og:url" content="https://theme-next.js.org/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="天真有邪">
+<meta property="og:description" content="mysql之索引底层数据结构索引：A database index is a data structure that improves the speed of operations in a table. Indexes can be created using one or more columns, providing the basis for both rapid random look">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-1.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-2.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-3.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-4.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-5.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-6.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-7.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-9.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-8.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-10.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-11.png">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-1-12.png">
+<meta property="article:published_time" content="2022-02-20T09:58:03.000Z">
+<meta property="article:modified_time" content="2022-03-01T11:21:35.200Z">
+<meta property="article:author" content="李俊龙">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://theme-next.js.org/images/mysql-1-1.png">
+
+
+<link rel="canonical" href="https://theme-next.js.org/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/","path":"2022/02/20/mysql之索引底层数据结构/","title":"mysql之索引底层数据结构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>mysql之索引底层数据结构 | 天真有邪</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">天真有邪</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">mysql之索引底层数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">索引数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash%E8%A1%A8"><span class="nav-number">2.1.</span> <span class="nav-text">Hash表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">2.2.</span> <span class="nav-text">二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">2.3.</span> <span class="nav-text">红黑树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Btree"><span class="nav-number">2.4.</span> <span class="nav-text">Btree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Tree"><span class="nav-number">2.5.</span> <span class="nav-text">B+Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree%E7%BB%93%E6%9E%84"><span class="nav-number">2.5.1.</span> <span class="nav-text">B+Tree结构</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="nav-number">3.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Myisam"><span class="nav-number">3.1.</span> <span class="nav-text">Myisam</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Innodb"><span class="nav-number">3.2.</span> <span class="nav-text">Innodb</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D%E8%A7%84%E5%88%99"><span class="nav-number">4.</span> <span class="nav-text">索引最左匹配规则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84"><span class="nav-number">5.</span> <span class="nav-text">附</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">李俊龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mysql之索引底层数据结构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-20 17:58:03" itemprop="dateCreated datePublished" datetime="2022-02-20T17:58:03+08:00">2022-02-20</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-01 19:21:35" itemprop="dateModified" datetime="2022-03-01T19:21:35+08:00">2022-03-01</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="mysql之索引底层数据结构"><a href="#mysql之索引底层数据结构" class="headerlink" title="mysql之索引底层数据结构"></a>mysql之索引底层数据结构</h1><p>索引：<br><b>A database index is a <font color='red'>data structure</font> that improves the speed of operations in a table. Indexes can be created using one or more columns, providing the basis for both <font color='red'>rapid random lookups and efficient ordering</font> of access to records.</b></p>
+<h1 id="索引数据结构"><a href="#索引数据结构" class="headerlink" title="索引数据结构"></a>索引数据结构</h1><ol>
+<li>Hash表</li>
+<li>二叉树  </li>
+<li>红黑树</li>
+<li>Btree</li>
+</ol>
+<h2 id="Hash表"><a href="#Hash表" class="headerlink" title="Hash表"></a>Hash表</h2><p><img src="/images/mysql-1-1.png" alt="Hash表结构" loading="lazy"></p>
+<ol>
+<li>hash表结构通过hash的方式来获取数据存储的位置</li>
+<li>很多时候hash索引要比B+tree索引高效</li>
+<li><font color='red'><b>仅仅支持“=、in&quot;的方式查找，范围查找不行</b></font></li>
+<li><font color='red'><b>hash冲突，hash表扩大</b></font></li>
+</ol>
+<a id="more"></a>
+
+<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><p><img src="/images/mysql-1-2.png" alt="二叉树结构" loading="lazy"></p>
+<ol>
+<li>过半查找</li>
+<li><font color='red'><b>二叉树跟节点插入的顺序息息相关，也影响查找的效率</b></font></li>
+<li><font color='red'><b>一旦节点数量变的很多，树的深度会变得非常大，也影响查找的效率</b></font></li>
+</ol>
+<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p><img src="/images/mysql-1-3.png" alt="红黑树结构" loading="lazy"></p>
+<ol>
+<li>过半查找</li>
+<li>对插入的顺序不在意</li>
+<li><font color='red'><b>这里的问题是一旦数据量大的，树的深度也是非常大</b></font></li>
+</ol>
+<h2 id="Btree"><a href="#Btree" class="headerlink" title="Btree"></a>Btree</h2><p><img src="/images/mysql-1-4.png" alt="Btree" loading="lazy"></p>
+<ol>
+<li>过半查找</li>
+<li>范围查找</li>
+<li>对插入的顺序不在意</li>
+<li><font color='red'><b>叶子节点具有相同的深度，叶节点的指针为空</b></font></li>
+<li><font color='red'><b>所有的节点数据都不为空</b></font></li>
+<li><font color='red'><b>节点中的数据从左至右递增</b></font></li>
+</ol>
+<blockquote>
+<p>相信上面一个对比分析，Btree是最满足我们的需求的，mysql的底层是用的Btree吗?答案是的，但是mysql底层对Btree做了改良，更加适用于自己的数据结构，<font color='red'><b>B+Tree</b></font></p>
+</blockquote>
+<h2 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B+Tree"></a>B+Tree</h2><p><img src="/images/mysql-1-5.png" alt="B+tree" loading="lazy"><br>B+Tree是在Btree上面做的改良，下面是B+Tree一些的特性</p>
+<ol>
+<li><font color='red'><b>非叶子节点不存储真实数据，只存储索引，这样可以放更多的索引</b></font></li>
+<li><font color='red'><b> 叶子节点包含所有的索引字段</b></font></li>
+<li><font color='red'><b>叶子节点用指针相互链接，提供区间的访问的性能</b></font></li>
+<li>还有一个特性需要看下，二级节点里面的数据都是叶子节点的首节点，这样可以提高定位能力</li>
+<li>从左至右递增</li>
+</ol>
+<h3 id="B-Tree结构"><a href="#B-Tree结构" class="headerlink" title="B+Tree结构"></a>B+Tree结构</h3><p>在mysql里面底层使用的B+Tree，一个节点就是一页的数据，在mysql innodb里面一页数据是多少？下面的命令就是16KB。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW GLOBAL STATUS like &#39;Innodb_page_size&#39;;</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th align="center">Variable_name</th>
+<th align="center">Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Innodb_page_size</td>
+<td align="center">16384</td>
+</tr>
+</tbody></table>
+<p>那么一页的结构是什么？见下图<br><img src="/images/mysql-1-6.png" alt="B+tree page结构" loading="lazy"></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 非叶子节点能存储多少索引记录</span><br><span class="line">(页 - File Header - Page Hear - File Trailer - ...) / (主键 + 记录的偏移量 + ...)</span><br><span class="line">(16kB - 38B - 56B - 8B - ...) / (4B + 4B + ...)</span><br><span class="line">约等于2000</span><br></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 叶子节点能存储多少索引记录</span><br><span class="line">(页 - File Header - Page Hear - File Trailer - ...) / (主键 + 数据 + 记录的偏移量 + ...)</span><br><span class="line">(16kB - 38B - 56B - 8B - ...) / (4B + 1KB + 4B + ...)</span><br><span class="line">约等于15</span><br></pre></td></tr></table></figure>
+<p><font color='red'><b>树高为3的B+Tree能存多少索引数据呢？ 2000 * 2000 * 15 = 60000000 条记录，千万级数量级</b></font></p>
+<h1 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h1><p>mysql中的数据用各种不同的技术存储在文件（或者内存）中。这些技术中的每一种技术都使用不同的存储机制、索引技术、锁定水平并且最终提供广泛的不同的功能和能力。</p>
+<p>mysql常见的存储引擎有哪些？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW ENGINES;</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th align="left">Engine</th>
+<th align="center">Support</th>
+<th align="left">Comment</th>
+<th align="center">Transactions</th>
+<th align="center">XA</th>
+<th align="center">Savepoints</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">InnoDB</td>
+<td align="center">DEFAULT</td>
+<td align="left">Supports transactions, row-level locking, and foreign keys</td>
+<td align="center">YES</td>
+<td align="center">YES</td>
+<td align="center">YES</td>
+</tr>
+<tr>
+<td align="left">MRG_MYISAM</td>
+<td align="center">YES</td>
+<td align="left">Collection of identical MyISAM tables</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+</tr>
+<tr>
+<td align="left">MEMORY</td>
+<td align="center">YES</td>
+<td align="left">Hash based, stored in memory, useful for temporary tables</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+</tr>
+<tr>
+<td align="left">BLACKHOLE</td>
+<td align="center">YES</td>
+<td align="left">/dev/null storage engine (anything you write to it disappears)</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+</tr>
+<tr>
+<td align="left">MyISAM</td>
+<td align="center">YES</td>
+<td align="left">MyISAM storage engine</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+</tr>
+<tr>
+<td align="left">CSV</td>
+<td align="center">YES</td>
+<td align="left">CSV storage engine</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+</tr>
+<tr>
+<td align="left">ARCHIVE</td>
+<td align="center">YES</td>
+<td align="left">Archive storage engine</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+</tr>
+<tr>
+<td align="left">PERFORMANCE_SCHEMA</td>
+<td align="center">YES</td>
+<td align="left">Performance Schema</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+<td align="center">NO</td>
+</tr>
+<tr>
+<td align="left">FEDERATED</td>
+<td align="center">NO</td>
+<td align="left">Federated MySQL storage engine</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p><font color='red'><b>存储引擎是基于表的，而不是数据库。mysql默认存储引擎就是innodb</b></font></p>
+<p>这里说明下比较常用的两种存储引擎Myisam和Innodb</p>
+<h2 id="Myisam"><a href="#Myisam" class="headerlink" title="Myisam"></a>Myisam</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create table myisam_test</span><br><span class="line">(</span><br><span class="line">    id   int  not null primary key,</span><br><span class="line">    name varchar(40) null</span><br><span class="line">) engine &#x3D; MyISAM;</span><br></pre></td></tr></table></figure>
+<p>创建上面这张表，指定存储引擎MyISAM，创建成功后会生成下面三个文件<code>*.frm、*.MYI、*.MYD</code>，其中前缀是表名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">*.frm framework简写，表名相关信息</span><br><span class="line">*.MYI MyISAM Index，索引信息</span><br><span class="line">*.MYD MyISAM DATA，数据</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-1-7.jpg" alt="MyISAM存储文件" loading="lazy"></p>
+<p><img src="/images/mysql-1-9.png" alt="MyISAM索引存储数据" loading="lazy"><br><b>叶子节点存储的是地址，拿到地址后，从*.MYD文件里面拿真正的行数据</b></p>
+<h2 id="Innodb"><a href="#Innodb" class="headerlink" title="Innodb"></a>Innodb</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create table innodb_test</span><br><span class="line">(</span><br><span class="line">    id   int  not null primary key,</span><br><span class="line">    name varchar(40) null</span><br><span class="line">) engine &#x3D; innodb;</span><br></pre></td></tr></table></figure>
+<p>创建上面这张表，指定存储引擎Innodb，创建成功后会生成下面三个文件<code>*.frm、*.ibd</code>，其中前缀是表名。<br><img src="/images/mysql-1-8.jpg" loading="lazy"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">*.frm framework简写，表名相关信息</span><br><span class="line">*.ibd 索引信息和数据</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-1-10.png" alt="Innodb主键索引存储数据" loading="lazy"><br>上图中，<b><font color='red'>主键索引</font>中，叶子节点存储的是这一行数据</b></p>
+<p><img src="/images/mysql-1-11.png" alt="Innodb非主键索引存储数据" loading="lazy"><br>上图中，<b><font color='red'>非主键索引</font>中，叶子节点存储的是这一行数据主键值，然后拿到主键值后再到主键索引B+Tree拿到那一行数据</b></p>
+<h1 id="索引最左匹配规则"><a href="#索引最左匹配规则" class="headerlink" title="索引最左匹配规则"></a>索引最左匹配规则</h1><p><img src="/images/mysql-1-12.png" alt="索引最左匹配规则" loading="lazy"></p>
+<ol>
+<li>单个节点内的数据是递增的</li>
+<li>节点间从左到右也是递增的</li>
+</ol>
+<h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><p>在线的数据结构的网址：<a target="_blank" rel="noopener" href="https://www.cs.usfca.edu/~galles/visualization/Algorithms.html">https://www.cs.usfca.edu/~galles/visualization/Algorithms.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/11/dubbo%E4%B9%8B%E8%B0%83%E7%94%A8%E8%AF%A6%E8%A7%A3/" rel="prev" title="dubbo之调用详解">
+                  <i class="fa fa-chevron-left"></i> dubbo之调用详解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">李俊龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

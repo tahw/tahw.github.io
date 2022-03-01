@@ -129,7 +129,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">29</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -172,6 +172,102 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/12/21/dubbo%E4%B9%8B%E5%8F%AF%E6%89%A9%E5%B1%95SPI%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/12/21/dubbo%E4%B9%8B%E5%8F%AF%E6%89%A9%E5%B1%95SPI%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">dubbo之可扩展SPI源码解析</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-12-21 18:51:43" itemprop="dateCreated datePublished" datetime="2021-12-21T18:51:43+08:00">2021-12-21</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-01-10 15:32:29" itemprop="dateModified" datetime="2022-01-10T15:32:29+08:00">2022-01-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/dubbo/" itemprop="url" rel="index"><span itemprop="name">dubbo</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="dubbo之可扩展SPI源码解析"><a href="#dubbo之可扩展SPI源码解析" class="headerlink" title="dubbo之可扩展SPI源码解析"></a>dubbo之可扩展SPI源码解析</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;在dubbo中，很多的扩展都是spi来加载的，比如Procotol、LoadBalance，而dubbo的扩展点加载是基于jdk标准的spi扩展机制增强而来的，dubbo解决jdk有的一些问题</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> jdk标准的spi会一次性实例化所有的实现，不能按需加载</li>
+<li><input checked="" disabled="" type="checkbox"> 扩展点如果加载失败，不会友好的提示异常信息</li>
+<li><input checked="" disabled="" type="checkbox"> 可以对扩展点实现ioc和aop，ioc通过setter()方法来注入，而aop可以通过wrapper类来增强</li>
+</ul>
+<h2 id="官方地址"><a href="#官方地址" class="headerlink" title="官方地址"></a>官方地址</h2><p><a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docsv2.7/dev/source/adaptive-extension/">https://dubbo.apache.org/zh/docsv2.7/dev/source/adaptive-extension/</a></p>
+<h2 id="SPI应用"><a href="#SPI应用" class="headerlink" title="SPI应用"></a>SPI应用</h2><p>这里是引用github dubbo master的代码，版本是2.7.7-SNAPSHOT</p>
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><p>新增模块，要使用dubbo，需引入下面pom</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.7-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-rpc-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.7-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-rpc-dubbo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.7-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-rpc-http<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.7-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/21/dubbo%E4%B9%8B%E5%8F%AF%E6%89%A9%E5%B1%95SPI%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -532,84 +628,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/08/13/shell%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李俊龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天真有邪">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/08/13/shell%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">shell基础</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-08-13 10:20:37 / 修改时间：10:31:31" itemprop="dateCreated datePublished" datetime="2021-08-13T10:20:37+08:00">2021-08-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h1><p>需求，文本一在kvconfig配置，想要去除文本二最新的文本</p>
-<p>文本一</p>
-<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line">4402f145e63948c19c0e32b972c7fa17</span><br><span class="line">9676caee21a34b46b2753ae57c4c3632</span><br><span class="line">f29b2db3bfe943a1a829d41ca2851813</span><br><span class="line">f8dff2e8d9764efa9d3bb3b4bfc04694</span><br><span class="line">5942df7748c44880becdf26ff6e2e6f6</span><br><span class="line">6a5778929a9b48abb164805ba3fd839f</span><br><span class="line">437e956cb4484e8399e6cdce1aeda824</span><br><span class="line">af8a385bec2d43dbb649e85ec8297966</span><br><span class="line">eee87d05ae964e5aaefcb7a9585702ee</span><br><span class="line">1c9fdc985cf4468c8eb9f11e1d43fe23</span><br><span class="line">d4e32899ad404c418440a1d46d9beab1</span><br><span class="line">ed19c89fbd59401688f3c2975c6bc446</span><br><span class="line">0ffefb040ff24a8baf220d9292531186</span><br><span class="line">dfba616e86ba48abaffb9ad059442004</span><br><span class="line">9da16e1e4e874afbacb612e45759f3c9</span><br><span class="line">a32c77ca70954f2dad94e4848650840c</span><br><span class="line">624b289564fc4e088388e6aaad4cc2cf</span><br><span class="line">7eb5ecc45c3147b89d4dbe19545dd6c7</span><br><span class="line">042e2485ae77445f867f2dec18a4b867</span><br><span class="line">6a911d3dc73e4ac9bee277d4731e1b8d</span><br><span class="line">3f151bdc71714b1bbc0816f51440482b</span><br><span class="line">b8b5c37ed4d746bd825ca862c7c0b80f</span><br><span class="line">c6267f51510c48829fb395e99e1c0f15</span><br><span class="line">1dee1c2282d74fe4bb6c126213f8584d</span><br><span class="line">d4ef7423c7e14576a68b67fee611170b</span><br><span class="line">1ceecad330ef47d7825671cc82c56aae</span><br><span class="line">bbe68ef324b6497fa228196a987d069e</span><br><span class="line">743d8f8062d7471ba6773ab78510df7b</span><br><span class="line">d29d081bc59846208af197c2400a465d</span><br><span class="line">7ebe0aa53011480285a3842622aeb70f</span><br><span class="line">8db67b6502d3456699681cae4387a6e5</span><br><span class="line">5ea22012134f4f3d803961a117731d3a</span><br><span class="line">27633703f4f04b22ac24fe91b104f734</span><br><span class="line">8d9db548f3064dd9a6d442224193aa51</span><br><span class="line">6dd247b51a5e498da1839339d8217da5</span><br><span class="line">2157cf70036b426fbc209bca9e4e3f1c</span><br><span class="line">a6780454fa6a4bb6a6edabca252af15b</span><br><span class="line">a4c7e594c3034044be1c6e2d76fede03</span><br><span class="line">e12e8f18cc6b493b9c2ef899670b9c83</span><br><span class="line">b373de33994a47c780c6c9c8aa648f8c</span><br><span class="line">138f15fd695a40cab48ea81bde7f888a</span><br><span class="line">19a33bfd845d49b1becc82b9633f3a5a</span><br><span class="line">8b18c3b33c934095a1efa29b41d32365</span><br><span class="line">a6f1cc9fd7c149e5a540a972c6e97785</span><br><span class="line">e689f355f9c147288b7c0c458664015a</span><br><span class="line">05cbd5e289dd4b2d85bd95656366b749</span><br><span class="line">18264adda51f4b899c76a9620aa8e331</span><br><span class="line">b8d3b54fa988440c8d9a381a0ffeb2ab</span><br><span class="line">fcfd1775f9314ce0a1add33b4332f809</span><br><span class="line">57d515324c454eb49120cb0cf404fc25</span><br><span class="line">c3561d0bf9ac4c4b92552a6912c1b137</span><br><span class="line">97c701cda6c64487a89d507bef065bdc</span><br><span class="line">1ac6515bb02d4135b7973c00619d358a</span><br><span class="line">f167e95110d24d9cbbe479df5ab5f134</span><br><span class="line">e5f0838346124cb887c528334e459f0b</span><br><span class="line">50ae32cd24d94a59baff5a7fc952ea4a</span><br><span class="line">e0faae88ce5f45e0a42b95e60e0e26c0</span><br><span class="line">bd639dde39de4ca491589af9056d0182</span><br><span class="line">49be8042db8440b0bc6c5e07f43c517b</span><br><span class="line">8c941f04427148539ad5326e92ed07c5</span><br><span class="line">c0ad306b5a874ae28c272f25fc619de3</span><br><span class="line">8e3a1a0960c2455bbb062e94ab49d702</span><br><span class="line">30e56a879efd446d9bb8b38698e629e6</span><br><span class="line">6b16dd3dd4364c58a533bda83ca64d2d</span><br><span class="line">a3524bdb10054c78828a9de52e6b1779</span><br><span class="line">4e9543669565440e9715e34df8b72610</span><br><span class="line">ae1cec3a0d054bb6aeed023e1f24cae8</span><br><span class="line">e4345f67956541a58ef20cfa82326306</span><br><span class="line">e19a37223caa40138fbc76454daf0d64</span><br><span class="line">69357a08967f40cca4c7feade44ba612</span><br><span class="line">a5b9208c9461444c84d830372bc5b132</span><br><span class="line">f204faf9e2fc4a56b1580ad2dcfd915f</span><br><span class="line">530904e240e0470fbb7b2dc6552e0609</span><br><span class="line">402961b73a1e48e5a8cdfef1d1c86757</span><br><span class="line">74f32ff760024480a83c60e2b462c463</span><br><span class="line">c4142afd9d624782ba0a6943dd168ed8</span><br><span class="line">210ec88678194d96b77d8c300c651946</span><br><span class="line">89b80e076a29493598e2453ab73d645e</span><br><span class="line">b5a0302dacf740a28e9957d796ed452e</span><br><span class="line">cb6f006e84a64586b6748dfbecdb0d60</span><br><span class="line">a9b4eb12cb624138abbb71ff985b5292</span><br><span class="line">794a7ee14fee4daab6d6d946bf3012de</span><br><span class="line">3afff1b19d3d4a4b952333f270500e81</span><br><span class="line">eaa5b6430c994fa89b3111e41750e07b</span><br><span class="line">2aa2fe7362cc40dca35dd3f111ecd68b</span><br><span class="line">685870a40016433c8faa7e8b76d26ed7</span><br><span class="line">1ada37c195e342768626f2d5e3eb2f26</span><br><span class="line">3408d6eafe2842c7a7da741ae9bd0041</span><br><span class="line">f0931d9a5c17496394d33a339fc31edf</span><br><span class="line">e63f3c9fbddf47b99560661097f3ebf7</span><br><span class="line">9573321a259c491fb147a67e6c87b5c6</span><br><span class="line">e5a6b09961674bd78bfa7fdce62b6047</span><br><span class="line">e32bd11c21464c03b21348c467851f44</span><br><span class="line">adaef989d1ae4e64af87d7cfb9c94818</span><br><span class="line">26ff377852f348069f4cba63f9f30134</span><br><span class="line">5dc22a746579494c9e2c592db532c9c4</span><br><span class="line">5bb0102ef5d3434e818fe819f1999edb</span><br><span class="line">4743eba69b5349468b4a147e2ace1f01</span><br><span class="line">44b0745ad5714d2d8da4b24cf2dc3b4a</span><br><span class="line">a4ec3f55a4f14a3ab0151ede640d0639</span><br><span class="line">83428d785398498bafba1b33e117c14a</span><br><span class="line">4ad4b3072a8346be8388ef9808b28dbf</span><br><span class="line">18d10a3259804b60af85fc6673572ad0</span><br><span class="line">aec967d3017849469664dbc3dbf4fc7e</span><br><span class="line">efcdc18f4a5c4d58b29e59aad065a57f</span><br><span class="line">831cf44857df40ff9ba0386adafdf074</span><br><span class="line">07b42f8ab8b040f19d23cceaaebf9a52</span><br><span class="line">60ead3282aca4cc988a8733999cc600a</span><br><span class="line">5f1ee5a6fffe4bfe98a81df78480c7aa</span><br><span class="line">57ec0d515e9347639be80d3b8ccd646c</span><br><span class="line">d645d46182064aaea80780313d2bb32b</span><br><span class="line">e362da810bda4d239289b0a9357c675f</span><br><span class="line">6d4e9e592c8043b8a04d9b7bbe118a28</span><br><span class="line">0ec51a2abd0f4c33bdf949b5cc31641d</span><br><span class="line">1fda6f0a6acc47dd9adb4963316e2ae5</span><br><span class="line">4fa8434b67d447ffb96fd0a9a1b5a0a1</span><br><span class="line">8a708f865e43487f9d2ac230261294d3</span><br><span class="line">61d34e91e38a4ff7ac3419bea1e83edd</span><br><span class="line">44f4bde79c984a8b8ab613e690ce1ae0</span><br><span class="line">b3c01db06705476b8198bc1a443f8f56</span><br><span class="line">94de802fc408420db9129d03df02a4ce</span><br><span class="line">0b05bc1c654742bfb3420c7f8f0351c4</span><br><span class="line">747222515ed74d2aa50371c3a5f686ae</span><br><span class="line">d2deb7e5451b4eb28be9f29ceefea44c</span><br><span class="line">2e51580f04bc4352b4f156a3404d5b8c</span><br><span class="line">c954a7f6d62546c89688f83e970202a0</span><br><span class="line">241189281e5c464baf8202e24e7e6a1e</span><br><span class="line">76a340b29b8d4f268509500813c257f9</span><br><span class="line">7c053b26e9654bc1ab41449b7c4c6d4a</span><br><span class="line">e8cc8e070d184568b5d5beacedba92bf</span><br><span class="line">45cfd6a067704f2993cd887023a275e3</span><br><span class="line">f31128c60b234ebeb05d2b044d36fd1b</span><br><span class="line">2d7255643e4c45d1a4c4ccdd32d85f3e</span><br><span class="line">9d9ccf17e2974ae682ac9eb4e15e96d0</span><br><span class="line">92695327ecc24e53ad489bfd79fa078a</span><br><span class="line">a87a06d709324529bde94871bada3cd3</span><br><span class="line">5a136f99c961459a93c9b3c59ec99adf</span><br><span class="line">916bfc4310314f0a8b739e498dbb3dfe</span><br><span class="line">04bf5a4674ce4b63903d52b391a5feaa</span><br><span class="line">71459dfddc744f26ba84f82815c8b98d</span><br><span class="line">58e3ce58dd8d4524abb9c18b03c6368b</span><br><span class="line">1193c59b6db944e5a12993c7eb778499</span><br><span class="line">17A01v1</span><br><span class="line">0ffefb040ff24a8baf220d9292531186</span><br><span class="line">dfba616e86ba48abaffb9ad059442004</span><br><span class="line">9da16e1e4e874afbacb612e45759f3c9</span><br><span class="line">a32c77ca70954f2dad94e4848650840c</span><br><span class="line">624b289564fc4e088388e6aaad4cc2cf</span><br><span class="line">7eb5ecc45c3147b89d4dbe19545dd6c7</span><br><span class="line">042e2485ae77445f867f2dec18a4b867</span><br><span class="line">6a911d3dc73e4ac9bee277d4731e1b8d</span><br><span class="line">3f151bdc71714b1bbc0816f51440482b</span><br><span class="line">b8b5c37ed4d746bd825ca862c7c0b80f</span><br><span class="line">c6267f51510c48829fb395e99e1c0f15</span><br><span class="line">5a136f99c961459a93c9b3c59ec99adf</span><br><span class="line">916bfc4310314f0a8b739e498dbb3dfe</span><br><span class="line">04bf5a4674ce4b63903d52b391a5feaa</span><br><span class="line">71459dfddc744f26ba84f82815c8b98d</span><br><span class="line">58e3ce58dd8d4524abb9c18b03c6368b</span><br><span class="line">1193c59b6db944e5a12993c7eb778499</span><br><span class="line">27c67ca0a5bf494c886f5c6af548bcc9</span><br></pre></td></tr></table></figure>
-<p>文本二</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">0ffefb040ff24a8baf220d9292531186</span><br><span class="line">dfba616e86ba48abaffb9ad059442004</span><br><span class="line">9da16e1e4e874afbacb612e45759f3c9</span><br><span class="line">a32c77ca70954f2dad94e4848650840c</span><br><span class="line">624b289564fc4e088388e6aaad4cc2cf</span><br><span class="line">042e2485ae77445f867f2dec18a4b867</span><br><span class="line">6a911d3dc73e4ac9bee277d4731e1b8d</span><br><span class="line">b8b5c37ed4d746bd825ca862c7c0b80f</span><br></pre></td></tr></table></figure>
-<h2 id="diff"><a href="#diff" class="headerlink" title="diff"></a>diff</h2><h2 id="tr"><a href="#tr" class="headerlink" title="tr"></a>tr</h2>
       
     </div>
 
