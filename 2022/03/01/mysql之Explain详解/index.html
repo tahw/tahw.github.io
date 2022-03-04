@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="mysql之Explain详解explain也叫做执行计划。官方说明：The EXPLAIN statement provides information about how MySQL executes statements. EXPLAIN works with SELECT, DELETE, INSERT, REPLACE, and UPDATE statements. 前言这里是使用mys">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql之Explain详解">
+<meta property="og:url" content="https://theme-next.js.org/2022/03/01/mysql%E4%B9%8BExplain%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="天真有邪">
+<meta property="og:description" content="mysql之Explain详解explain也叫做执行计划。官方说明：The EXPLAIN statement provides information about how MySQL executes statements. EXPLAIN works with SELECT, DELETE, INSERT, REPLACE, and UPDATE statements. 前言这里是使用mys">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-1.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-2.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-1.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-3.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-4.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-5.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-6.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-7.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-8.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-9.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-10.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-5.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-6.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-11.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-12.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-13.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-14.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-15.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-16.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-17.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-17.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-17.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-17.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-18.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-18.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-20.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-19.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-21.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-22.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-23.jpg">
+<meta property="og:image" content="https://theme-next.js.org/images/mysql-2-24.jpg">
+<meta property="article:published_time" content="2022-03-01T14:11:37.000Z">
+<meta property="article:modified_time" content="2022-03-04T08:19:14.840Z">
+<meta property="article:author" content="李俊龙">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://theme-next.js.org/images/mysql-2-1.jpg">
+
+
+<link rel="canonical" href="https://theme-next.js.org/2022/03/01/mysql%E4%B9%8BExplain%E8%AF%A6%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2022/03/01/mysql%E4%B9%8BExplain%E8%AF%A6%E8%A7%A3/","path":"2022/03/01/mysql之Explain详解/","title":"mysql之Explain详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>mysql之Explain详解 | 天真有邪</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">天真有邪</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql%E4%B9%8BExplain%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">mysql之Explain详解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#explain-%E8%BE%93%E5%87%BA%E5%88%97"><span class="nav-number">3.</span> <span class="nav-text">explain 输出列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87"><span class="nav-number">3.1.</span> <span class="nav-text">数据准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">使用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#id-amp-table"><span class="nav-number">3.3.</span> <span class="nav-text">id &amp; table</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select-type"><span class="nav-number">3.4.</span> <span class="nav-text">select_type</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#simple"><span class="nav-number">3.4.1.</span> <span class="nav-text">simple</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#primary-amp-derived-amp-subquery"><span class="nav-number">3.4.2.</span> <span class="nav-text">primary &amp; derived &amp; subquery</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#union"><span class="nav-number">3.4.3.</span> <span class="nav-text">union</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#partitions"><span class="nav-number">3.5.</span> <span class="nav-text">partitions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#type"><span class="nav-number">3.6.</span> <span class="nav-text">type</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#null"><span class="nav-number">3.6.1.</span> <span class="nav-text">null</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#system-amp-const"><span class="nav-number">3.6.2.</span> <span class="nav-text">system &amp; const</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eq-ref"><span class="nav-number">3.6.3.</span> <span class="nav-text">eq_ref</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ref"><span class="nav-number">3.6.4.</span> <span class="nav-text">ref</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#range"><span class="nav-number">3.6.5.</span> <span class="nav-text">range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index"><span class="nav-number">3.6.6.</span> <span class="nav-text">index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ALL"><span class="nav-number">3.6.7.</span> <span class="nav-text">ALL</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#possible-keys"><span class="nav-number">3.7.</span> <span class="nav-text">possible_keys</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#key"><span class="nav-number">3.8.</span> <span class="nav-text">key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#key-len"><span class="nav-number">3.9.</span> <span class="nav-text">key_len</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ref-1"><span class="nav-number">3.10.</span> <span class="nav-text">ref</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rows-amp-filtered"><span class="nav-number">3.11.</span> <span class="nav-text">rows &amp; filtered</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extra"><span class="nav-number">3.12.</span> <span class="nav-text">Extra</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-index"><span class="nav-number">3.12.1.</span> <span class="nav-text">Using index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-where"><span class="nav-number">3.12.2.</span> <span class="nav-text">Using where</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-index-condition"><span class="nav-number">3.12.3.</span> <span class="nav-text">Using index condition</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E5%AE%9E%E8%B7%B5"><span class="nav-number">4.</span> <span class="nav-text">索引实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87-1"><span class="nav-number">4.1.</span> <span class="nav-text">数据准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#key-len%E8%AE%A1%E7%AE%97"><span class="nav-number">4.2.</span> <span class="nav-text">key_len计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#type%E5%8C%BA%E5%88%86"><span class="nav-number">4.3.</span> <span class="nav-text">type区分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84"><span class="nav-number">5.</span> <span class="nav-text">附</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">李俊龙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2022/03/01/mysql%E4%B9%8BExplain%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mysql之Explain详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-01 22:11:37" itemprop="dateCreated datePublished" datetime="2022-03-01T22:11:37+08:00">2022-03-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-04 16:19:14" itemprop="dateModified" datetime="2022-03-04T16:19:14+08:00">2022-03-04</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="mysql之Explain详解"><a href="#mysql之Explain详解" class="headerlink" title="mysql之Explain详解"></a>mysql之Explain详解</h1><p>explain也叫做执行计划。<br>官方说明：<b>The EXPLAIN statement provides information about how MySQL executes statements. EXPLAIN works with SELECT, DELETE, INSERT, REPLACE, and UPDATE statements.</b></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这里是使用mysql5.7来介绍</p>
+<h1 id="explain-输出列"><a href="#explain-输出列" class="headerlink" title="explain 输出列"></a>explain 输出列</h1><table>
+<thead>
+<tr>
+<th align="left">Column</th>
+<th align="left">JSON Name</th>
+<th align="left">Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">id</td>
+<td align="left">select_id</td>
+<td align="left">The SELECT identifier</td>
+</tr>
+<tr>
+<td align="left">select_type</td>
+<td align="left">None</td>
+<td align="left">The SELECT type</td>
+</tr>
+<tr>
+<td align="left">table</td>
+<td align="left">table_name</td>
+<td align="left">The table for the output row</td>
+</tr>
+<tr>
+<td align="left">partitions</td>
+<td align="left">partitions</td>
+<td align="left">The matching partitions</td>
+</tr>
+<tr>
+<td align="left">type</td>
+<td align="left">access_type</td>
+<td align="left">The join type</td>
+</tr>
+<tr>
+<td align="left">possible_keys</td>
+<td align="left">possible_keys</td>
+<td align="left">The possible indexes to choose</td>
+</tr>
+<tr>
+<td align="left">key</td>
+<td align="left">key</td>
+<td align="left">The index actually chosen</td>
+</tr>
+<tr>
+<td align="left">key_len</td>
+<td align="left">key_length</td>
+<td align="left">The length of the chosen key</td>
+</tr>
+<tr>
+<td align="left">ref</td>
+<td align="left">ref</td>
+<td align="left">The columns compared to the index</td>
+</tr>
+<tr>
+<td align="left">rows</td>
+<td align="left">rows</td>
+<td align="left">Estimate of rows to be examined</td>
+</tr>
+<tr>
+<td align="left">filtered</td>
+<td align="left">filtered</td>
+<td align="left">Percentage of rows filtered by table condition</td>
+</tr>
+<tr>
+<td align="left">Extra</td>
+<td align="left">None</td>
+<td align="left">Additional information</td>
+</tr>
+</tbody></table>
+<a id="more"></a>
+
+<h2 id="数据准备"><a href="#数据准备" class="headerlink" title="数据准备"></a>数据准备</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> animals</span><br><span class="line">(</span><br><span class="line">    id <span class="type">int</span> <span class="keyword">primary</span> <span class="keyword">key</span> auto_increment,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    input_time datetime <span class="keyword">not</span> <span class="keyword">null</span></span><br><span class="line">) engine <span class="operator">=</span> innodb ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.animals (id, name, input_time) <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;朝阳动物园&#x27;</span>, <span class="string">&#x27;2022-03-03 11:15:59&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.animals (id, name, input_time) <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">&#x27;顺义动物园&#x27;</span>, <span class="string">&#x27;2022-03-03 11:16:22&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.animals (id, name, input_time) <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="string">&#x27;通州动物园&#x27;</span>, <span class="string">&#x27;2021-03-03 11:16:40&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.animals (id, name, input_time) <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="string">&#x27;昌平动物园&#x27;</span>, <span class="string">&#x27;2021-09-03 11:16:59&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.animals (id, name, input_time) <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="string">&#x27;海淀动物园&#x27;</span>, <span class="string">&#x27;2018-03-03 11:17:28&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> zoo</span><br><span class="line">(</span><br><span class="line">    id <span class="type">int</span> <span class="keyword">primary</span> <span class="keyword">key</span> auto_increment,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    key index_name(`name`)</span><br><span class="line">) engine <span class="operator">=</span> innodb ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo (id, name) <span class="keyword">VALUES</span> (<span class="number">6</span>, <span class="string">&#x27;兔子&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo (id, name) <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="string">&#x27;大象&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo (id, name) <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="string">&#x27;海豚&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo (id, name) <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;猴子&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo (id, name) <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">&#x27;长颈鹿&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo (id, name) <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="string">&#x27;鲨鱼&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> zoo_animals</span><br><span class="line">(</span><br><span class="line">    id <span class="type">int</span> <span class="keyword">primary</span> <span class="keyword">key</span> auto_increment,</span><br><span class="line">    zoo_id <span class="type">int</span> <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    animals_id <span class="type">int</span> <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    remark <span class="type">varchar</span>(<span class="number">200</span>) <span class="keyword">default</span> <span class="keyword">null</span>,</span><br><span class="line">    <span class="keyword">unique</span> key index_animals_id_zoo_id(`animals_id`,`zoo_id`)</span><br><span class="line">) engine <span class="operator">=</span> innodb;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo_animals (id, zoo_id, animals_id, remark) <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo_animals (id, zoo_id, animals_id, remark) <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="string">&#x27;随便测试数据&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo_animals (id, zoo_id, animals_id, remark) <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo_animals (id, zoo_id, animals_id, remark) <span class="keyword">VALUES</span> (<span class="number">6</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="string">&#x27;哈哈&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.zoo_animals (id, zoo_id, animals_id, remark) <span class="keyword">VALUES</span> (<span class="number">7</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="keyword">null</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#123;EXPLAIN | DESCRIBE | DESC&#125;</span><br><span class="line">    tbl_name [col_name <span class="operator">|</span> wild]</span><br><span class="line"></span><br><span class="line">&#123;EXPLAIN | DESCRIBE | DESC&#125;</span><br><span class="line">    [explain_type]</span><br><span class="line">    &#123;explainable_stmt | FOR CONNECTION connection_id&#125;</span><br><span class="line"></span><br><span class="line">explain_type: &#123;</span><br><span class="line">    EXTENDED</span><br><span class="line">  <span class="operator">|</span> PARTITIONS</span><br><span class="line">  <span class="operator">|</span> FORMAT <span class="operator">=</span> format_name</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">format_name: &#123;</span><br><span class="line">    TRADITIONAL</span><br><span class="line">  <span class="operator">|</span> JSON</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">explainable_stmt: &#123;</span><br><span class="line">    <span class="keyword">SELECT</span> statement</span><br><span class="line">  <span class="operator">|</span> <span class="keyword">DELETE</span> statement</span><br><span class="line">  <span class="operator">|</span> <span class="keyword">INSERT</span> statement</span><br><span class="line">  <span class="operator">|</span> REPLACE statement</span><br><span class="line">  <span class="operator">|</span> <span class="keyword">UPDATE</span> statement</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一般我们在sql前面加<code>EXPLAIN</code>，也会加<code>EXPLAIN EXTENDED</code>、<code>EXPLAIN PARTITIONS</code>方式，其中<code>EXPLAIN EXTENDED</code>会在<code>EXPLAIN</code>基础上添加一些额外的信息，类似于extra字段信息，<code>EXPLAIN PARTITIONS</code>会比<code>EXPLAIN</code>增加partitions信息</p>
+<h2 id="id-amp-table"><a href="#id-amp-table" class="headerlink" title="id &amp; table"></a>id &amp; table</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> session optimizer_switch<span class="operator">=</span><span class="string">&#x27;derived_merge=off&#x27;</span>;</span><br><span class="line">explain <span class="keyword">select</span> (<span class="keyword">select</span> name <span class="keyword">from</span> animals <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">1</span>) <span class="keyword">from</span> (<span class="keyword">select</span> id <span class="keyword">from</span> zoo_animals <span class="keyword">where</span> animals_id <span class="operator">=</span> <span class="number">3</span>) a;</span><br><span class="line"># 恢复 <span class="keyword">set</span> session optimizer_switch<span class="operator">=</span><span class="string">&#x27;derived_merge=on&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p>结果<br><img src="/images/mysql-2-1.jpg" alt="执行结果" loading="lazy"></p>
+<ol>
+<li>id 列的编号就是select的序列号</li>
+<li>有几个select就有几个id</li>
+<li>执行的顺序按id降序的，id多大优先级越高，其中id会null最后执行</li>
+<li>看下上面的结构，table执行简单查询的时候，就是表名，但是其中id为1是最后的执行的，其中的table是由id和select_type组合而成，方式是<derivedN>，这是id为1是等待id 3执行完成，还有其他的形式<ul>
+<li>&lt;unionM,N&gt;: The row refers to the union of the rows with id values of M and N.</li>
+<li><derivedN>: The row refers to the derived table result for the row with an id value of N. A derived table may result, for example, from a subquery in the FROM clause.</li>
+<li><subqueryN>: The row refers to the result of a materialized subquery for the row with an id value of N. </li>
+</ul>
+</li>
+</ol>
+<p>详细看：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/explain-output.html#explain_table">https://dev.mysql.com/doc/refman/5.7/en/explain-output.html#explain_table</a></p>
+<h2 id="select-type"><a href="#select-type" class="headerlink" title="select_type"></a>select_type</h2><p>表示对应行是简单还是复杂查询</p>
+<table>
+<thead>
+<tr>
+<th align="left">序号</th>
+<th align="left">select_type Value</th>
+<th align="left">JSON Name</th>
+<th align="left">Meaning</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left">SIMPLE</td>
+<td align="left">None</td>
+<td align="left">Simple SELECT (not using UNION or subqueries)</td>
+<td align="left">简单查询</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">PRIMARY</td>
+<td align="left">None</td>
+<td align="left">Outermost SELECT</td>
+<td align="left">复杂查询中最外层的select</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">UNION</td>
+<td align="left">None</td>
+<td align="left">Second or later SELECT statement in a UNION</td>
+<td align="left">在union中第二个和随后的select</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">DEPENDENT UNION</td>
+<td align="left">dependent (true)</td>
+<td align="left">Second or later SELECT statement in a UNION, dependent on outer query</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left">UNION RESULT</td>
+<td align="left">union_result</td>
+<td align="left">Result of a UNION.</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left">SUBQUERY</td>
+<td align="left">None</td>
+<td align="left">First SELECT in subquery</td>
+<td align="left">子查询，from之前的查询</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="left">DEPENDENT SUBQUERY</td>
+<td align="left">dependent (true)</td>
+<td align="left">First SELECT in subquery, dependent on outer query</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="left">DERIVED</td>
+<td align="left">None</td>
+<td align="left">Derived table</td>
+<td align="left">衍生表，在from之后的查询，临时查询结果</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="left">MATERIALIZED</td>
+<td align="left">materialized_from_subquery</td>
+<td align="left">Materialized subquery</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="left">UNCACHEABLE SUBQUERY</td>
+<td align="left">cacheable (false)</td>
+<td align="left">A subquery for which the result cannot be cached and must be re-evaluated for each row of the outer query</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">11</td>
+<td align="left">UNCACHEABLE UNION</td>
+<td align="left">cacheable (false)</td>
+<td align="left">The second or later select in a UNION that belongs to an uncacheable subquery (see UNCACHEABLE SUBQUERY)</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h3 id="simple"><a href="#simple" class="headerlink" title="simple"></a>simple</h3><p>简单查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> name <span class="keyword">from</span> animals <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-2.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="primary-amp-derived-amp-subquery"><a href="#primary-amp-derived-amp-subquery" class="headerlink" title="primary &amp; derived &amp; subquery"></a>primary &amp; derived &amp; subquery</h3><p>primary：复杂查询中最外层的select<br>derived：衍生表，在from之后的查询，临时查询结果<br>subquery：子查询，from之前的查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> session optimizer_switch<span class="operator">=</span><span class="string">&#x27;derived_merge=off&#x27;</span>;</span><br><span class="line">explain <span class="keyword">select</span> (<span class="keyword">select</span> name <span class="keyword">from</span> animals <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">1</span>) <span class="keyword">from</span> (<span class="keyword">select</span> id <span class="keyword">from</span> zoo_animals <span class="keyword">where</span> animals_id <span class="operator">=</span> <span class="number">3</span>) a;</span><br><span class="line"># 恢复 <span class="keyword">set</span> session optimizer_switch<span class="operator">=</span><span class="string">&#x27;derived_merge=on&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-1.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="union"><a href="#union" class="headerlink" title="union"></a>union</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="number">1</span> <span class="keyword">from</span> zoo_animals</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line"><span class="keyword">select</span> <span class="number">2</span> <span class="keyword">from</span> zoo_animals</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line"><span class="keyword">select</span> <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-3.jpg" alt="执行结果" loading="lazy"></p>
+<h2 id="partitions"><a href="#partitions" class="headerlink" title="partitions"></a>partitions</h2><p>分区信息，The partitions from which records would be matched by the query. The value is NULL for nonpartitioned tables. </p>
+<h2 id="type"><a href="#type" class="headerlink" title="type"></a>type</h2><p>表关联类型</p>
+<table>
+<thead>
+<tr>
+<th align="left">序号（序号越在前索引优化越好）</th>
+<th align="left">类型</th>
+<th align="left">意义</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left">system</td>
+<td align="left">The table has only one row (= system table).</td>
+<td align="left">system是const一种特例，表里只有一条元祖匹配</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">const</td>
+<td align="left">const is used when you compare all parts of a PRIMARY KEY or UNIQUE index to constant values.</td>
+<td align="left">主键查询或者唯一主键查询</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">eq_ref</td>
+<td align="left">It is used when all parts of an index are used by the join and the index is a PRIMARY KEY or UNIQUE NOT NULL index. eq_ref can be used for indexed columns that are compared using the = operator</td>
+<td align="left">主键、唯一索引关联查询</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">ref</td>
+<td align="left">ref is used if the join uses only a leftmost prefix of the key or if the key is not a PRIMARY KEY or UNIQUE index. ref can be used for indexed columns that are compared using the = or &lt;=&gt; operator</td>
+<td align="left">非主键、非唯一索引、唯一索引部分前缀</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left">fulltext</td>
+<td align="left">The join is performed using a FULLTEXT index.</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left">ref_or_null</td>
+<td align="left">This join type is like ref, but with the addition that MySQL does an extra search for rows that contain NULL values.</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="left">index_merge</td>
+<td align="left">This join type indicates that the Index Merge optimization is used</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="left">unique_subquery</td>
+<td align="left">unique_subquery is just an index lookup function that replaces the subquery completely for better efficiency.</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="left">index_subquery</td>
+<td align="left">it works for nonunique indexes in subqueries of the following form</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="left">range</td>
+<td align="left">range can be used when a key column is compared to a constant using any of the =, &lt;&gt;, &gt;, &gt;=, &lt;, &lt;=, IS NULL, &lt;=&gt;, BETWEEN, LIKE, or IN() operators:</td>
+<td align="left">范围查找</td>
+</tr>
+<tr>
+<td align="left">11</td>
+<td align="left">index</td>
+<td align="left">MySQL can use this join type when the query uses only columns that are part of a single index.</td>
+<td align="left">扫描二级索引就能拿到结果</td>
+</tr>
+<tr>
+<td align="left">12</td>
+<td align="left">ALL</td>
+<td align="left">A full table scan is done for each combination of rows from the previous tables</td>
+<td align="left">全表扫描，没有使用索引</td>
+</tr>
+</tbody></table>
+<h3 id="null"><a href="#null" class="headerlink" title="null"></a>null</h3><p>下面值为null，这表示mysql在执行的时候是需要访问表和索引，直接能拿到结果</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="built_in">min</span>(id) <span class="keyword">from</span> animals ;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-4.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="system-amp-const"><a href="#system-amp-const" class="headerlink" title="system &amp; const"></a>system &amp; const</h3><p>system是const一种特例，表里只有一条元祖匹配<br>const就是主键查询或者唯一主键查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> session optimizer_switch<span class="operator">=</span><span class="string">&#x27;derived_merge=off&#x27;</span>;</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> (<span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> animals <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">1</span>) a;</span><br><span class="line"><span class="keyword">set</span> session optimizer_switch<span class="operator">=</span><span class="string">&#x27;derived_merge=on&#x27;</span>;</span><br><span class="line"><span class="keyword">show</span> warnings ;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 优化结果</span><br><span class="line"><span class="keyword">select</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">AS</span> `id`,<span class="string">&#x27;朝阳动物园&#x27;</span> <span class="keyword">AS</span> `name`,<span class="string">&#x27;2022-03-03 11:15:59&#x27;</span> <span class="keyword">AS</span> `input_time` <span class="keyword">from</span> dual</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-5.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="eq-ref"><a href="#eq-ref" class="headerlink" title="eq_ref"></a>eq_ref</h3><p>主键、唯一索引关联查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> zoo_animals <span class="keyword">left</span> <span class="keyword">join</span> zoo z <span class="keyword">on</span> zoo_animals.zoo_id <span class="operator">=</span> z.id;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-6.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h3><p>非主键、非唯一索引、唯一索引部分前缀</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> zoo_animals <span class="keyword">where</span> animals_id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-7.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="range"><a href="#range" class="headerlink" title="range"></a>range</h3><p>范围查找</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> zoo_animals <span class="keyword">where</span> id <span class="operator">&gt;</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-8.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="index"><a href="#index" class="headerlink" title="index"></a>index</h3><p>扫描二级索引就能拿到结果</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> id,animals_id,zoo_id <span class="keyword">from</span> zoo_animals;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-9.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="ALL"><a href="#ALL" class="headerlink" title="ALL"></a>ALL</h3><p>全表扫描，没有使用索引或者使用全表扫描更加合适</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> id,animals_id,zoo_id,remark <span class="keyword">from</span> zoo_animals;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-10.jpg" alt="执行结果" loading="lazy"></p>
+<h2 id="possible-keys"><a href="#possible-keys" class="headerlink" title="possible_keys"></a>possible_keys</h2><p>可能用到的主键key</p>
+<h2 id="key"><a href="#key" class="headerlink" title="key"></a>key</h2><p>mysql实际采用那个索引来优化sql，如果没有使用索引，则该值为null</p>
+<h2 id="key-len"><a href="#key-len" class="headerlink" title="key_len"></a>key_len</h2><p>这一类展示的是mysql索引里使用的字节数，通过这个值可以算出具体使用索引中的哪些字段</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> session optimizer_switch<span class="operator">=</span><span class="string">&#x27;derived_merge=off&#x27;</span>;</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> (<span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> zoo_animals <span class="keyword">where</span> animals_id <span class="operator">=</span> <span class="number">1</span> <span class="keyword">and</span> zoo_id <span class="operator">=</span> <span class="number">1</span>) a;</span><br><span class="line"><span class="keyword">set</span> session optimizer_switch<span class="operator">=</span><span class="string">&#x27;derived_merge=on&#x27;</span>;</span><br><span class="line"><span class="keyword">show</span> warnings ;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-5.jpg" alt="执行结果" loading="lazy"></p>
+<p>其中key_len = 4;这里计算规则是：</p>
+<table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">大小(字节)</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">char(n)</td>
+<td align="left">汉字就是3n</td>
+<td align="left">n是代表字符数，utf-8格式下，一个数字或字母占一个字节，一个汉字占3个字节，不同的编码格式下字符数是不一样的</td>
+</tr>
+<tr>
+<td align="left">varchar(n)</td>
+<td align="left">汉字就是3n+2</td>
+<td align="left">n是代表字符数，utf-8格式下，一个数字或字母占一个字节，一个汉字占3个字节，其中多的2个字节用来存储字符串长度，varchar变长，不同的编码格式下字符数是不一样的</td>
+</tr>
+<tr>
+<td align="left">tinyint</td>
+<td align="left">1</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">smallint</td>
+<td align="left">2</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">int</td>
+<td align="left">4</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">bigint</td>
+<td align="left">8</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">date</td>
+<td align="left">3</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">timestamp</td>
+<td align="left">4</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">datetime</td>
+<td align="left">8</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">字段允许为null</td>
+<td align="left">额外增加1字节</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">索引最大值768字节</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h2 id="ref-1"><a href="#ref-1" class="headerlink" title="ref"></a>ref</h2><p>这个值显示key列使用的索引引用所使用的列或常量，const(常量)或列</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> zoo_animals <span class="keyword">left</span> <span class="keyword">join</span> zoo z <span class="keyword">on</span> zoo_animals.zoo_id <span class="operator">=</span> z.id;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-6.jpg" alt="执行结果" loading="lazy"></p>
+<h2 id="rows-amp-filtered"><a href="#rows-amp-filtered" class="headerlink" title="rows &amp; filtered"></a>rows &amp; filtered</h2><p>rows：mysql估计要读取并检测的行数，不是实际扫描的行数<br>rows * filtered / 100 可以估算出与表关联连接的行数</p>
+<h2 id="Extra"><a href="#Extra" class="headerlink" title="Extra"></a>Extra</h2><p>附加信息<br>详细看<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/explain-output.html#explain-extra-information">https://dev.mysql.com/doc/refman/5.7/en/explain-output.html#explain-extra-information</a></p>
+<h3 id="Using-index"><a href="#Using-index" class="headerlink" title="Using index"></a>Using index</h3><p>使用覆盖索引，就会显示Using index，覆盖索引：key值存在索引，如果直接能从key值所在的B+tree能获取到所需要的信息，则就用到了覆盖索引</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> (<span class="keyword">select</span> name <span class="keyword">from</span> zoo <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;猴子&#x27;</span>) <span class="keyword">from</span> zoo <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-11.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="Using-where"><a href="#Using-where" class="headerlink" title="Using where"></a>Using where</h3><p>使用where语句来处理结果，没有使用覆盖索引</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> zoo_animals <span class="keyword">where</span> remark <span class="operator">=</span> <span class="string">&#x27;哈哈&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-12.jpg" alt="执行结果" loading="lazy"></p>
+<h3 id="Using-index-condition"><a href="#Using-index-condition" class="headerlink" title="Using index condition"></a>Using index condition</h3><p>查询的列不完全被索引覆盖</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> zoo_animals <span class="keyword">where</span> animals_id <span class="operator">&gt;</span> <span class="number">1</span> limit <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-13.jpg" alt="执行结果" loading="lazy"></p>
+<h1 id="索引实践"><a href="#索引实践" class="headerlink" title="索引实践"></a>索引实践</h1><h2 id="数据准备-1"><a href="#数据准备-1" class="headerlink" title="数据准备"></a>数据准备</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> person</span><br><span class="line">(</span><br><span class="line">    id <span class="type">int</span> auto_increment <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">primary</span> <span class="keyword">key</span> comment <span class="string">&#x27;主键&#x27;</span>,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">40</span>) <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;姓名&#x27;</span>,</span><br><span class="line">    age <span class="type">int</span> <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;年纪&#x27;</span>,</span><br><span class="line">    province <span class="type">varchar</span>(<span class="number">20</span>) <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;省份&#x27;</span>,</span><br><span class="line">    gender <span class="type">int</span> <span class="keyword">null</span> comment <span class="string">&#x27;性别&#x27;</span>,</span><br><span class="line">    card <span class="type">varchar</span>(<span class="number">40</span>) <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;身份证号&#x27;</span>,</span><br><span class="line">    create_time datetime <span class="keyword">not</span> <span class="keyword">null</span> <span class="keyword">default</span> <span class="built_in">current_timestamp</span> comment <span class="string">&#x27;创建时间&#x27;</span>,</span><br><span class="line">    update_time datetime <span class="keyword">null</span> comment <span class="string">&#x27;更新时间&#x27;</span>,</span><br><span class="line">    <span class="keyword">unique</span> key unique_index_card(`card`),</span><br><span class="line">    key index_name_province_gender(`name`,`province`,`gender`)</span><br><span class="line">) engine <span class="operator">=</span> innodb auto_increment <span class="operator">=</span> <span class="number">1</span> <span class="keyword">default</span> charset <span class="operator">=</span> utf8;</span><br><span class="line"></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.person (id, name, age, province, gender, card, create_time, update_time) <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;张三&#x27;</span>, <span class="number">18</span>, <span class="string">&#x27;湖北省&#x27;</span>, <span class="number">1</span>, <span class="string">&#x27;202203041034&#x27;</span>, <span class="string">&#x27;2022-03-04 10:34:30&#x27;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.person (id, name, age, province, gender, card, create_time, update_time) <span class="keyword">VALUES</span> (<span class="number">2</span>, <span class="string">&#x27;李四&#x27;</span>, <span class="number">20</span>, <span class="string">&#x27;湖南省&#x27;</span>, <span class="number">0</span>, <span class="string">&#x27;202203051037&#x27;</span>, <span class="string">&#x27;2022-03-04 10:39:04&#x27;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.person (id, name, age, province, gender, card, create_time, update_time) <span class="keyword">VALUES</span> (<span class="number">3</span>, <span class="string">&#x27;王五&#x27;</span>, <span class="number">13</span>, <span class="string">&#x27;江西省&#x27;</span>, <span class="number">0</span>, <span class="string">&#x27;202103050437&#x27;</span>, <span class="string">&#x27;2022-03-04 10:39:04&#x27;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.person (id, name, age, province, gender, card, create_time, update_time) <span class="keyword">VALUES</span> (<span class="number">4</span>, <span class="string">&#x27;赵六&#x27;</span>, <span class="number">15</span>, <span class="string">&#x27;广东省&#x27;</span>, <span class="number">1</span>, <span class="string">&#x27;202507052037&#x27;</span>, <span class="string">&#x27;2022-03-04 10:39:04&#x27;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.person (id, name, age, province, gender, card, create_time, update_time) <span class="keyword">VALUES</span> (<span class="number">5</span>, <span class="string">&#x27;孙七&#x27;</span>, <span class="number">55</span>, <span class="string">&#x27;河北省&#x27;</span>, <span class="number">0</span>, <span class="string">&#x27;202210111232&#x27;</span>, <span class="string">&#x27;2022-03-04 10:39:04&#x27;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.person (id, name, age, province, gender, card, create_time, update_time) <span class="keyword">VALUES</span> (<span class="number">6</span>, <span class="string">&#x27;周八&#x27;</span>, <span class="number">34</span>, <span class="string">&#x27;天津省&#x27;</span>, <span class="number">1</span>, <span class="string">&#x27;201207240110&#x27;</span>, <span class="string">&#x27;2022-03-04 10:39:04&#x27;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.person (id, name, age, province, gender, card, create_time, update_time) <span class="keyword">VALUES</span> (<span class="number">7</span>, <span class="string">&#x27;吴九&#x27;</span>, <span class="number">98</span>, <span class="string">&#x27;辽宁省&#x27;</span>, <span class="number">1</span>, <span class="string">&#x27;201604328713&#x27;</span>, <span class="string">&#x27;2022-03-04 10:39:04&#x27;</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tahw.person (id, name, age, province, gender, card, create_time, update_time) <span class="keyword">VALUES</span> (<span class="number">8</span>, <span class="string">&#x27;郑十&#x27;</span>, <span class="number">30</span>, <span class="string">&#x27;山东省&#x27;</span>, <span class="number">1</span>, <span class="string">&#x27;201932332546&#x27;</span>, <span class="string">&#x27;2022-03-04 10:39:04&#x27;</span>, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="key-len计算"><a href="#key-len计算" class="headerlink" title="key_len计算"></a>key_len计算</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># key_len <span class="operator">=</span> <span class="number">40</span> <span class="operator">*</span> <span class="number">3</span> <span class="operator">+</span> <span class="number">2</span></span><br><span class="line"># <span class="keyword">ref</span>列是const</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> person <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;张三&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-14.jpg" alt="执行结果" loading="lazy"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># key_len <span class="operator">=</span> <span class="number">40</span> <span class="operator">*</span> <span class="number">3</span> <span class="operator">+</span> <span class="number">2</span> <span class="operator">+</span> <span class="number">20</span> <span class="operator">*</span> <span class="number">3</span> <span class="operator">+</span> <span class="number">2</span> <span class="operator">+</span> <span class="number">4</span> <span class="operator">+</span> <span class="number">1</span></span><br><span class="line"># <span class="keyword">ref</span>列是const,const,const</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> person <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;张三&#x27;</span> <span class="keyword">and</span> province <span class="operator">=</span> <span class="string">&#x27;湖北省&#x27;</span> <span class="keyword">and</span> gender <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-15.jpg" alt="执行结果" loading="lazy"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 根据key_len来确定只使用了name索引字段</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> person <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;张三&#x27;</span> <span class="keyword">and</span> gender <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/mysql-2-16.jpg" alt="执行结果" loading="lazy"></p>
+<h2 id="type区分"><a href="#type区分" class="headerlink" title="type区分"></a>type区分</h2><table>
+<thead>
+<tr>
+<th align="left">sql</th>
+<th align="left">type</th>
+<th align="left">解释</th>
+<th align="left">执行结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">explain select * from person where <font color='red'><b>name &gt; &#39;张三&#39;</b></font>;</td>
+<td align="left">ALL</td>
+<td align="left">根据索引最左侧原理，name也可以单独使用索引，possible_keys是使用name索引的，但是其实mysql根据表的结果，查询全部字段，数量不多，就不采用查询二级索引然后回查的方式，直接全表扫描效率更高</td>
+<td align="left"><img src="/images/mysql-2-17.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+<tr>
+<td align="left">explain select * from person where <font color='red'><b>name != &#39;张三&#39;</b></font>;</td>
+<td align="left">ALL</td>
+<td align="left">根据索引最左侧原理，name也可以单独使用索引，possible_keys是使用name索引的，但是其实mysql根据表的结果，查询全部字段，数量不多，就不采用查询二级索引然后回查的方式，直接全表扫描效率更高</td>
+<td align="left"><img src="/images/mysql-2-17.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+<tr>
+<td align="left">explain select * from person where <font color='red'><b>name &lt;&gt; &#39;张三&#39;</b></font>;</td>
+<td align="left">ALL</td>
+<td align="left">根据索引最左侧原理，name也可以单独使用索引，possible_keys是使用name索引的，但是其实mysql根据表的结果，查询全部字段，数量不多，就不采用查询二级索引然后回查的方式，直接全表扫描效率更高</td>
+<td align="left"><img src="/images/mysql-2-17.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+<tr>
+<td align="left">explain select * from person where <font color='red'><b>name not in (&#39;张三&#39;)</b></font>;</td>
+<td align="left">ALL</td>
+<td align="left">根据索引最左侧原理，name也可以单独使用索引，possible_keys是使用name索引的，但是其实mysql根据表的结果，查询全部字段，数量不多，就不采用查询二级索引然后回查的方式，直接全表扫描效率更高</td>
+<td align="left"><img src="/images/mysql-2-17.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+<tr>
+<td align="left">explain select * from person where <font color='red'><b>name in (&#39;张三&#39;)</b></font>;</td>
+<td align="left">ref</td>
+<td align="left">使用索引</td>
+<td align="left"><img src="/images/mysql-2-18.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+<tr>
+<td align="left">explain select * from person where <font color='red'><b>name = &#39;张三&#39;</b></font>;</td>
+<td align="left">ref</td>
+<td align="left">使用索引</td>
+<td align="left"><img src="/images/mysql-2-18.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+</tbody></table>
+<p>下面两个sql执行前，先加一下索引<code>alter table person add index index_age(</code>age<code>) using btree ;</code></p>
+<table>
+<thead>
+<tr>
+<th align="left">sql</th>
+<th align="left">type</th>
+<th align="left">解释</th>
+<th align="left">执行结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">explain select * from person where <font color='red'><b>age &gt; 10</b></font>;</td>
+<td align="left">ALL</td>
+<td align="left">根据索引最左侧原理，name也可以单独使用索引，possible_keys是使用索引的，但是其实mysql根据表的结果，查询全部字段，数量不多，就不采用查询二级索引然后回查的方式，直接全表扫描效率更高，注意这里extra为Using where</td>
+<td align="left"><img src="/images/mysql-2-20.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+<tr>
+<td align="left">explain select * from person where <font color='red'><b>age &gt; 10 and age &lt; 20</b></font>;</td>
+<td align="left">range</td>
+<td align="left">使用索引，为什么？其实这也是优化手段，分页查询会减少查询</td>
+<td align="left"><img src="/images/mysql-2-19.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="left">sql</th>
+<th align="left">type</th>
+<th align="left">解释</th>
+<th align="left">执行结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">explain select <font color='red'><b>name,province</b></font> from person where substring(name,0,1) = &#39;张&#39;;</td>
+<td align="left">Index</td>
+<td align="left">possible_keys识别出来没有使用索引，截取字符串函数是不能使用索引的，但是获取的是name索引相关的字段，二级索引是最优的方式，这里也就使用二级索引字段的索引，而不是name字段索引，key_len进一步来验证这一点</td>
+<td align="left"><img src="/images/mysql-2-21.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+<tr>
+<td align="left">explain select <font color='red'><b>*</b></font> from person where substring(name,0,1) = &#39;张&#39;;</td>
+<td align="left">ALL</td>
+<td align="left">没有使用索引，不识别函数，查主键索引最方便</td>
+<td align="left"><img src="/images/mysql-2-22.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="left">sql</th>
+<th align="left">type</th>
+<th align="left">解释</th>
+<th align="left">执行结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">explain select * from person where name like <font color='red'><b>&#39;%十&#39;</b></font>;</td>
+<td align="left">ALL</td>
+<td align="left">前面百分号不识别，熟知B+Tree即可知道</td>
+<td align="left"><img src="/images/mysql-2-23.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+<tr>
+<td align="left">explain select * from person where name like <font color='red'><b>&#39;李%&#39;</b></font>;</td>
+<td align="left">range</td>
+<td align="left">后面百分号可以使用索引，最左匹配原则</td>
+<td align="left"><img src="/images/mysql-2-24.jpg" alt="执行结果" loading="lazy"></td>
+</tr>
+</tbody></table>
+<h1 id="附"><a href="#附" class="headerlink" title="附"></a>附</h1><p>官方地址：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/explain-output.html">https://dev.mysql.com/doc/refman/5.7/en/explain-output.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="prev" title="mysql之索引底层数据结构">
+                  <i class="fa fa-chevron-left"></i> mysql之索引底层数据结构
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">李俊龙</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
