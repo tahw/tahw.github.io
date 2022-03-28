@@ -129,7 +129,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -181,6 +181,113 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2022/03/18/mysql%E4%B9%8B%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%92%8C%E9%94%81%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/03/18/mysql%E4%B9%8B%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%92%8C%E9%94%81%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">mysql之事务隔离级别和锁机制</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-18 18:29:12" itemprop="dateCreated datePublished" datetime="2022-03-18T18:29:12+08:00">2022-03-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-28 15:11:31" itemprop="dateModified" datetime="2022-03-28T15:11:31+08:00">2022-03-28</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>事务是由一组sql语句组成的逻辑单元，他们要么成功提交，要么失败都回滚掉。</p>
+<blockquote>
+<p>原文：Transactions are atomic units of work that can be committed or rolled back. When a transaction makes multiple changes to the database, either all the changes succeed when the transaction is committed, or all the changes are undone when the transaction is rolled back. <br><br>Database transactions, as implemented by InnoDB, have properties that are collectively known by the acronym ACID, for atomicity, consistency, isolation, and durability.</p>
+</blockquote>
+<h2 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h2><p>事务的特性ACID</p>
+<h3 id="A-atomicity（原子性）"><a href="#A-atomicity（原子性）" class="headerlink" title="A - atomicity（原子性）"></a>A - atomicity（原子性）</h3><p>事务是一个原子的操作单元，要么全部提交，要么全部回滚</p>
+<blockquote>
+<p>原文：Transactions are atomic units of work that can be committed or rolled back. When a transaction makes multiple changes to the database, either all the changes succeed when the transaction is committed, or all the changes are undone when the transaction is rolled back.</p>
+</blockquote>
+<h3 id="C-consistency（一致性）"><a href="#C-consistency（一致性）" class="headerlink" title="C - consistency（一致性）"></a>C - consistency（一致性）</h3><p>数据需要保持一致的状态，无论事务修改数据，读的都是一致数据。不能是中间数据</p>
+<blockquote>
+<p>原文：The database remains in a consistent state at all times — after each commit or rollback, and while transactions are in progress. If related data is being updated across multiple tables, queries see either all old values or all new values, not a mix of old and new values.</p>
+</blockquote>
+<h3 id="I-isolation（隔离性）"><a href="#I-isolation（隔离性）" class="headerlink" title="I - isolation（隔离性）"></a>I - isolation（隔离性）</h3><p>事务是隔离的。事务处理过程中的数据是不会被外部可见的。</p>
+<blockquote>
+<p>原文：Transactions are protected (isolated) from each other while they are in progress; they cannot interfere with each other or see each other&#39;s uncommitted data. This isolation is achieved through the locking mechanism. Experienced users can adjust the isolation level, trading off less protection in favor of increased performance and concurrency, when they can be sure that the transactions really do not interfere with each other.</p>
+</blockquote>
+<h3 id="D-durability（持久性）"><a href="#D-durability（持久性）" class="headerlink" title="D - durability（持久性）"></a>D - durability（持久性）</h3><p>事务结果是持久性的，即使系统出现故障，也能恢复。</p>
+<blockquote>
+<p>原文：The results of transactions are durable: once a commit operation succeeds, the changes made by that transaction are safe from power failures, system crashes, race conditions, or other potential dangers that many non-database applications are vulnerable to. Durability typically involves writing to disk storage, with a certain amount of redundancy to protect against power failures or software crashes during write operations. (In InnoDB, the doublewrite buffer assists with durability.)</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/18/mysql%E4%B9%8B%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%92%8C%E9%94%81%E6%9C%BA%E5%88%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2022/03/10/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96%E9%80%89%E6%8B%A9/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -212,7 +319,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-15 19:13:34" itemprop="dateModified" datetime="2022-03-15T19:13:34+08:00">2022-03-15</time>
+        <time title="修改时间：2022-03-15 19:38:33" itemprop="dateModified" datetime="2022-03-15T19:38:33+08:00">2022-03-15</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -584,95 +691,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2022/02/11/dubbo%E4%B9%8B%E8%B0%83%E7%94%A8%E8%AF%A6%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李俊龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天真有邪">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/02/11/dubbo%E4%B9%8B%E8%B0%83%E7%94%A8%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">dubbo之调用详解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-02-11 17:08:33" itemprop="dateCreated datePublished" datetime="2022-02-11T17:08:33+08:00">2022-02-11</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-02-16 22:25:04" itemprop="dateModified" datetime="2022-02-16T22:25:04+08:00">2022-02-16</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/dubbo/" itemprop="url" rel="index"><span itemprop="name">dubbo</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="dubbo之调用详解"><a href="#dubbo之调用详解" class="headerlink" title="dubbo之调用详解"></a>dubbo之调用详解</h1><p>前言：分析的dubbo源码是2.7.7版本</p>
-<h1 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h1><p>代理类方法调用，走的是InvokerInvocationHandler.invoke方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * InvokerHandler</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InvokerInvocationHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(InvokerInvocationHandler.class);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Invoker&lt;?&gt; invoker;</span><br><span class="line">    <span class="keyword">private</span> ConsumerModel consumerModel;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">InvokerInvocationHandler</span><span class="params">(Invoker&lt;?&gt; handler)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.invoker = handler;</span><br><span class="line">        String serviceKey = invoker.getUrl().getServiceKey();</span><br><span class="line">        <span class="keyword">if</span> (serviceKey != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.consumerModel = ApplicationModel.getConsumerModel(serviceKey);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 这里的Invoker就是</span></span><br><span class="line"><span class="comment">     * MockClusterInvoker -&gt;</span></span><br><span class="line"><span class="comment">     *   AbstractCluster$Interceptor</span></span><br><span class="line"><span class="comment">     *     FailoverClusterInvoker -&gt;</span></span><br><span class="line"><span class="comment">     *        RegistryDirectory -&gt;</span></span><br><span class="line"><span class="comment">     *          路由</span></span><br><span class="line"><span class="comment">     *          List&lt;RegistryDirectory$InvokerDelegate&gt;</span></span><br><span class="line"><span class="comment">     *          负载</span></span><br><span class="line"><span class="comment">     *               RegistryDirectory$InvokerDelegate</span></span><br><span class="line"><span class="comment">     *                  ListenerInvokerWrapper -&gt;</span></span><br><span class="line"><span class="comment">     *                     Invoker$0(ConsumerContextFilter)</span></span><br><span class="line"><span class="comment">     *                     Invoker$1(FutureFilter)</span></span><br><span class="line"><span class="comment">     *                     Invoker$2(MonitorFilter) -&gt;</span></span><br><span class="line"><span class="comment">     *                         AsyncToSyncInvoker -&gt;</span></span><br><span class="line"><span class="comment">     *                          DubboInvoker</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> proxy</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> method</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Throwable</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (method.getDeclaringClass() == Object.class) &#123;</span><br><span class="line">            <span class="keyword">return</span> method.invoke(invoker, args);</span><br><span class="line">        &#125;</span><br><span class="line">        String methodName = method.getName();</span><br><span class="line">        Class&lt;?&gt;[] parameterTypes = method.getParameterTypes();</span><br><span class="line">        <span class="keyword">if</span> (parameterTypes.length == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="string">&quot;toString&quot;</span>.equals(methodName)) &#123;</span><br><span class="line">                <span class="keyword">return</span> invoker.toString();</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;$destroy&quot;</span>.equals(methodName)) &#123;</span><br><span class="line">                invoker.destroy();</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;hashCode&quot;</span>.equals(methodName)) &#123;</span><br><span class="line">                <span class="keyword">return</span> invoker.hashCode();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (parameterTypes.length == <span class="number">1</span> &amp;&amp; <span class="string">&quot;equals&quot;</span>.equals(methodName)) &#123;</span><br><span class="line">            <span class="keyword">return</span> invoker.equals(args[<span class="number">0</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        RpcInvocation rpcInvocation = <span class="keyword">new</span> RpcInvocation(method, invoker.getInterface().getName(), args);</span><br><span class="line">        String serviceKey = invoker.getUrl().getServiceKey();</span><br><span class="line">        rpcInvocation.setTargetServiceUniqueName(serviceKey);</span><br><span class="line">      </span><br><span class="line">        <span class="keyword">if</span> (consumerModel != <span class="keyword">null</span>) &#123;</span><br><span class="line">            rpcInvocation.put(Constants.CONSUMER_MODEL, consumerModel);</span><br><span class="line">            rpcInvocation.put(Constants.METHOD_MODEL, consumerModel.getMethodModel(method));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> invoker.invoke(rpcInvocation).recreate(); <span class="comment">// 构造成RpcInvocation</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/02/11/dubbo%E4%B9%8B%E8%B0%83%E7%94%A8%E8%AF%A6%E8%A7%A3/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
