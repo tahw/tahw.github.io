@@ -129,7 +129,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -172,6 +172,106 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="post-title-link" itemprop="url">mysql之索引底层数据结构</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-20 17:58:03" itemprop="dateCreated datePublished" datetime="2022-02-20T17:58:03+08:00">2022-02-20</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-01 22:07:57" itemprop="dateModified" datetime="2022-03-01T22:07:57+08:00">2022-03-01</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="mysql之索引底层数据结构"><a href="#mysql之索引底层数据结构" class="headerlink" title="mysql之索引底层数据结构"></a>mysql之索引底层数据结构</h1><p>索引：<br><b>A database index is a <font color='red'>data structure</font> that improves the speed of operations in a table. Indexes can be created using one or more columns, providing the basis for both <font color='red'>rapid random lookups and efficient ordering</font> of access to records.</b></p>
+<h1 id="索引数据结构"><a href="#索引数据结构" class="headerlink" title="索引数据结构"></a>索引数据结构</h1><ol>
+<li>Hash表</li>
+<li>二叉树  </li>
+<li>红黑树</li>
+<li>Btree</li>
+</ol>
+<h2 id="Hash表"><a href="#Hash表" class="headerlink" title="Hash表"></a>Hash表</h2><p><img src="/images/mysql-1-1.png" alt="Hash表结构" loading="lazy"></p>
+<ol>
+<li>hash表结构通过hash的方式来获取数据存储的位置</li>
+<li>很多时候hash索引要比B+tree索引高效</li>
+<li><font color='red'><b>仅仅支持“=、in&quot;的方式查找，范围查找不行</b></font></li>
+<li><font color='red'><b>hash冲突，hash表扩大</b></font></li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -516,102 +616,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/01/10/dubbo%E4%B9%8B%E4%B8%8Espring%E6%95%B4%E5%90%88%E6%BA%90%E7%A0%81/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/12/21/dubbo%E4%B9%8B%E5%8F%AF%E6%89%A9%E5%B1%95SPI%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李俊龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天真有邪">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/12/21/dubbo%E4%B9%8B%E5%8F%AF%E6%89%A9%E5%B1%95SPI%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">dubbo之可扩展SPI源码解析</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-12-21 18:51:43" itemprop="dateCreated datePublished" datetime="2021-12-21T18:51:43+08:00">2021-12-21</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-01-10 15:32:29" itemprop="dateModified" datetime="2022-01-10T15:32:29+08:00">2022-01-10</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/dubbo/" itemprop="url" rel="index"><span itemprop="name">dubbo</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="dubbo之可扩展SPI源码解析"><a href="#dubbo之可扩展SPI源码解析" class="headerlink" title="dubbo之可扩展SPI源码解析"></a>dubbo之可扩展SPI源码解析</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;在dubbo中，很多的扩展都是spi来加载的，比如Procotol、LoadBalance，而dubbo的扩展点加载是基于jdk标准的spi扩展机制增强而来的，dubbo解决jdk有的一些问题</p>
-<ul>
-<li><input checked="" disabled="" type="checkbox"> jdk标准的spi会一次性实例化所有的实现，不能按需加载</li>
-<li><input checked="" disabled="" type="checkbox"> 扩展点如果加载失败，不会友好的提示异常信息</li>
-<li><input checked="" disabled="" type="checkbox"> 可以对扩展点实现ioc和aop，ioc通过setter()方法来注入，而aop可以通过wrapper类来增强</li>
-</ul>
-<h2 id="官方地址"><a href="#官方地址" class="headerlink" title="官方地址"></a>官方地址</h2><p><a target="_blank" rel="noopener" href="https://dubbo.apache.org/zh/docsv2.7/dev/source/adaptive-extension/">https://dubbo.apache.org/zh/docsv2.7/dev/source/adaptive-extension/</a></p>
-<h2 id="SPI应用"><a href="#SPI应用" class="headerlink" title="SPI应用"></a>SPI应用</h2><p>这里是引用github dubbo master的代码，版本是2.7.7-SNAPSHOT</p>
-<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><p>新增模块，要使用dubbo，需引入下面pom</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-common<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.7-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-rpc-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.7-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-rpc-dubbo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.7-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-rpc-http<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.7-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/12/21/dubbo%E4%B9%8B%E5%8F%AF%E6%89%A9%E5%B1%95SPI%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

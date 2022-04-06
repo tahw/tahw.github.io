@@ -129,7 +129,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -172,6 +172,97 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2022/03/31/mysql%E4%B9%8BMVCC%E5%92%8CBufferPool%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="李俊龙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="天真有邪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/03/31/mysql%E4%B9%8BMVCC%E5%92%8CBufferPool%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">mysql之MVCC和BufferPool缓存机制</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-31 10:39:24" itemprop="dateCreated datePublished" datetime="2022-03-31T10:39:24+08:00">2022-03-31</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-06 13:02:52" itemprop="dateModified" datetime="2022-04-06T13:02:52+08:00">2022-04-06</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="mysql之MVCC和BufferPool缓存机制"><a href="#mysql之MVCC和BufferPool缓存机制" class="headerlink" title="mysql之MVCC和BufferPool缓存机制"></a>mysql之MVCC和BufferPool缓存机制</h1><h1 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h1><p>mvcc（Multiversion Concurrency Control）多版本并发控制机制。MVCC提升事务并发处理能力。要介绍MVCC必须先介绍undo日志链和read-view一致性视图。MVCC是使用这两个来实现的。</p>
+<blockquote>
+<p>读已提交和可重复读都实现MVCC</p>
+</blockquote>
+<h2 id="undo日志链"><a href="#undo日志链" class="headerlink" title="undo日志链"></a>undo日志链</h2><p>undo日志版本链是指一行数据被多个事务依次修改后，在每个事务修改后，mysql会保留修改前的数据。这个就是undo日志。<font color='red'><b>其中使用两个隐藏的字段trx_id（事务id）和roll_pointer（指针）把undo给串联起来。</b></font><br><img src="/images/mysql-6-1-undo_log.png" alt="undo日志链" loading="lazy"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/31/mysql%E4%B9%8BMVCC%E5%92%8CBufferPool%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -591,106 +682,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/03/01/mysql%E4%B9%8BExplain%E8%AF%A6%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李俊龙">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="天真有邪">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="post-title-link" itemprop="url">mysql之索引底层数据结构</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-02-20 17:58:03" itemprop="dateCreated datePublished" datetime="2022-02-20T17:58:03+08:00">2022-02-20</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-01 22:07:57" itemprop="dateModified" datetime="2022-03-01T22:07:57+08:00">2022-03-01</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="mysql之索引底层数据结构"><a href="#mysql之索引底层数据结构" class="headerlink" title="mysql之索引底层数据结构"></a>mysql之索引底层数据结构</h1><p>索引：<br><b>A database index is a <font color='red'>data structure</font> that improves the speed of operations in a table. Indexes can be created using one or more columns, providing the basis for both <font color='red'>rapid random lookups and efficient ordering</font> of access to records.</b></p>
-<h1 id="索引数据结构"><a href="#索引数据结构" class="headerlink" title="索引数据结构"></a>索引数据结构</h1><ol>
-<li>Hash表</li>
-<li>二叉树  </li>
-<li>红黑树</li>
-<li>Btree</li>
-</ol>
-<h2 id="Hash表"><a href="#Hash表" class="headerlink" title="Hash表"></a>Hash表</h2><p><img src="/images/mysql-1-1.png" alt="Hash表结构" loading="lazy"></p>
-<ol>
-<li>hash表结构通过hash的方式来获取数据存储的位置</li>
-<li>很多时候hash索引要比B+tree索引高效</li>
-<li><font color='red'><b>仅仅支持“=、in&quot;的方式查找，范围查找不行</b></font></li>
-<li><font color='red'><b>hash冲突，hash表扩大</b></font></li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/02/20/mysql%E4%B9%8B%E7%B4%A2%E5%BC%95%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
