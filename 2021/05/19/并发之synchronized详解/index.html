@@ -22,8 +22,8 @@
 <script class="next-config" data-name="main" type="application/json">{"hostname":"theme-next.js.org","root":"/","images":"/images","scheme":"Gemini","version":"8.6.1","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 <meta name="description" content="如何解决并发问题&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;实际上，所有的并发模式在解决并发安全问题时，采用的方案都是序列化访问临界资源。即在同一时刻，只能有一个线程访问临界资源，也称作同步互质访问。Java中提供了两种方式来实现同步互质访问：synchronized和lock。同步器的本质就是加锁，加锁的目的：序列化访问临界资源。  当多个线程执行一个方法时，该方法的局部变量并不是临界资源，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="synchronized">
-<meta property="og:url" content="https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:title" content="并发之synchronized详解">
+<meta property="og:url" content="https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91%E4%B9%8Bsynchronized%E8%AF%A6%E8%A7%A3/index.html">
 <meta property="og:site_name" content="天真有邪">
 <meta property="og:description" content="如何解决并发问题&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;实际上，所有的并发模式在解决并发安全问题时，采用的方案都是序列化访问临界资源。即在同一时刻，只能有一个线程访问临界资源，也称作同步互质访问。Java中提供了两种方式来实现同步互质访问：synchronized和lock。同步器的本质就是加锁，加锁的目的：序列化访问临界资源。  当多个线程执行一个方法时，该方法的局部变量并不是临界资源，">
 <meta property="og:locale" content="zh_CN">
@@ -33,21 +33,21 @@
 <meta property="og:image" content="https://theme-next.js.org/images/pasted-45.png">
 <meta property="og:image" content="https://theme-next.js.org/images/pasted-47.png">
 <meta property="article:published_time" content="2021-05-19T01:02:00.000Z">
-<meta property="article:modified_time" content="2021-07-07T04:23:12.335Z">
+<meta property="article:modified_time" content="2022-04-21T02:59:49.455Z">
 <meta property="article:author" content="李俊龙">
 <meta property="article:tag" content="并发">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://theme-next.js.org/images/pasted-43.png">
 
 
-<link rel="canonical" href="https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">
+<link rel="canonical" href="https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91%E4%B9%8Bsynchronized%E8%AF%A6%E8%A7%A3/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/","path":"2021/05/19/并发synchronized详解/","title":"synchronized"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91%E4%B9%8Bsynchronized%E8%AF%A6%E8%A7%A3/","path":"2021/05/19/并发之synchronized详解/","title":"并发之synchronized详解"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>synchronized | 天真有邪</title>
+<title>并发之synchronized详解 | 天真有邪</title>
   
 
 
@@ -195,7 +195,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91synchronized%E8%AF%A6%E8%A7%A3/">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/05/19/%E5%B9%B6%E5%8F%91%E4%B9%8Bsynchronized%E8%AF%A6%E8%A7%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -208,7 +208,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          synchronized
+          并发之synchronized详解
         </h1>
 
         <div class="post-meta-container">
@@ -226,7 +226,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-07-07 12:23:12" itemprop="dateModified" datetime="2021-07-07T12:23:12+08:00">2021-07-07</time>
+        <time title="修改时间：2022-04-21 10:59:49" itemprop="dateModified" datetime="2022-04-21T10:59:49+08:00">2022-04-21</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -271,7 +271,7 @@
 <h2 id="monitor监视器锁"><a href="#monitor监视器锁" class="headerlink" title="monitor监视器锁"></a>monitor监视器锁</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;任何一个对象都有一个<code>monitor</code>与之关联，并且一个<code>monitor</code>被持有后，它将处于锁定状态。<br>synchronized在jvm里的实现都是基于进入和退出monitor对象来实现方法的同步与代码块同步。虽然具体实现细节不一样，但是都可以成对的<code>monitorenter</code>和<code>monitorexit</code>指令来实现。</p>
 <ul>
 <li>monitorenter<ul>
-<li>当monitorenter为0，如果线程进入monitor，则进入数加1，该线程持有了monitor<br>   * 如果这个线程持有了monitor，尝试再进入monitor（例如方法调用方法），则monitor的进入数加1<br>   * 那其他线程已经占有的monitor，则其他线程会阻塞状态，直至monitor的进入数为0，再重新尝试获取monitor的所有权</li>
+<li>当monitorenter为0，如果线程进入monitor，则进入数加1，该线程持有了monitor<br>   * 如果这个线程持有了monitor，尝试再进入monitor（例如方法调用方法），则monitor的进入数加1<br>   * 那当前线程已经占有的monitor，则其他线程会阻塞状态，直至monitor的进入数为0，再重新尝试获取monitor的所有权</li>
 </ul>
 </li>
 <li>monitorexit<ul>
@@ -339,7 +339,7 @@
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">java</span>.lang.Object object internals:</span><br><span class="line"><span class="attribute">OFF</span>  SZ   TYPE DESCRIPTION               VALUE</span><br><span class="line">  <span class="attribute">0</span>   <span class="number">8</span>        (object header: mark)     <span class="number">0</span>x<span class="number">0000000000000005</span> (biasable; age: <span class="number">0</span>)</span><br><span class="line">  <span class="attribute">8</span>   <span class="number">4</span>        (object header: class)    <span class="number">0</span>xf<span class="number">80001</span>e<span class="number">5</span></span><br><span class="line"> <span class="attribute">12</span>   <span class="number">4</span>        (object alignment gap)    </span><br><span class="line"><span class="attribute">Instance</span> size: <span class="number">16</span> bytes</span><br><span class="line"><span class="attribute">Space</span> losses: <span class="number">0</span> bytes internal + <span class="number">4</span> bytes external = <span class="number">4</span> bytes total</span><br><span class="line"></span><br><span class="line"><span class="attribute">java</span>.lang.Object object internals:</span><br><span class="line"><span class="attribute">OFF</span>  SZ   TYPE DESCRIPTION               VALUE</span><br><span class="line">  <span class="attribute">0</span>   <span class="number">8</span>        (object header: mark)     <span class="number">0</span>x<span class="number">00007</span>ffeda<span class="number">809005</span> (biased: <span class="number">0</span>x<span class="number">0000001</span>fffb<span class="number">6</span>a<span class="number">024</span>; epoch: <span class="number">0</span>; age: <span class="number">0</span>)</span><br><span class="line">  <span class="attribute">8</span>   <span class="number">4</span>        (object header: class)    <span class="number">0</span>xf<span class="number">80001</span>e<span class="number">5</span></span><br><span class="line"> <span class="attribute">12</span>   <span class="number">4</span>        (object alignment gap)    </span><br><span class="line"><span class="attribute">Instance</span> size: <span class="number">16</span> bytes</span><br><span class="line"><span class="attribute">Space</span> losses: <span class="number">0</span> bytes internal + <span class="number">4</span> bytes external = <span class="number">4</span> bytes total</span><br><span class="line"></span><br><span class="line"><span class="attribute">607635164</span></span><br><span class="line"><span class="attribute">java</span>.lang.Object object internals:</span><br><span class="line"><span class="attribute">OFF</span>  SZ   TYPE DESCRIPTION               VALUE</span><br><span class="line">  <span class="attribute">0</span>   <span class="number">8</span>        (object header: mark)     <span class="number">0</span>x<span class="number">0000002437</span>c<span class="number">6</span>dc<span class="number">01</span> (hash: <span class="number">0</span>x<span class="number">2437</span>c<span class="number">6</span>dc; age: <span class="number">0</span>)</span><br><span class="line">  <span class="attribute">8</span>   <span class="number">4</span>        (object header: class)    <span class="number">0</span>xf<span class="number">80001</span>e<span class="number">5</span></span><br><span class="line"> <span class="attribute">12</span>   <span class="number">4</span>        (object alignment gap)    </span><br><span class="line"><span class="attribute">Instance</span> size: <span class="number">16</span> bytes</span><br><span class="line"><span class="attribute">Space</span> losses: <span class="number">0</span> bytes internal + <span class="number">4</span> bytes external = <span class="number">4</span> bytes total</span><br><span class="line"></span><br><span class="line"><span class="attribute">java</span>.lang.Object object internals:</span><br><span class="line"><span class="attribute">OFF</span>  SZ   TYPE DESCRIPTION               VALUE</span><br><span class="line">  <span class="attribute">0</span>   <span class="number">8</span>        (object header: mark)     <span class="number">0</span>x<span class="number">000070000</span>c<span class="number">4</span>d<span class="number">2988</span> (thin lock: <span class="number">0</span>x<span class="number">000070000</span>c<span class="number">4</span>d<span class="number">2988</span>)</span><br><span class="line">  <span class="attribute">8</span>   <span class="number">4</span>        (object header: class)    <span class="number">0</span>xf<span class="number">80001</span>e<span class="number">5</span></span><br><span class="line"> <span class="attribute">12</span>   <span class="number">4</span>        (object alignment gap)    </span><br><span class="line"><span class="attribute">Instance</span> size: <span class="number">16</span> bytes</span><br><span class="line"><span class="attribute">Space</span> losses: <span class="number">0</span> bytes internal + <span class="number">4</span> bytes external = <span class="number">4</span> bytes total</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>那打印的<code>System.out.println(o.hashCode());</code>不是锁降为无锁状态，而是此时作为没有synchronized修饰对象，获取的此时对象的头。<br>那这里为什么偏向锁调用hashCode会升级偏向锁呢？由于偏向锁的时候Mark Word里是没有存储hashCode，而轻量级锁里面是有hashCode的，hashCode是锁对象里的Mark Word的指针指向栈中lock record中的mark word的hashCode，详细见锁的膨胀升级。那这是直接调用底层生成的hashcode，还是使用的lock record的hashcode，这块是不确定的。</p>
 <h4 id="自旋锁"><a href="#自旋锁" class="headerlink" title="自旋锁"></a>自旋锁</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;轻量级锁失败后，虚拟机为了避免线程真实地在操作系统层面挂起，还会进行一项称为自旋锁的手段。这是基于在大多情况下，线程持有锁的时间都不太长，如果直接挂起操作系统层面的线程可能会得不偿失，毕竟操作系统实现线程之间的切换时需要从用户态切换到核心态，这个状态切换是需要时间的，成本比较高。因此自旋锁会假设在不久将来，当前的线程可以获取锁，因此虚拟机会让当前想要获取锁的线程做几个空循环（这也是成为自旋的原因），一般不会太久，可能是50个循环或100循环，在经过若干次循环后，如果得到锁，就顺利进入临界区。如果还不能获取锁，那就会将线程在操作系统层面挂起，这就是自旋锁的优化。否则就升级为重量级锁</p>
-<h4 id="锁消除"><a href="#锁消除" class="headerlink" title="锁消除"></a>锁消除</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;锁消除是虚拟机的另外一种锁的优化。这种优化更彻底，java虚拟机在Jit编译时（可以简单理解为当某段代码即将第一次被执行时进行编译，又称及时编译），通过对上下文的扫描，去除不可能存在共享资源竞争的锁，通过这种方式消除没有必要的锁，可以节省毫无意义的请求锁时间。所消除的依据是逃逸分析的数据支持。</p>
+<h4 id="锁消除"><a href="#锁消除" class="headerlink" title="锁消除"></a>锁消除</h4><p>&nbsp;&nbsp;&nbsp;&nbsp;锁消除是虚拟机的另外一种锁的优化。这种优化更彻底，java虚拟机在Jit编译时（可以简单理解为当某段代码即将第一次被执行时进行编译，又称即时编译），通过对上下文的扫描，去除不可能存在共享资源竞争的锁，通过这种方式消除没有必要的锁，可以节省毫无意义的请求锁时间。所消除的依据是逃逸分析的数据支持。</p>
 <blockquote>
 <p>如StringBuffer的append是一个同步方法，但是在add方法中的StringBuffer属于一个局部变量，并且不会被其他线程所使用，因此StringBuffer不可能存在共享资源竞争的情景，JVM会自动将其锁消除。</p>
 </blockquote>
@@ -371,8 +371,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/05/15/MESI/" rel="prev" title="MESI">
-                  <i class="fa fa-chevron-left"></i> MESI
+                <a href="/2021/05/15/%E5%B9%B6%E5%8F%91%E4%B9%8BVolatile%E8%AF%A6%E8%A7%A3MESI/" rel="prev" title="并发之Volatile详解MESI">
+                  <i class="fa fa-chevron-left"></i> 并发之Volatile详解MESI
                 </a>
             </div>
             <div class="post-nav-item">
