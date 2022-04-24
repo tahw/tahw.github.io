@@ -284,7 +284,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/05/26/AQS/">
+    <link itemprop="mainEntityOfPage" href="https://theme-next.js.org/2021/05/26/%E5%B9%B6%E5%8F%91%E4%B9%8BAQS%E5%85%A5%E9%97%A8%E5%92%8CReentrantLock%E4%BB%8B%E7%BB%8D/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -297,7 +297,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/05/26/AQS/" class="post-title-link" itemprop="url">AQS</a>
+          <a href="/2021/05/26/%E5%B9%B6%E5%8F%91%E4%B9%8BAQS%E5%85%A5%E9%97%A8%E5%92%8CReentrantLock%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">并发之AQS入门和ReentrantLock介绍</a>
         </h2>
 
         <div class="post-meta-container">
@@ -315,7 +315,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-07-09 16:01:14" itemprop="dateModified" datetime="2021-07-09T16:01:14+08:00">2021-07-09</time>
+        <time title="修改时间：2022-04-22 10:36:28" itemprop="dateModified" datetime="2022-04-22T10:36:28+08:00">2022-04-22</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -337,7 +337,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;AQS是什么呢？<code>AbstractQueuedSynchronizer</code>简称AQS。java并发变成核心在于java.concurrent.util包而juc当中的大多数同步器实现都是围绕着共同的基础行为，比如等待队列、条件队列、独占获取、共享获取等。而这个行为都是都是aqs去做的。下面是aqs的官方介绍。</p>
+          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;AQS是什么呢？<code>AbstractQueuedSynchronizer</code>简称AQS。java并发编程核心在于java.concurrent.util包而juc当中的大多数同步器实现都是围绕着共同的基础行为，比如等待队列、条件队列、独占获取、共享获取等。而这个行为都是都是aqs去做的。下面是aqs的官方介绍。</p>
 <pre>
 Provides a framework for implementing blocking locks 
 and related synchronizers (semaphores, events, etc) 
@@ -349,7 +349,7 @@ that rely on <b><font color='red'>a single atomic int value to represent state.<
 <h1 id="AQS依赖"><a href="#AQS依赖" class="headerlink" title="AQS依赖"></a>AQS依赖</h1><p><img src="/images/pasted-48.png" alt="AQS依赖图" loading="lazy"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/05/26/AQS/#more" rel="contents">
+              <a class="btn" href="/2021/05/26/%E5%B9%B6%E5%8F%91%E4%B9%8BAQS%E5%85%A5%E9%97%A8%E5%92%8CReentrantLock%E4%BB%8B%E7%BB%8D/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
